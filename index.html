@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gabriel Martin R. Manalo — Portfolio</title>
+
+  <meta name="description" content="Gabriel Martin R. Manalo — IT student portfolio: full-stack development, networking, UI/UX, and data analysis projects.">
+  <meta property="og:title" content="Gabriel Martin R. Manalo | IT Student">
+  <meta property="og:description" content="Full-stack development, networking, UI/UX, and data analysis projects.">
+  <meta property="og:image" content="images/Profile.jpg">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Google Fonts: Geist, Geist Mono, Source Serif 4 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+
+  <!-- Halftone Texture Backdrop -->
+  <div class="halftone-backdrop" aria-hidden="true"></div>
+
+  <!-- Desktop Fixed Left Sidebar Navigation -->
+  <aside id="sidebar" aria-label="Main Navigation">
+    <div class="sidebar-brand">
+      <span class="sidebar-initials">mrtn.riel</span>
+      <span class="sidebar-status-pill">
+        <span class="status-dot"></span> AVAILABLE
+      </span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-links">
+        <li><a href="#about" class="nav-link"><span class="nav-num">01</span><span class="nav-label">About</span></a></li>
+        <li><a href="#projects" class="nav-link"><span class="nav-num">02</span><span class="nav-label">Projects</span></a></li>
+        <li><a href="#education" class="nav-link"><span class="nav-num">03</span><span class="nav-label">Education</span></a></li>
+        <li><a href="#skills" class="nav-link"><span class="nav-num">04</span><span class="nav-label">Skills</span></a></li>
+        <li><a href="#contact" class="nav-link"><span class="nav-num">05</span><span class="nav-label">Contact</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-meta">
+        <span class="meta-label">TIME</span>
+        <span id="live-time" class="time">00:00:00</span>
+      </div>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme" title="Toggle Light/Dark Theme">
+        <span class="theme-icon">☾</span>
+        <span class="theme-text">THEME</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Sticky Top Bar -->
+  <header class="mobile-header">
+    <div class="mobile-identity">
+      <span class="mobile-name">GABRIEL MARTIN R. MANALO</span>
+      <span class="mobile-sub">IT STUDENT</span>
+    </div>
+    <div class="mobile-controls">
+      <button id="mobile-theme-toggle" class="icon-btn" aria-label="Toggle theme">☾</button>
+      <button id="mobile-nav-toggle" class="mobile-menu-btn" aria-expanded="false" aria-controls="sidebar">
+        <span>[ MENU ]</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <div class="layout-wrapper">
+    <main class="container">
+
+      <!-- Identity & Hero Section -->
+      <header class="hero-section fade-up">
+        <div class="hero-meta-bar">
+          <div class="meta-item">
+            <span class="meta-tag">[ IDENTITY ]</span>
+            <span class="meta-value">PUP MANILA // BSIT</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-tag">[ LOCATION ]</span>
+            <span class="meta-value">QUEZON CITY, PH</span>
+          </div>
+        </div>
+
+        <div class="hero-heading-block">
+          <h1 class="hero-name scramble-target">GABRIEL MARTIN R. MANALO</h1>
+          <p class="hero-role">3rd-Year Information Technology Student</p>
+        </div>
+      </header>
+
+      <!-- 01 — About Section -->
+      <section id="about" class="scroll-section">
+        <div class="section-header fade-up">
+          <span class="section-title scramble-target">01 — about</span>
+          <span class="section-badge">[ § 00.a ]</span>
+        </div>
+
+        <div class="about-card card-surface fade-up">
+          <div class="about-grid">
+            <div class="profile-photo-wrapper">
+              <img src="images/Profile.jpg" alt="Gabriel Martin R. Manalo" class="profile-photo">
+              <div class="photo-overlay-tag">G. MANALO</div>
+            </div>
+
+            <div class="about-text">
+              <p class="statement-lead">
+                <strong>3rd-year BS Information Technology student</strong> with a fundamental understanding of full-stack software development, network engineering, and data analysis.
+              </p>
+              <p class="statement-body">
+                Seeking an IT internship to gain hands-on experience, collaborate with industry professionals, and further advance technical problem-solving capabilities.
+              </p>
+
+              <div class="social-links">
+                <a href="https://github.com/mrtnriel" target="_blank" rel="noopener noreferrer" class="mono-link">
+                  <span>GITHUB</span> <span class="arrow-glyph">↗</span>
+                </a>
+                <a href="https://www.linkedin.com/in/gabriel-martin-manalo-411a0134a" target="_blank" rel="noopener noreferrer" class="mono-link">
+                  <span>LINKEDIN</span> <span class="arrow-glyph">↗</span>
+                </a>
+                <a href="https://www.facebook.com/gabriel.martin.77736" target="_blank" rel="noopener noreferrer" class="mono-link">
+                  <span>FACEBOOK</span> <span class="arrow-glyph">↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 — Projects Section -->
+      <section id="projects" class="scroll-section">
+        <div class="section-header fade-up">
+          <span class="section-title scramble-target">02 — projects</span>
+          <span class="section-badge">[ § 01.a ]</span>
+        </div>
+
+        <ul class="artifacts-list fade-up">
+
+          <!-- Project 1: SALN Portal -->
+          <li class="artifact-item" tabindex="0" role="button" aria-expanded="false">
+            <div class="artifact-header">
+              <div class="artifact-title-row">
+                <span class="artifact-badge badge-featured">DEV</span>
+                <span class="artifact-title">SALN Submission Portal</span>
+              </div>
+              <span class="artifact-stack">Python Flask, MySQL, JS, Gemini AI</span>
+              <span class="accordion-indicator" aria-hidden="true">+</span>
+            </div>
+
+            <div class="artifact-details">
+              <div class="details-inner">
+                <div class="project-brief-grid">
+                  <div class="brief-box">
+                    <span class="box-label">[ THE PROBLEM ]</span>
+                    <p>There was a need for a secure, efficient, and modernized digital system to handle the collection and submission of sensitive government ID data and records.</p>
+                  </div>
+                  <div class="brief-box">
+                    <span class="box-label">[ THE SOLUTION ]</span>
+                    <p>Developed a full-stack web application utilizing Python Flask for the backend, HTML/CSS/JavaScript for the frontend, and MySQL for database persistence. Configured schema architecture, implemented strict frontend form validation, and integrated AI-assisted workflows to accelerate development.</p>
+                  </div>
+                </div>
+
+                <div class="role-box">
+                  <span class="box-label">[ ROLE & SCOPE ]</span>
+                  <p><strong>Lead Developer:</strong> Handled the majority of the codebase, including backend routing, database architecture, and frontend UI design.</p>
+                </div>
+
+                <!-- Screenshots Carousel -->
+                <div class="artifact-screenshots">
+                  <div class="carousel-container" aria-roledescription="carousel" aria-label="SALN System Screenshots">
+                    <div class="carousel-track">
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 232457.png" alt="Login Portal">
+                        <div class="slide-caption">Login Portal</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233212.png" alt="Declarant Information">
+                        <div class="slide-caption">Declarant Information</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233222.png" alt="Spouse Information">
+                        <div class="slide-caption">Spouse Information</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233232.png" alt="Unmarried Children Section">
+                        <div class="slide-caption">Dependents Entry</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233245.png" alt="Assets">
+                        <div class="slide-caption">Assets Section</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233252.png" alt="Liabilities">
+                        <div class="slide-caption">Liabilities Section</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233316.png" alt="Final Review">
+                        <div class="slide-caption">Final Review</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233434.png" alt="Confirmation">
+                        <div class="slide-caption">Submission Confirmation</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233447.png" alt="Admin Dashboard">
+                        <div class="slide-caption">Admin Dashboard Overview</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233500.png" alt="Pending Requests">
+                        <div class="slide-caption">Pending Requests Queue</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233507.png" alt="Record Details Modal">
+                        <div class="slide-caption">Detailed Record View</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233521.png" alt="Approved Records">
+                        <div class="slide-caption">Approved Records Database</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233536.png" alt="Search Records">
+                        <div class="slide-caption">Search & Filter Interface</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233546.png" alt="Agencies">
+                        <div class="slide-caption">Agency Directory</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233554.png" alt="Database Filters">
+                        <div class="slide-caption">Predefined Quick Filters</div>
+                      </div>
+                      <div class="carousel-slide">
+                        <img src="images/Project 1/Screenshot 2026-07-14 233607.png" alt="Filter Results">
+                        <div class="slide-caption">Filtered Results Data</div>
+                      </div>
+                    </div>
+
+                    <button class="carousel-btn prev-btn" aria-label="Previous Screenshot">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button class="carousel-btn next-btn" aria-label="Next Screenshot">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+
+                    <div class="carousel-indicators" role="tablist"></div>
+                  </div>
+                </div>
+
+                <div class="project-action-row">
+                  <a href="https://github.com/mrtnriel/SALN-System" target="_blank" rel="noopener noreferrer" class="btn-action">
+                    <span>VIEW REPOSITORY</span> <span class="arrow-glyph">↗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Project 2: Room Booking Prototype -->
+          <li class="artifact-item" tabindex="0" role="button" aria-expanded="false">
+            <div class="artifact-header">
+              <div class="artifact-title-row">
+                <span class="artifact-badge">UX/UI</span>
+                <span class="artifact-title">Room Booking & Visualization Prototype</span>
+              </div>
+              <span class="artifact-stack">Figma, UCD Principles, Wireframing</span>
+              <span class="accordion-indicator" aria-hidden="true">+</span>
+            </div>
+
+            <div class="artifact-details">
+              <div class="details-inner">
+                <div class="project-brief-grid">
+                  <div class="brief-box">
+                    <span class="box-label">[ THE PROBLEM ]</span>
+                    <p>The university faced severe room shortage issues and scheduling chaos, making it difficult for students and faculty to locate available rooms in real-time.</p>
+                  </div>
+                  <div class="brief-box">
+                    <span class="box-label">[ THE SOLUTION ]</span>
+                    <p>Collaborated on an interactive room-booking dashboard in Figma. Applied User-Centered Design (UCD) principles to build an intuitive interface that simplifies availability checks and room reservations.</p>
+                  </div>
+                </div>
+
+                <div class="role-box">
+                  <span class="box-label">[ ROLE & SCOPE ]</span>
+                  <p><strong>UI Co-Designer / Wireframer:</strong> Designed reusable UI component libraries and connected interactive frames to produce a high-fidelity prototype.</p>
+                </div>
+
+                <div class="project-action-row">
+                  <a href="https://www.figma.com/design/gqwc5tSAWlLeSLLpxWD74U/High-Fidelity-Wireframe--Group-4-?node-id=251-2134&t=wYsBHzPpAqCFS38t-1" target="_blank" rel="noopener noreferrer" class="btn-action">
+                    <span>VIEW FIGMA PROTOTYPE</span> <span class="arrow-glyph">↗</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Project 3: Enterprise Network Topology -->
+          <li class="artifact-item" tabindex="0" role="button" aria-expanded="false">
+            <div class="artifact-header">
+              <div class="artifact-title-row">
+                <span class="artifact-badge">NET</span>
+                <span class="artifact-title">Enterprise Network Topology Design</span>
+              </div>
+              <span class="artifact-stack">Cisco Packet Tracer, VLANs, STP, EtherChannel</span>
+              <span class="accordion-indicator" aria-hidden="true">+</span>
+            </div>
+
+            <div class="artifact-details">
+              <div class="details-inner">
+                <div class="project-brief-grid">
+                  <div class="brief-box">
+                    <span class="box-label">[ THE PROBLEM ]</span>
+                    <p>A simulated enterprise network environment was required to securely handle complex internal routing, redundant switching paths, and perimeter security.</p>
+                  </div>
+                  <div class="brief-box">
+                    <span class="box-label">[ THE SOLUTION ]</span>
+                    <p>Architected an end-to-end network topology in Cisco Packet Tracer. Configured multi-area OSPF routing, integrated core switch layers with a firewall, and resolved physical and logical connection bottlenecks for stable failover.</p>
+                  </div>
+                </div>
+
+                <div class="role-box">
+                  <span class="box-label">[ ROLE & SCOPE ]</span>
+                  <p><strong>Network Co-Designer:</strong> Collaborated on subnet design, security ACLs, VLAN tagging, and live troubleshooting to verify network stability.</p>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Project 4: Exploratory Data Analysis -->
+          <li class="artifact-item" tabindex="0" role="button" aria-expanded="false">
+            <div class="artifact-header">
+              <div class="artifact-title-row">
+                <span class="artifact-badge">DATA</span>
+                <span class="artifact-title">Exploratory Data Analysis: Student Habits</span>
+              </div>
+              <span class="artifact-stack">R Language, Statistical Modeling, ggplot2</span>
+              <span class="accordion-indicator" aria-hidden="true">+</span>
+            </div>
+
+            <div class="artifact-details">
+              <div class="details-inner">
+                <div class="project-brief-grid">
+                  <div class="brief-box">
+                    <span class="box-label">[ THE PROBLEM ]</span>
+                    <p>A raw dataset of academic and lifestyle behaviors required systematic cleaning and analysis to uncover correlations with student academic performance.</p>
+                  </div>
+                  <div class="brief-box">
+                    <span class="box-label">[ THE SOLUTION ]</span>
+                    <p>Executed exploratory data analysis using R. Cleaned and normalized anomalous entries, transformed categorical variables, and generated visualization plots to highlight key behavioral factors.</p>
+                  </div>
+                </div>
+
+                <div class="role-box">
+                  <span class="box-label">[ ROLE & SCOPE ]</span>
+                  <p><strong>Data Analyst:</strong> Structured the analytical pipeline, wrote data wrangling scripts in R, and synthesized the final visual reporting summaries.</p>
+                </div>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- 03 — Education Section -->
+      <section id="education" class="scroll-section">
+        <div class="section-header fade-up">
+          <span class="section-title scramble-target">03 — education</span>
+          <span class="section-badge">[ § 01.b ]</span>
+        </div>
+
+        <div class="education-card card-surface fade-up">
+          <div class="edu-top-row">
+            <div>
+              <span class="edu-institution">Polytechnic University of the Philippines</span>
+              <h3 class="edu-degree">Bachelor of Science in Information Technology</h3>
+            </div>
+            <div class="edu-timeline">
+              <span class="edu-years">2024 — PRESENT</span>
+              <span class="status-pill-subtle">
+                <span class="status-dot"></span> ENROLLED
+              </span>
+            </div>
+          </div>
+
+          <p class="edu-description">
+            Currently an incoming 3rd-year student. Relevant coursework includes Network Engineering, Data Communications, Database Theory & Normalization, and Human-Computer Interaction.
+          </p>
+
+          <div class="edu-meta-grid">
+            <div class="meta-cell">
+              <span class="cell-label">CAMPUS LOCATION</span>
+              <span class="cell-val">Sta. Mesa, Manila, Philippines</span>
+            </div>
+            <div class="meta-cell">
+              <span class="cell-label">ACADEMIC STATUS</span>
+              <span class="cell-val">Undergraduate Student</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 — Skills Section -->
+      <section id="skills" class="scroll-section">
+        <div class="section-header fade-up">
+          <span class="section-title scramble-target">04 — skills</span>
+          <span class="section-badge">[ § 01.c ]</span>
+        </div>
+
+        <div class="skills-grid fade-up">
+          
+          <div class="skill-category-card card-surface">
+            <span class="skill-category-header">[ 01 / LANGUAGES ]</span>
+            <div class="skill-pill-list">
+              <span class="skill-pill">Java</span>
+              <span class="skill-pill">C++</span>
+              <span class="skill-pill">Python</span>
+              <span class="skill-pill">COBOL</span>
+              <span class="skill-pill">JavaScript</span>
+              <span class="skill-pill">HTML5</span>
+              <span class="skill-pill">CSS3</span>
+              <span class="skill-pill">R</span>
+            </div>
+          </div>
+
+          <div class="skill-category-card card-surface">
+            <span class="skill-category-header">[ 02 / BACKEND & DATABASE ]</span>
+            <div class="skill-pill-list">
+              <span class="skill-pill">Flask</span>
+              <span class="skill-pill">MySQL</span>
+              <span class="skill-pill">ERD Modeling</span>
+              <span class="skill-pill">Database Normalization</span>
+            </div>
+          </div>
+
+          <div class="skill-category-card card-surface">
+            <span class="skill-category-header">[ 03 / DESIGN & UX/UI ]</span>
+            <div class="skill-pill-list">
+              <span class="skill-pill">Figma</span>
+              <span class="skill-pill">User-Centered Design (UCD)</span>
+              <span class="skill-pill">Wireframing</span>
+              <span class="skill-pill">Prototyping</span>
+            </div>
+          </div>
+
+          <div class="skill-category-card card-surface">
+            <span class="skill-category-header">[ 04 / NETWORKING ]</span>
+            <div class="skill-pill-list">
+              <span class="skill-pill">Cisco Packet Tracer</span>
+              <span class="skill-pill">VLAN Configuration</span>
+              <span class="skill-pill">STP</span>
+              <span class="skill-pill">EtherChannel</span>
+            </div>
+          </div>
+
+          <div class="skill-category-card card-surface">
+            <span class="skill-category-header">[ 05 / DEV TOOLS ]</span>
+            <div class="skill-pill-list">
+              <span class="skill-pill">Git</span>
+              <span class="skill-pill">GitHub</span>
+              <span class="skill-pill">Vercel</span>
+              <span class="skill-pill">VS Code</span>
+            </div>
+          </div>
+
+          <div class="skill-category-card card-surface">
+            <span class="skill-category-header">[ 06 / AI PLATFORMS ]</span>
+            <div class="skill-pill-list">
+              <span class="skill-pill">Gemini Pro</span>
+              <span class="skill-pill">Claude</span>
+              <span class="skill-pill">ChatGPT</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 05 — Contact Section -->
+      <section id="contact" class="scroll-section">
+        <div class="section-header fade-up">
+          <span class="section-title scramble-target">05 — contact</span>
+          <span class="section-badge">[ § 02.a ]</span>
+        </div>
+
+        <div class="contact-card card-surface fade-up">
+          <p class="contact-lead">
+            Currently open to IT internship opportunities. Whether you have a position to fill, a project to discuss, or wish to connect, reach out directly:
+          </p>
+
+          <div class="contact-rows">
+            <div class="contact-row">
+              <span class="contact-tag">[ PRIMARY EMAIL ]</span>
+              <a href="mailto:martinramirezasdw@gmail.com" class="contact-link">
+                martinramirezasdw@gmail.com <span class="arrow-glyph">↗</span>
+              </a>
+            </div>
+
+            <div class="contact-row">
+              <span class="contact-tag">[ ACADEMIC EMAIL ]</span>
+              <a href="mailto:gabrielrmanalo@iskolarngbayan.pup.edu.ph" class="contact-link">
+                gabrielrmanalo@iskolarngbayan.pup.edu.ph <span class="arrow-glyph">↗</span>
+              </a>
+            </div>
+
+            <div class="contact-row">
+              <span class="contact-tag">[ PHONE ]</span>
+              <a href="tel:+639164011194" class="contact-link">
+                +63 916 401 1194 <span class="arrow-glyph">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Minimalist Colophon Footer -->
+      <footer class="colophon-footer fade-up">
+        <div class="footer-divider"></div>
+        <div class="footer-content">
+          <span class="footer-text">© 2026 GABRIEL MARTIN R. MANALO — ALL RIGHTS RESERVED</span>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+</body>
+</html>
