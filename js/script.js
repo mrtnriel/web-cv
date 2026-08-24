@@ -1,29 +1,66 @@
 /**
  * Gabriel Martin R. Manalo — Portfolio Engine
- * Implements bryl-minimal design logic, theme switching, live clock,
- * text scramble animations, accordion details, scroll-spy, and screenshot carousel.
+ * Stable 60fps/120fps Scroll Engine, Dynamic Island Navigation, Accordions, and Carousels.
  */
 
-// --- 1. Live Time Clock ---
-function initLiveClock() {
-  const timeElement = document.getElementById('live-time');
-  if (!timeElement) return;
+// --- 1. Scroll Engine: Fade Progress Calculation ---
+function initScrollEngine() {
+  const scrollThreshold = 300;
 
-  function update() {
-    const now = new Date();
-    timeElement.textContent = now.toLocaleTimeString('en-GB', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-  }
+  let ticking = false;
 
-  update();
-  setInterval(update, 1000);
+  const onScroll = () => {
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    // Hero scroll hint opacity calculation
+    const progress = Math.min(Math.max(scrollY / scrollThreshold, 0), 1);
+    document.documentElement.style.setProperty('--hero-scroll-progress', progress.toFixed(4));
+
+    ticking = false;
+  };
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  onScroll();
+  window.addEventListener('resize', onScroll, { passive: true });
 }
 
-// --- 2. Text Scramble Animation ---
+// --- 2. Staggered Scroll Reveal Observer ---
+function initScrollReveals() {
+  const staggerGroups = document.querySelectorAll('.stagger-group');
+  staggerGroups.forEach((group) => {
+    const items = group.querySelectorAll('.reveal-item');
+    items.forEach((item, index) => {
+      item.style.setProperty('--stagger-delay', `${index * 55}ms`);
+    });
+  });
+
+  const revealItems = document.querySelectorAll('.reveal-item');
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  revealItems.forEach((item) => observer.observe(item));
+}
+
+// --- 3. Text Scramble Animation ---
 class TextScramble {
   constructor(el) {
     this.el = el;
@@ -40,8 +77,8 @@ class TextScramble {
     for (let i = 0; i < length; i++) {
       const from = oldText[i] || '';
       const to = newText[i] || '';
-      const start = Math.floor(Math.random() * 30);
-      const end = start + Math.floor(Math.random() * 30);
+      const start = Math.floor(Math.random() * 25);
+      const end = start + Math.floor(Math.random() * 25);
       this.queue.push({ from, to, start, end });
     }
 
@@ -65,7 +102,7 @@ class TextScramble {
           char = this.chars[Math.floor(Math.random() * this.chars.length)];
           this.queue[i].char = char;
         }
-        output += `<span style="opacity: 0.5;">${char}</span>`;
+        output += `<span style="opacity: 0.45;">${char}</span>`;
       } else {
         output += from;
       }
@@ -88,32 +125,11 @@ function initScrambleEffects() {
     const originalText = target.textContent;
     const fx = new TextScramble(target);
 
-    // Run on initial load
     fx.setText(originalText);
 
-    // Re-run on hover
     target.addEventListener('mouseenter', () => {
       fx.setText(originalText);
     });
-  });
-}
-
-// --- 3. Scroll Fade-Up Observer ---
-function initScrollObserver() {
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
-
-  document.querySelectorAll('.fade-up').forEach((el) => {
-    observer.observe(el);
   });
 }
 
@@ -124,13 +140,11 @@ function initArtifactAccordion() {
   const toggleItem = (item) => {
     const isCurrentlyActive = item.classList.contains('active');
 
-    // Close all items
     artifactItems.forEach((other) => {
       other.classList.remove('active');
       other.setAttribute('aria-expanded', 'false');
     });
 
-    // Toggle target item
     if (!isCurrentlyActive) {
       item.classList.add('active');
       item.setAttribute('aria-expanded', 'true');
@@ -138,16 +152,13 @@ function initArtifactAccordion() {
   };
 
   artifactItems.forEach((item) => {
-    // Mouse click
     item.addEventListener('click', (e) => {
-      // Prevent toggling if user clicks a direct button or carousel control
       if (e.target.closest('.carousel-container') || e.target.closest('.btn-action') || e.target.closest('a')) {
         return;
       }
       toggleItem(item);
     });
 
-    // Keyboard support (Enter / Space)
     item.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         if (e.target.closest('.carousel-container') || e.target.closest('.btn-action') || e.target.closest('a')) {
@@ -160,77 +171,86 @@ function initArtifactAccordion() {
   });
 }
 
-// --- 5. Scroll-Spy Navigation & Mobile Drawer ---
+// --- 5. Dynamic Island Navigation (Accurate & Jitter-Free) ---
 function initNavigation() {
   const sections = document.querySelectorAll('.scroll-section');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const mobileToggleBtn = document.getElementById('mobile-nav-toggle');
-  const sidebar = document.getElementById('sidebar');
+  const navLinks = document.querySelectorAll('.island-link');
+  let isProgrammaticScrolling = false;
+  let scrollTimeout = null;
 
-  // Scroll Spy
-  const spyObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          navLinks.forEach((link) => link.classList.remove('active-nav'));
-          const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-          if (activeLink) {
-            activeLink.classList.add('active-nav');
-          }
-        }
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const targetId = link.getAttribute('href')?.replace('#', '');
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      e.preventDefault();
+
+      navLinks.forEach((l) => l.classList.remove('active-nav'));
+      link.classList.add('active-nav');
+
+      isProgrammaticScrolling = true;
+      clearTimeout(scrollTimeout);
+
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+      const topOffset = 80;
+      const finalY = Math.max(0, targetTop - topOffset);
+
+      window.scrollTo({
+        top: finalY,
+        behavior: 'smooth'
       });
-    },
-    { rootMargin: '-30% 0px -60% 0px', threshold: 0 }
-  );
 
-  sections.forEach((sec) => spyObserver.observe(sec));
+      history.pushState(null, '', `#${targetId}`);
 
-  // Mobile Drawer Toggle
-  if (mobileToggleBtn && sidebar) {
-    const toggleMenu = () => {
-      const isOpen = sidebar.classList.toggle('open');
-      mobileToggleBtn.setAttribute('aria-expanded', isOpen);
-      mobileToggleBtn.innerHTML = isOpen ? '<span>[ CLOSE ]</span>' : '<span>[ MENU ]</span>';
-    };
-
-    mobileToggleBtn.addEventListener('click', toggleMenu);
-
-    // Close when clicking nav links
-    navLinks.forEach((link) => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 1024) {
-          sidebar.classList.remove('open');
-          mobileToggleBtn.setAttribute('aria-expanded', 'false');
-          mobileToggleBtn.innerHTML = '<span>[ MENU ]</span>';
-        }
-      });
+      scrollTimeout = setTimeout(() => {
+        isProgrammaticScrolling = false;
+      }, 750);
     });
+  });
 
-    // Close on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-        mobileToggleBtn.setAttribute('aria-expanded', 'false');
-        mobileToggleBtn.innerHTML = '<span>[ MENU ]</span>';
+  const updateSpy = () => {
+    if (isProgrammaticScrolling) return;
+
+    const scrollY = window.scrollY || window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight;
+    const windowHeight = window.innerHeight;
+
+    if (windowHeight + scrollY >= docHeight - 80) {
+      navLinks.forEach((l) => l.classList.remove('active-nav'));
+      const contactLink = document.querySelector('.island-link[href="#contact"]');
+      if (contactLink) contactLink.classList.add('active-nav');
+      return;
+    }
+
+    let currentSectionId = '';
+    sections.forEach((section) => {
+      const sectionTop = section.getBoundingClientRect().top;
+      if (sectionTop <= 160) {
+        currentSectionId = section.getAttribute('id');
       }
     });
-  }
+
+    if (currentSectionId) {
+      navLinks.forEach((l) => l.classList.remove('active-nav'));
+      const activeLink = document.querySelector(`.island-link[href="#${currentSectionId}"]`);
+      if (activeLink) activeLink.classList.add('active-nav');
+    }
+  };
+
+  window.addEventListener('scroll', updateSpy, { passive: true });
+  updateSpy();
 }
 
 // --- 6. Light / Dark Theme Toggle ---
 function initThemeToggle() {
-  const desktopToggle = document.getElementById('theme-toggle');
-  const mobileToggle = document.getElementById('mobile-theme-toggle');
+  const toggleBtn = document.getElementById('theme-toggle');
 
-  const updateIcons = (theme) => {
+  const updateIcon = (theme) => {
     const isDark = theme === 'dark';
-    if (desktopToggle) {
-      desktopToggle.querySelector('.theme-icon').textContent = isDark ? '☼' : '☾';
-      desktopToggle.querySelector('.theme-text').textContent = isDark ? 'LIGHT' : 'DARK';
-    }
-    if (mobileToggle) {
-      mobileToggle.textContent = isDark ? '☼' : '☾';
+    if (toggleBtn) {
+      const icon = toggleBtn.querySelector('.theme-icon');
+      if (icon) icon.textContent = isDark ? '☼' : '☾';
     }
   };
 
@@ -238,27 +258,25 @@ function initThemeToggle() {
     if (theme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       localStorage.setItem('portfolio-theme', 'dark');
-      updateIcons('dark');
+      updateIcon('dark');
     } else {
       document.documentElement.removeAttribute('data-theme');
       localStorage.setItem('portfolio-theme', 'light');
-      updateIcons('light');
+      updateIcon('light');
     }
   };
 
-  // Check saved theme or system preference
   const savedTheme = localStorage.getItem('portfolio-theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
   applyTheme(initialTheme);
 
-  const toggleTheme = () => {
-    const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(isCurrentlyDark ? 'light' : 'dark');
-  };
-
-  if (desktopToggle) desktopToggle.addEventListener('click', toggleTheme);
-  if (mobileToggle) mobileToggle.addEventListener('click', toggleTheme);
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      applyTheme(isCurrentlyDark ? 'light' : 'dark');
+    });
+  }
 }
 
 // --- 7. Project Screenshot Carousel ---
@@ -274,7 +292,6 @@ function initCarousels() {
 
     let currentIndex = 0;
 
-    // Build indicator dots
     slides.forEach((_, idx) => {
       const dot = document.createElement('div');
       dot.classList.add('dot');
@@ -305,7 +322,6 @@ function initCarousels() {
       if (dots[currentIndex]) dots[currentIndex].classList.add('active');
     };
 
-    // Button controls
     if (nextBtn) {
       nextBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -320,7 +336,6 @@ function initCarousels() {
       });
     }
 
-    // Keyboard Arrow Controls
     container.setAttribute('tabindex', '0');
     container.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') {
@@ -332,7 +347,6 @@ function initCarousels() {
       }
     });
 
-    // Touch Swipe Gesture Support
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -359,11 +373,11 @@ function initCarousels() {
   });
 }
 
-// --- Initialization ---
+// --- Initialize All Systems ---
 document.addEventListener('DOMContentLoaded', () => {
-  initLiveClock();
+  initScrollEngine();
+  initScrollReveals();
   initScrambleEffects();
-  initScrollObserver();
   initArtifactAccordion();
   initNavigation();
   initThemeToggle();
