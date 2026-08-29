@@ -388,6 +388,15 @@ p {
   filter: grayscale(85%);
 }
 
+/* Remove filter in Light Mode */
+[data-theme="light"] .immersive-photo {
+  filter: none;
+}
+
+[data-theme="light"] .immersive-photo:hover {
+  filter: none;
+}
+
 .statement-lead { 
   font-family: var(--font-serif); 
   font-size: 1.4rem; 
