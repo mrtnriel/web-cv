@@ -14,9 +14,14 @@
 </head>
 <body>
 
+  <!-- Custom Cursor Elements (Desktop) -->
+  <div class="custom-cursor-dot" aria-hidden="true"></div>
+  <div class="custom-cursor-ring" aria-hidden="true"></div>
+
+  <!-- Halftone Texture Background -->
   <div class="halftone-backdrop" aria-hidden="true"></div>
 
-  <!-- Dynamic Island -->
+  <!-- Dynamic Island Navigation -->
   <header class="island-wrapper" aria-label="Main Navigation">
     <nav id="dynamic-island" class="dynamic-island hero-entrance-island">
       <div class="island-items">
@@ -56,7 +61,7 @@
     <section id="about" class="snap-section">
       <div class="container section-content">
         <div class="section-header reveal-item">
-          <span class="section-title">01 — about</span>
+          <span class="section-title">01 — Profile</span>
           <span class="section-badge">Manila, PH</span>
         </div>
 
@@ -82,17 +87,70 @@
     <section id="projects" class="snap-section">
       <div class="container section-content no-bottom-padding">
         <div class="section-header reveal-item">
-          <span class="section-title">02 — projects</span>
-          <span class="section-badge">Scroll →</span>
+          <span class="section-title">02 — Featured Work</span>
+          <div class="project-nav-controls">
+            <button id="project-prev-btn" class="project-nav-btn" aria-label="Previous project">←</button>
+            <button id="project-next-btn" class="project-nav-btn" aria-label="Next project">→</button>
+            <span class="section-badge">Scroll / Click →</span>
+          </div>
         </div>
 
         <div class="projects-track reveal-item">
           
-          <!-- Project 1 -->
-          <article class="project-panel">
-            <div class="project-media">
-              <img src="images/Project 1/Screenshot 2026-07-14 232457.png" alt="SALN Login Portal" loading="lazy">
+          <!-- Project 1: SALN Submission Portal (Multi-Image Carousel) -->
+          <article class="project-panel" id="saln-project">
+            <div class="project-media carousel-media">
+              
+              <!-- Carousel Images -->
+              <div class="carousel-slides-container">
+                <div class="carousel-slide is-active">
+                  <img src="images/Project 1/Screenshot 2026-07-14 232457.png" alt="01 — SALN Login Portal" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233212.png" alt="02 — Declarant Information & Compliance" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233222.png" alt="03 — Spouse Information Form" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233232.png" alt="04 — Unmarried Children Below 18" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233245.png" alt="05 — Real & Personal Assets Breakdown" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233252.png" alt="06 — Liabilities & Creditor Balances" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233316.png" alt="07 — Review Net Worth & Sworn Declaration" loading="lazy">
+                </div>
+                <div class="carousel-slide">
+                  <img src="images/Project 1/Screenshot 2026-07-14 233434.png" alt="08 — Submission Confirmation Alert" loading="lazy">
+                </div>
+              </div>
+
+              <!-- Carousel Controls Overlay -->
+              <div class="carousel-overlay">
+                <span class="carousel-counter"><span class="carousel-current">01</span> / 08</span>
+                <div class="carousel-arrows">
+                  <button type="button" class="carousel-btn carousel-prev" aria-label="Previous screen">←</button>
+                  <button type="button" class="carousel-btn carousel-next" aria-label="Next screen">→</button>
+                </div>
+              </div>
+
+              <!-- Carousel Thumbnail Dots -->
+              <div class="carousel-dots" role="tablist" aria-label="SALN Portal Screens">
+                <button type="button" class="carousel-dot is-active" aria-label="Screen 1: Login Portal"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 2: Declarant Info"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 3: Spouse Info"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 4: Unmarried Children"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 5: Assets Breakdown"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 6: Liabilities"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 7: Review & Declaration"></button>
+                <button type="button" class="carousel-dot" aria-label="Screen 8: Submission Confirmation"></button>
+              </div>
             </div>
+
             <div class="project-info">
               <span class="artifact-stack">Python Flask, MySQL, HTML, CSS, JS</span>
               <h3>SALN Submission Portal</h3>
@@ -133,15 +191,16 @@
       </div>
     </section>
 
-<!-- 03 — Expertise -->
+    <!-- 03 — Expertise -->
     <section id="expertise" class="snap-section">
       <div class="container section-content">
         <div class="section-header reveal-item">
           <span class="section-title">03 — Expertise & Background</span>
+          <span class="section-badge">Manila, PH</span>
         </div>
 
         <div class="immersive-grid split-grid reveal-item">
-          <!-- Education Side (Timeline Aesthetic) -->
+          <!-- Education Column -->
           <div class="edu-column">
             <h3 class="column-header">Education</h3>
             
@@ -156,7 +215,7 @@
             </div>
           </div>
 
-          <!-- Skills Side (Pill Cluster Aesthetic) -->
+          <!-- Skills Column -->
           <div class="skills-column">
             <h3 class="column-header">Technical Toolkit</h3>
             
@@ -209,17 +268,16 @@
       </div>
     </section>
 
-<!-- 04 — Contact -->
+    <!-- 04 — Contact -->
     <section id="contact" class="snap-section">
       <div class="container section-content">
-        
-        <!-- RESTORED STANDARD SECTION HEADER WITH DIVIDER -->
         <div class="section-header reveal-item">
           <span class="section-title">04 — contact</span>
+          <span class="section-badge">Manila, PH</span>
         </div>
 
         <div class="contact-layout reveal-item">
-          <!-- Left Column: Info & Links -->
+          <!-- Left Column -->
           <div class="contact-info-col">
             <h2 class="contact-heading">Let's Connect</h2>
             <p class="contact-lead">Have a project in mind, or just want to chat about IT, networking, or distributed systems? Drop me a line.</p>
@@ -276,7 +334,6 @@
           </div>
         </div>
 
-        <!-- FOOTER: Made very small -->
         <footer class="minimal-footer reveal-item">
           <span class="footer-text">© 2026 GABRIEL MARTIN R. MANALO — ALL RIGHTS RESERVED.</span>
         </footer>

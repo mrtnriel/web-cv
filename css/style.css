@@ -1,5 +1,5 @@
 /* ==========================================================================
-   bryl-minimal Design System — Emil Design Engineering Motion Architecture
+   bryl-minimal Design System — Emil Motion Architecture
    ========================================================================== */
 
 :root {
@@ -12,6 +12,14 @@
   --gray-400: #71717a;
   --gray-500: #a1a1aa;
   
+  /* Accent & Particle Colors */
+  --cursor-dot-color: var(--ink);
+  --cursor-ring-color: color-mix(in srgb, var(--ink) 45%, transparent);
+  --cursor-ring-hover-bg: color-mix(in srgb, var(--ink) 12%, transparent);
+  --particle-color-1: var(--ink);
+  --particle-color-2: #f472b6;
+  --particle-color-3: #fb7185;
+
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
   --font-serif: 'Source Serif 4', Georgia, serif;
@@ -21,7 +29,7 @@
   --radius-pill: 9999px;
   --dot-color: rgba(255, 255, 255, 0.05);
 
-  /* Emil Design Motion Tokens */
+  /* Motion Tokens */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-instant: 100ms;
@@ -41,6 +49,13 @@
   --gray-400: #a3a3a3;
   --gray-500: #737373;
   --dot-color: rgba(0, 0, 0, 0.08);
+
+  --cursor-dot-color: var(--ink);
+  --cursor-ring-color: color-mix(in srgb, var(--ink) 50%, transparent);
+  --cursor-ring-hover-bg: color-mix(in srgb, #f472b6 15%, transparent);
+  --particle-color-1: #0a0a0a;
+  --particle-color-2: #ec4899;
+  --particle-color-3: #f43f5e;
 }
 
 *, *::before, *::after { 
@@ -72,6 +87,87 @@ body {
 a { 
   text-decoration: none; 
   color: inherit; 
+}
+
+/* --- Custom Cursor (Desktop Only) --- */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .carousel-btn, .carousel-dot {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background-color: var(--cursor-dot-color);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--cursor-ring-color);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: 
+    opacity var(--duration-fast) var(--ease-out),
+    width var(--duration-normal) var(--ease-out),
+    height var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out),
+    background-color var(--duration-normal) var(--ease-out);
+}
+
+.custom-cursor-ring.is-hovering {
+  width: 44px;
+  height: 44px;
+  border-color: var(--particle-color-2);
+  background-color: var(--cursor-ring-hover-bg);
+}
+
+.custom-cursor-dot.is-active {
+  transform: translate(-50%, -50%) scale(0.65);
+}
+
+.custom-cursor-ring.is-active {
+  transform: translate(-50%, -50%) scale(0.85);
+}
+
+/* --- Click Particles --- */
+.click-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9997;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: particle-burst var(--duration-slow) cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+}
+
+@keyframes particle-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.1);
+  }
 }
 
 /* Halftone Backdrop */
@@ -166,7 +262,6 @@ a {
   border: none; 
   background: transparent; 
   color: var(--gray-500); 
-  cursor: pointer; 
   font-size: 13px; 
   display: flex;
   align-items: center;
@@ -272,7 +367,7 @@ p {
   text-align-last: center;
 }
 
-/* --- Tactile Buttons (Micro-interactions Level 1) --- */
+/* --- Buttons --- */
 .btn-primary, .btn-secondary, .btn-action { 
   display: inline-flex; 
   align-items: center; 
@@ -284,7 +379,6 @@ p {
   font-weight: 500; 
   text-transform: uppercase; 
   letter-spacing: 0.05em; 
-  cursor: pointer; 
   transition: 
     transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
@@ -388,11 +482,8 @@ p {
   filter: grayscale(85%);
 }
 
-/* Remove filter in Light Mode */
-[data-theme="light"] .immersive-photo {
-  filter: none;
-}
-
+/* Light mode image rule (no filter) */
+[data-theme="light"] .immersive-photo,
 [data-theme="light"] .immersive-photo:hover {
   filter: none;
 }
@@ -446,10 +537,47 @@ p {
   transform: translateY(2px);
 }
 
-/* --- 02 Projects (Showcase Track) --- */
+/* --- 02 Projects --- */
 .no-bottom-padding { 
   justify-content: flex-start; 
   padding-top: 10vh; 
+}
+
+.project-nav-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: 
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.project-nav-btn:hover {
+  background-color: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.project-nav-btn:active {
+  transform: translateY(0) scale(0.94);
 }
 
 .projects-track { 
@@ -479,30 +607,167 @@ p {
 
 .project-panel.alone { grid-template-columns: 1fr; }
 
+/* The Frame & Aspect Ratio */
 .project-media { 
   width: 100%; 
   aspect-ratio: 16/10; 
   border-radius: var(--radius-md); 
   overflow: hidden; 
   border: 1px solid color-mix(in srgb, var(--gray-200) 50%, transparent); 
-  background-color: var(--gray-100);
+  background-color: var(--gray-50); 
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4); 
   transition: border-color var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
 }
 
-.project-media img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
+/* Image containment without cropping */
+.project-media img,
+.carousel-media img,
+.carousel-slide img { 
+  width: 100% !important; 
+  height: 100% !important; 
+  object-fit: contain !important; 
+  object-position: center !important;
+  display: block;
   transition: transform var(--duration-slow) var(--ease-out);
-}
-
-.project-panel:hover .project-media img {
-  transform: scale(1.025);
 }
 
 .project-panel:hover .project-media {
   border-color: var(--gray-300);
+}
+
+/* SALN Project Media Carousel */
+.carousel-media {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.carousel-slides-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.985);
+  transition: 
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
+}
+
+.carousel-slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  position: relative;
+}
+
+.carousel-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.carousel-counter {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background-color: color-mix(in srgb, var(--bg) 75%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gray-200);
+}
+
+.carousel-arrows {
+  display: inline-flex;
+  gap: 0.35rem;
+  pointer-events: auto;
+}
+
+.carousel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--bg) 75%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--gray-200);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: 
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.carousel-btn:hover {
+  background-color: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  transform: scale(1.08);
+}
+
+.carousel-btn:active {
+  transform: scale(0.92);
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  cursor: pointer;
+  padding: 0;
+  transition: 
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    width var(--duration-fast) var(--ease-out);
+}
+
+.carousel-dot:hover {
+  background-color: var(--ink);
+  transform: scale(1.3);
+}
+
+.carousel-dot.is-active {
+  width: 18px;
+  border-radius: var(--radius-pill);
+  background-color: var(--ink);
 }
 
 .project-info {
@@ -558,7 +823,6 @@ p {
   padding-bottom: 1rem; 
 }
 
-/* Timeline Node */
 .timeline-node {
   position: relative;
   padding-left: 1.5rem;
@@ -587,7 +851,6 @@ p {
 .edu-institution { display: block; font-size: 1.1rem; color: var(--gray-400); margin-bottom: 1.25rem; font-family: var(--font-serif); font-style: italic; }
 .edu-description { font-size: 1.05rem; color: var(--gray-500); line-height: 1.6; }
 
-/* Skill Tags (Rule 6: Explicit transitions) */
 .skills-clusters { display: flex; flex-direction: column; gap: 2rem; }
 .skill-category { display: flex; flex-direction: column; gap: 0.85rem; }
 .skill-label { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -693,7 +956,6 @@ p {
   transform: translateX(2px);
 }
 
-/* Contact Form */
 .contact-form-col { 
   background-color: var(--gray-50); 
   border: 1px solid var(--gray-200); 
@@ -775,7 +1037,6 @@ p {
   font-weight: 600; 
   text-transform: uppercase; 
   letter-spacing: 0.05em; 
-  cursor: pointer; 
   position: relative;
   overflow: hidden;
   transition: 
@@ -820,10 +1081,10 @@ p {
 .minimal-footer { margin-top: 2rem; }
 .footer-text { font-family: var(--font-mono); font-size: 10px; color: var(--gray-400); letter-spacing: 0.05em; }
 
-/* --- Emil Scroll Reveals & Staggers --- */
+/* --- Section Reveals --- */
 .reveal-item { 
   opacity: 0; 
-  transform: translateY(12px); 
+  transform: translateY(14px); 
   transition: 
     opacity var(--duration-reveal) var(--ease-out), 
     transform var(--duration-reveal) var(--ease-out); 
@@ -835,13 +1096,12 @@ p {
   transform: translateY(0); 
 }
 
-/* Stagger sequence (40-60ms intervals for crisp delivery) */
 .reveal-group .reveal-item:nth-child(1) { transition-delay: 0ms; }
 .reveal-group .reveal-item:nth-child(2) { transition-delay: 50ms; }
 .reveal-group .reveal-item:nth-child(3) { transition-delay: 100ms; }
 .reveal-group .reveal-item:nth-child(4) { transition-delay: 150ms; }
 
-/* --- Responsive Behavior --- */
+/* --- Responsive Adjustments --- */
 @media (max-width: 1200px) {
   .projects-track {
     padding-left: calc(50vw - 450px);
@@ -863,12 +1123,11 @@ p {
   .contact-form-col { padding: 1.5rem; }
   .island-wrapper { padding: 0 0.5rem; }
   
-  /* Simplify mobile transforms */
   .reveal-item { transform: translateY(8px); }
   .reveal-group .reveal-item:nth-child(n) { transition-delay: 0ms; }
 }
 
-/* --- Rule 26: Accessibility & Reduced Motion Support --- */
+/* --- Accessibility & Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -877,6 +1136,14 @@ p {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .custom-cursor-dot,
+  .custom-cursor-ring,
+  .click-particle {
+    display: none !important;
+  }
+  body, a, button, input, textarea {
+    cursor: auto !important;
   }
   .reveal-item {
     opacity: 1 !important;
