@@ -280,7 +280,7 @@ function initContactForm() {
   });
 }
 
-// 7. Project Showcase Track Slider (Click, Wheel, Keyboard)
+// 7. Project Showcase Track Slider (Click & Keyboard Navigation)
 function initProjectSlider() {
   const track = document.querySelector('.projects-track');
   const prevBtn = document.getElementById('project-prev-btn');
@@ -289,34 +289,28 @@ function initProjectSlider() {
 
   const getScrollDistance = () => {
     const panel = track.querySelector('.project-panel');
-    return panel ? panel.offsetWidth + 64 : 600;
+    if (!panel) return 600;
+    // Accounts for responsive gap sizes
+    const gap = window.innerWidth <= 900 ? 32 : (window.innerWidth <= 1200 ? 48 : 128);
+    return panel.offsetWidth + gap;
   };
 
+  // Click Navigation
   if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       track.scrollBy({ left: getScrollDistance(), behavior: 'smooth' });
     });
   }
 
   if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       track.scrollBy({ left: -getScrollDistance(), behavior: 'smooth' });
     });
   }
 
-  track.addEventListener('wheel', (e) => {
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      const maxScrollLeft = track.scrollWidth - track.clientWidth;
-      const atStart = track.scrollLeft <= 0 && e.deltaY < 0;
-      const atEnd = track.scrollLeft >= maxScrollLeft - 2 && e.deltaY > 0;
-
-      if (!atStart && !atEnd) {
-        e.preventDefault();
-        track.scrollBy({ left: e.deltaY * 1.5, behavior: 'auto' });
-      }
-    }
-  }, { passive: false });
-
+  // Keyboard Arrow Navigation (when Section 02 is active in view)
   window.addEventListener('keydown', (e) => {
     const projectsSection = document.getElementById('projects');
     if (!projectsSection) return;

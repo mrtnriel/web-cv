@@ -543,41 +543,51 @@ p {
   padding-top: 10vh; 
 }
 
+/* --- Refined Glassmorphic Project Navigation Controls --- */
 .project-nav-controls {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .project-nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--radius-sm);
-  background-color: var(--gray-50);
-  border: 1px solid var(--gray-300);
-  color: var(--ink);
+  
+  /* Frosted Glassmorphism */
+  background-color: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--gray-200) 80%, transparent);
+  color: var(--gray-400);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   transition: 
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .project-nav-btn:hover {
-  background-color: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+  background-color: color-mix(in srgb, var(--gray-100) 85%, transparent);
+  border-color: var(--gray-400);
+  color: var(--ink);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .project-nav-btn:active {
   transform: translateY(0) scale(0.94);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .projects-track { 
