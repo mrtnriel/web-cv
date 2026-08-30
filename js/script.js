@@ -1,8 +1,84 @@
 /**
- * Gabriel Martin R. Manalo — Interaction & Motion Engine
+ * Gabriel Martin R. Manalo — Interaction & Motion Engine 2.0
+ * Pure Vanilla Architecture • Web Audio Synthesis • Kinetic Physics
  */
 
-// 1. Custom Cursor (Desktop Only)
+// Global Audio Engine (Web Audio API - Zero External Dependencies)
+let audioCtx = null;
+let isSoundEnabled = true;
+
+function initAudioFeedback() {
+  const savedSound = localStorage.getItem('portfolio-sound');
+  isSoundEnabled = savedSound !== null ? savedSound === 'true' : true;
+
+  const soundBtn = document.getElementById('sound-toggle');
+  const updateSoundUI = () => {
+    if (soundBtn) {
+      const icon = soundBtn.querySelector('.sound-icon');
+      if (icon) icon.textContent = isSoundEnabled ? '🔊' : '🔇';
+      soundBtn.classList.toggle('is-muted', !isSoundEnabled);
+    }
+  };
+  updateSoundUI();
+
+  if (soundBtn) {
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isSoundEnabled = !isSoundEnabled;
+      localStorage.setItem('portfolio-sound', String(isSoundEnabled));
+      updateSoundUI();
+      if (isSoundEnabled) playHapticSound('switch');
+    });
+  }
+}
+
+function playHapticSound(type = 'click') {
+  if (!isSoundEnabled) return;
+  try {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'click') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1400, now);
+      osc.frequency.exponentialRampToValueAtTime(350, now + 0.025);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+      osc.start(now);
+      osc.stop(now + 0.025);
+    } else if (type === 'switch') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(1200, now + 0.04);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } else if (type === 'tick') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, now);
+      gain.gain.setValueAtTime(0.02, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
+      osc.start(now);
+      osc.stop(now + 0.015);
+    }
+  } catch (err) {
+    // Graceful fallback if audio context isn't permitted by autoplay policy
+  }
+}
+
+// 1. Custom Cursor (Desktop Only with Spring Lerp)
 function initCustomCursor() {
   const dot = document.querySelector('.custom-cursor-dot');
   const ring = document.querySelector('.custom-cursor-ring');
@@ -39,6 +115,7 @@ function initCustomCursor() {
   requestAnimationFrame(renderCursor);
 
   const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot';
+  
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
       ring.classList.add('is-hovering');
@@ -54,6 +131,7 @@ function initCustomCursor() {
   window.addEventListener('mousedown', () => {
     dot.classList.add('is-active');
     ring.classList.add('is-active');
+    playHapticSound('click');
   });
 
   window.addEventListener('mouseup', () => {
@@ -80,6 +158,9 @@ function initClickParticles() {
   ];
 
   window.addEventListener('click', (e) => {
+    // Avoid particle bursts on form inputs to prevent distractions
+    if (e.target.closest('input, textarea')) return;
+
     const count = 7;
     for (let i = 0; i < count; i++) {
       const particle = document.createElement('span');
@@ -109,10 +190,63 @@ function initClickParticles() {
   });
 }
 
-// 3. Scroll Reveal & Navigation
+// 3. Dynamic Island Sliding Indicator & Scroll Progress
+function initDynamicIsland() {
+  const islandItems = document.querySelector('.island-items');
+  const indicator = document.querySelector('.island-indicator');
+  const navLinks = document.querySelectorAll('.island-link');
+  const progressBar = document.querySelector('.island-progress-bar');
+  if (!islandItems || !indicator || !navLinks.length) return;
+
+  function positionIndicator(targetLink) {
+    if (!targetLink) {
+      indicator.classList.remove('is-visible');
+      return;
+    }
+    const containerRect = islandItems.getBoundingClientRect();
+    const linkRect = targetLink.getBoundingClientRect();
+    const offsetLeft = linkRect.left - containerRect.left;
+
+    indicator.style.width = `${linkRect.width}px`;
+    indicator.style.transform = `translateX(${offsetLeft}px)`;
+    indicator.classList.add('is-visible');
+  }
+
+  // Initial position on active nav
+  const activeLink = document.querySelector('.island-link.active-nav') || navLinks[0];
+  setTimeout(() => positionIndicator(activeLink), 100);
+
+  // Hover transitions
+  navLinks.forEach(link => {
+    link.addEventListener('mouseenter', () => positionIndicator(link));
+  });
+
+  islandItems.addEventListener('mouseleave', () => {
+    const currentActive = document.querySelector('.island-link.active-nav') || navLinks[0];
+    positionIndicator(currentActive);
+  });
+
+  window.addEventListener('resize', () => {
+    const currentActive = document.querySelector('.island-link.active-nav') || navLinks[0];
+    positionIndicator(currentActive);
+  });
+
+  // Scroll Progress Bar Update
+  window.addEventListener('scroll', () => {
+    if (!progressBar) return;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollTop = window.scrollY;
+    const progressPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = `${Math.min(100, Math.max(0, progressPercent))}%`;
+  }, { passive: true });
+}
+
+// 4. Scroll Reveal & Navigation Sync
 function initScrollObserver() {
   const sections = document.querySelectorAll('.snap-section');
   const navLinks = document.querySelectorAll('.island-link');
+  const indicator = document.querySelector('.island-indicator');
+  const islandItems = document.querySelector('.island-items');
 
   const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
@@ -131,11 +265,22 @@ function initScrollObserver() {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const id = entry.target.getAttribute('id');
+        let matchingLink = null;
         navLinks.forEach(link => {
           const isActive = link.getAttribute('href') === `#${id}`;
           link.classList.toggle('active-nav', isActive);
           link.setAttribute('aria-current', isActive ? 'page' : 'false');
+          if (isActive) matchingLink = link;
         });
+
+        if (matchingLink && indicator && islandItems) {
+          const containerRect = islandItems.getBoundingClientRect();
+          const linkRect = matchingLink.getBoundingClientRect();
+          const offsetLeft = linkRect.left - containerRect.left;
+          indicator.style.width = `${linkRect.width}px`;
+          indicator.style.transform = `translateX(${offsetLeft}px)`;
+          indicator.classList.add('is-visible');
+        }
       }
     });
   }, { threshold: 0.4 });
@@ -146,7 +291,7 @@ function initScrollObserver() {
   });
 }
 
-// 4. Light / Dark Theme Toggle
+// 5. Light / Dark Theme Toggle
 function initThemeToggle() {
   const toggleBtn = document.getElementById('theme-toggle');
 
@@ -176,11 +321,12 @@ function initThemeToggle() {
     toggleBtn.addEventListener('click', () => {
       const isCurrentlyLight = document.documentElement.getAttribute('data-theme') === 'light';
       applyTheme(isCurrentlyLight ? 'dark' : 'light');
+      playHapticSound('switch');
     });
   }
 }
 
-// 5. Text Scramble Animation
+// 6. Text Scramble Animation
 class TextScramble {
   constructor(el) {
     this.el = el;
@@ -245,61 +391,69 @@ class TextScramble {
 function initScrambleEffects() {
   const targets = document.querySelectorAll('.scramble-target');
   targets.forEach((target) => {
-    const originalText = target.textContent;
+    const originalText = target.dataset.text || target.textContent;
     const fx = new TextScramble(target);
-    setTimeout(() => fx.setText(originalText), 150);
+    setTimeout(() => fx.setText(originalText), 200);
     target.addEventListener('mouseenter', () => fx.setText(originalText));
   });
 }
 
-// 6. Contact Form Feedback
-function initContactForm() {
-  const form = document.querySelector('.contact-form');
-  const submitBtn = document.querySelector('.btn-submit');
-  if (!form || !submitBtn) return;
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (submitBtn.classList.contains('is-submitting')) return;
-
-    submitBtn.classList.add('is-submitting');
-    const originalContent = submitBtn.innerHTML;
-    submitBtn.innerHTML = `<span>Sending...</span>`;
-
-    setTimeout(() => {
-      submitBtn.classList.remove('is-submitting');
-      submitBtn.classList.add('is-success');
-      submitBtn.innerHTML = `<span>Message Sent ✓</span>`;
-      form.reset();
-
-      setTimeout(() => {
-        submitBtn.classList.remove('is-success');
-        submitBtn.innerHTML = originalContent;
-      }, 3000);
-    }, 700);
+// 7. Spotlight Proximity Mouse Tracking
+function initSpotlightTracking() {
+  const cards = document.querySelectorAll('.spotlight-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
   });
 }
 
-// 7. Project Showcase Track Slider (Click & Keyboard Navigation)
-function initProjectSlider() {
+// 8. Magnetic Buttons (Kinetic Physics)
+function initMagneticButtons() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
+  const magneticBtns = document.querySelectorAll('.magnetic-btn');
+  magneticBtns.forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const deltaX = (e.clientX - centerX) * 0.22;
+      const deltaY = (e.clientY - centerY) * 0.22;
+      btn.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+    });
+  });
+}
+
+// 9. Project Track Showcase & Slider
+function initProjectShowcase() {
   const track = document.querySelector('.projects-track');
   const prevBtn = document.getElementById('project-prev-btn');
   const nextBtn = document.getElementById('project-next-btn');
-  if (!track) return;
+  const panels = document.querySelectorAll('.project-panel');
+  if (!track || !panels.length) return;
 
   const getScrollDistance = () => {
     const panel = track.querySelector('.project-panel');
     if (!panel) return 600;
-    // Accounts for responsive gap sizes
     const gap = window.innerWidth <= 900 ? 32 : (window.innerWidth <= 1200 ? 48 : 128);
     return panel.offsetWidth + gap;
   };
 
-  // Click Navigation
   if (nextBtn) {
     nextBtn.addEventListener('click', (e) => {
       e.preventDefault();
       track.scrollBy({ left: getScrollDistance(), behavior: 'smooth' });
+      playHapticSound('tick');
     });
   }
 
@@ -307,10 +461,11 @@ function initProjectSlider() {
     prevBtn.addEventListener('click', (e) => {
       e.preventDefault();
       track.scrollBy({ left: -getScrollDistance(), behavior: 'smooth' });
+      playHapticSound('tick');
     });
   }
 
-  // Keyboard Arrow Navigation (when Section 02 is active in view)
+  // Keyboard Arrow Navigation
   window.addEventListener('keydown', (e) => {
     const projectsSection = document.getElementById('projects');
     if (!projectsSection) return;
@@ -320,14 +475,16 @@ function initProjectSlider() {
     if (isInView) {
       if (e.key === 'ArrowRight') {
         track.scrollBy({ left: getScrollDistance(), behavior: 'smooth' });
+        playHapticSound('tick');
       } else if (e.key === 'ArrowLeft') {
         track.scrollBy({ left: -getScrollDistance(), behavior: 'smooth' });
+        playHapticSound('tick');
       }
     }
   });
 }
 
-// 8. SALN Project Multi-Image Carousel
+// 10. SALN Project Multi-Image Carousel
 function initProjectCarousel() {
   const container = document.querySelector('.carousel-media');
   if (!container) return;
@@ -339,7 +496,6 @@ function initProjectCarousel() {
   const counterCurrent = container.querySelector('.carousel-current');
 
   if (!slides.length) return;
-
   let currentIndex = 0;
 
   function updateCarousel(newIndex) {
@@ -364,6 +520,7 @@ function initProjectCarousel() {
     if (counterCurrent) {
       counterCurrent.textContent = String(currentIndex + 1).padStart(2, '0');
     }
+    playHapticSound('tick');
   }
 
   if (nextBtn) {
@@ -405,14 +562,48 @@ function initProjectCarousel() {
   }, { passive: true });
 }
 
+// 11. Contact Form Submission
+function initContactForm() {
+  const form = document.querySelector('.contact-form');
+  const submitBtn = document.querySelector('.btn-submit');
+  if (!form || !submitBtn) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (submitBtn.classList.contains('is-submitting')) return;
+
+    submitBtn.classList.add('is-submitting');
+    const originalContent = submitBtn.innerHTML;
+    submitBtn.innerHTML = `<span>Sending...</span>`;
+    playHapticSound('click');
+
+    setTimeout(() => {
+      submitBtn.classList.remove('is-submitting');
+      submitBtn.classList.add('is-success');
+      submitBtn.innerHTML = `<span>Message Sent ✓</span>`;
+      playHapticSound('switch');
+      form.reset();
+
+      setTimeout(() => {
+        submitBtn.classList.remove('is-success');
+        submitBtn.innerHTML = originalContent;
+      }, 3000);
+    }, 700);
+  });
+}
+
 // Master Initialization
 document.addEventListener('DOMContentLoaded', () => {
+  initAudioFeedback();
   initCustomCursor();
   initClickParticles();
+  initDynamicIsland();
   initScrollObserver();
   initThemeToggle();
   initScrambleEffects();
-  initContactForm();
-  initProjectSlider();
+  initSpotlightTracking();
+  initMagneticButtons();
+  initProjectShowcase();
   initProjectCarousel();
-});
+  initContactForm();
+});
