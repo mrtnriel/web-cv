@@ -349,7 +349,7 @@ a {
   flex-direction: column;
   justify-content: center;
   padding: 6rem 2rem 2rem 2rem;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: none;
   overflow: hidden;
 }
 
