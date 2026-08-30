@@ -966,6 +966,8 @@ p {
 .skill-pills { display: flex; flex-wrap: wrap; gap: 0.65rem; }
 
 .skill-pills span {
+  position: relative;
+  overflow: hidden;
   font-size: 0.95rem;
   padding: 0.4rem 0.9rem;
   border-radius: var(--radius-sm); 
@@ -975,16 +977,34 @@ p {
   cursor: default;
   transition: 
     transform var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.skill-pills span::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    75px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    color-mix(in srgb, var(--ink) 20%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.skill-pills span:hover::before {
+  opacity: 1;
 }
 
 .skill-pills span:hover {
   border-color: var(--ink);
-  color: var(--bg);
-  background-color: var(--ink);
   transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .skill-pills span:active {

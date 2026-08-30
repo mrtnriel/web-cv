@@ -400,14 +400,14 @@ function initScrambleEffects() {
 
 // 7. Spotlight Proximity Mouse Tracking
 function initSpotlightTracking() {
-  const cards = document.querySelectorAll('.spotlight-card');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
+  const elements = document.querySelectorAll('.spotlight-card, .skill-pills span');
+  elements.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
+      el.style.setProperty('--mouse-x', `${x}px`);
+      el.style.setProperty('--mouse-y', `${y}px`);
     });
   });
 }
