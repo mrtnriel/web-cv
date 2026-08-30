@@ -30,13 +30,15 @@
   --dot-color: rgba(255, 255, 255, 0.05);
 
   /* Motion Tokens */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-instant: 100ms;
-  --duration-fast: 150ms;
-  --duration-normal: 220ms;
-  --duration-slow: 350ms;
-  --duration-reveal: 450ms;
+  --duration-instant: 120ms;
+  --duration-fast: 180ms;
+  --duration-normal: 280ms;
+  --duration-slow: 420ms;
+  --duration-reveal: 550ms;
 }
 
 [data-theme="light"] {
@@ -210,10 +212,22 @@ a {
   border-radius: var(--radius-pill); 
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   transition: border-color var(--duration-normal) var(--ease-out), background-color var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out);
+  animation: island-float-in var(--duration-reveal) var(--ease-out-expo) both;
+}
+
+@keyframes island-float-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -14px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 .island-items { 
-  position: relative;
+  position: relative; 
   display: flex; 
   align-items: center; 
   gap: 0.2rem; 
@@ -230,10 +244,11 @@ a {
   pointer-events: none;
   z-index: 1;
   opacity: 0;
+  will-change: transform, width, opacity;
   transition: 
-    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.2s ease;
+    transform 0.32s var(--ease-out-expo),
+    width 0.32s var(--ease-out-expo),
+    opacity var(--duration-fast) ease;
 }
 
 .island-indicator.is-visible {
@@ -250,6 +265,7 @@ a {
   text-decoration: none;
   padding: 0.35rem 0.8rem;
   border-radius: var(--radius-pill);
+  will-change: color, transform;
   transition: 
     color var(--duration-fast) var(--ease-out), 
     transform var(--duration-instant) var(--ease-out);
@@ -260,8 +276,8 @@ a {
   color: var(--ink); 
 }
 
-.island-link:active {
-  transform: scale(0.96);
+.island-link:active { 
+  transform: scale(0.95); 
 }
 
 .island-link.active-nav { 
@@ -292,45 +308,57 @@ a {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  will-change: transform, color, background-color;
   transition: 
     color var(--duration-fast) var(--ease-out), 
     background-color var(--duration-fast) var(--ease-out), 
-    transform var(--duration-fast) var(--ease-out); 
+    transform var(--duration-fast) var(--ease-spring); 
   flex-shrink: 0; 
 }
 
 .island-theme-btn:hover { 
   color: var(--ink); 
   background-color: var(--gray-100); 
-  transform: scale(1.08); 
+  transform: scale(1.12); 
 }
 
-.island-theme-btn:active {
-  transform: scale(0.92);
+.island-theme-btn:active { 
+  transform: scale(0.90); 
 }
 
-.island-theme-btn.is-muted {
-  opacity: 0.5;
+.island-theme-btn .theme-icon,
+.island-theme-btn .sound-icon {
+  display: inline-block;
+  transition: transform var(--duration-fast) var(--ease-out-expo);
 }
 
-/* Island Scroll Progress Track */
-.island-progress-track {
-  position: absolute;
-  bottom: -3px;
-  left: 1.25rem;
-  right: 1.25rem;
-  height: 2px;
-  background-color: color-mix(in srgb, var(--gray-200) 60%, transparent);
-  border-radius: var(--radius-pill);
-  overflow: hidden;
+.island-theme-btn:hover .theme-icon {
+  transform: rotate(15deg) scale(1.05);
+}
+
+.island-theme-btn.is-muted { 
+  opacity: 0.5; 
+}
+
+/* --- Global Scroll Progress Bar (Top of Website) --- */
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 2.5px;
+  background-color: color-mix(in srgb, var(--gray-200) 25%, transparent);
+  z-index: 10001;
   pointer-events: none;
 }
 
-.island-progress-bar {
+.scroll-progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--particle-color-2), var(--ink));
-  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--particle-color-2), var(--particle-color-3), var(--ink));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--particle-color-2) 60%, transparent);
+  will-change: width;
   transition: width 0.08s linear;
 }
 
@@ -435,6 +463,13 @@ p {
 }
 
 /* --- Buttons & Magnetic Elements --- */
+.magnetic-btn {
+  display: inline-flex;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
 .btn-primary, .btn-secondary, .btn-action { 
   display: inline-flex; 
   align-items: center; 
@@ -446,6 +481,8 @@ p {
   font-weight: 500; 
   text-transform: uppercase; 
   letter-spacing: 0.05em; 
+  position: relative;
+  overflow: hidden;
   transition: 
     transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
@@ -458,6 +495,7 @@ p {
   background-color: var(--ink); 
   color: var(--bg); 
   border: 1px solid var(--ink); 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary { 
@@ -474,17 +512,21 @@ p {
   margin-top: 1rem; 
 }
 
-.btn-primary:hover, .btn-secondary:hover, .btn-action:hover { 
-  transform: translateY(-1px); 
-}
-
-.btn-primary:active, .btn-secondary:active, .btn-action:active { 
-  transform: translateY(0) scale(0.97); 
+.btn-primary:hover { 
+  transform: translate3d(0, -2px, 0); 
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 .btn-secondary:hover, .btn-action:hover { 
+  transform: translate3d(0, -2px, 0); 
   border-color: var(--ink); 
   background-color: var(--gray-100); 
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active, .btn-secondary:active, .btn-action:active { 
+  transform: translate3d(0, 0, 0) scale(0.96); 
+  transition-duration: var(--duration-instant);
 }
 
 /* --- Spotlight Proximity Effect --- */
@@ -494,7 +536,17 @@ p {
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-md);
   overflow: hidden;
-  transition: border-color var(--duration-normal) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out), transform var(--duration-normal) var(--ease-out);
+  will-change: transform, box-shadow, border-color;
+  transition: 
+    border-color var(--duration-normal) var(--ease-out), 
+    box-shadow var(--duration-normal) var(--ease-out), 
+    transform var(--duration-normal) var(--ease-out-expo);
+}
+
+.spotlight-card:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 12px 36px -10px rgba(0, 0, 0, 0.35);
+  border-color: var(--gray-300);
 }
 
 .spotlight-card::before {
@@ -513,6 +565,7 @@ p {
   opacity: 0;
   pointer-events: none;
   z-index: 1;
+  will-change: opacity, background;
   transition: opacity 0.3s ease;
 }
 
@@ -567,27 +620,51 @@ p {
 }
 
 .image-column {
-  overflow: hidden;
-  border-radius: var(--radius-sm);
   position: relative;
+  width: 100%;
+  max-width: 380px;
+  justify-self: center;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.4);
+  background-color: var(--gray-50);
 }
 
 .immersive-photo { 
   width: 100%; 
-  aspect-ratio: 4/5; 
+  height: 100%;
+  display: block;
   object-fit: cover; 
+  object-position: center center;
   filter: grayscale(100%); 
-  border-radius: var(--radius-sm); 
-  transition: transform var(--duration-slow) var(--ease-out), filter var(--duration-normal) var(--ease-out);
+  border-radius: inherit; 
+  will-change: transform, filter;
+  transition: 
+    transform var(--duration-slow) var(--ease-out-expo), 
+    filter var(--duration-normal) var(--ease-out);
 }
 
-.immersive-photo:hover {
-  transform: scale(1.02);
-  filter: grayscale(80%);
+.image-column:hover .immersive-photo {
+  transform: scale(1.035);
+  filter: grayscale(50%);
+}
+
+.photo-ambient-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--particle-color-2) 14%, transparent), transparent 70%);
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.image-column:hover .photo-ambient-glow {
+  opacity: 0.8;
 }
 
 [data-theme="light"] .immersive-photo,
-[data-theme="light"] .immersive-photo:hover {
+[data-theme="light"] .image-column:hover .immersive-photo {
   filter: none;
 }
 
@@ -765,17 +842,28 @@ p {
   height: 100%;
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.985);
+  transform: translate3d(20px, 0, 0) scale(0.985);
+  will-change: opacity, transform;
   transition: 
-    opacity var(--duration-normal) var(--ease-out),
-    transform var(--duration-normal) var(--ease-out);
+    opacity var(--duration-normal) var(--ease-out-expo),
+    transform var(--duration-normal) var(--ease-out-expo);
 }
 
 .carousel-slide.is-active {
   opacity: 1;
   pointer-events: auto;
-  transform: scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
   position: relative;
+}
+
+.carousel-slide.slide-from-left {
+  transform: translate3d(-20px, 0, 0) scale(0.985);
+  opacity: 0;
+}
+
+.carousel-slide.slide-from-right {
+  transform: translate3d(20px, 0, 0) scale(0.985);
+  opacity: 0;
 }
 
 .carousel-overlay {
@@ -801,6 +889,7 @@ p {
   padding: 0.25rem 0.6rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--gray-200);
+  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
 }
 
 .carousel-arrows {
@@ -824,10 +913,11 @@ p {
   font-family: var(--font-mono);
   font-size: 12px;
   cursor: pointer;
+  will-change: transform;
   transition: 
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring),
     color var(--duration-fast) var(--ease-out);
 }
 
@@ -835,11 +925,11 @@ p {
   background-color: var(--ink);
   color: var(--bg);
   border-color: var(--ink);
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 
 .carousel-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.90);
 }
 
 .carousel-dots {
@@ -849,6 +939,7 @@ p {
   right: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 0.4rem;
   z-index: 10;
   pointer-events: auto;
@@ -862,21 +953,23 @@ p {
   background-color: color-mix(in srgb, var(--ink) 35%, transparent);
   cursor: pointer;
   padding: 0;
+  will-change: width, transform, background-color;
   transition: 
     background-color var(--duration-fast) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out),
-    width var(--duration-fast) var(--ease-out);
+    transform var(--duration-fast) var(--ease-spring),
+    width var(--duration-normal) var(--ease-spring);
 }
 
 .carousel-dot:hover {
   background-color: var(--ink);
-  transform: scale(1.3);
+  transform: scale(1.25);
 }
 
 .carousel-dot.is-active {
-  width: 18px;
+  width: 20px;
   border-radius: var(--radius-pill);
   background-color: var(--ink);
+  transform: scale(1);
 }
 
 .project-info {
@@ -947,12 +1040,17 @@ p {
   height: 7px;
   border-radius: 50%;
   background-color: var(--gray-400);
-  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+  will-change: transform, background-color, box-shadow;
+  transition: 
+    transform var(--duration-fast) var(--ease-spring), 
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .timeline-node:hover .timeline-dot {
   background-color: var(--ink);
-  transform: scale(1.3);
+  transform: scale(1.4);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--ink) 50%, transparent);
 }
 
 .edu-years { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); display: block; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
@@ -975,8 +1073,9 @@ p {
   border: 1px solid var(--gray-300); 
   color: var(--ink); 
   cursor: default;
+  will-change: transform, border-color, box-shadow;
   transition: 
-    transform var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring),
     border-color var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out);
@@ -1003,12 +1102,12 @@ p {
 
 .skill-pills span:hover {
   border-color: var(--ink);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
 }
 
 .skill-pills span:active {
-  transform: translateY(0) scale(0.96);
+  transform: translate3d(0, 0, 0) scale(0.96);
 }
 
 /* --- 04 Contact --- */
@@ -1168,6 +1267,8 @@ p {
   letter-spacing: 0.05em; 
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  will-change: transform, box-shadow, background-color;
   transition: 
     transform var(--duration-fast) var(--ease-out), 
     box-shadow var(--duration-fast) var(--ease-out),
@@ -1176,20 +1277,21 @@ p {
 }
 
 .btn-submit:hover { 
-  transform: translateY(-1px); 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+  transform: translate3d(0, -2px, 0); 
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); 
 }
 
 .btn-submit:active {
-  transform: translateY(0) scale(0.98);
+  transform: translate3d(0, 0, 0) scale(0.97);
+  transition-duration: var(--duration-instant);
 }
 
 .btn-submit svg {
-  transition: transform var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out-expo);
 }
 
 .btn-submit:hover svg {
-  transform: translate(2px, -2px);
+  transform: translate3d(2px, -2px, 0);
 }
 
 .btn-submit.is-submitting {
@@ -1201,10 +1303,11 @@ p {
   background-color: #10b981;
   border-color: #10b981;
   color: #ffffff;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
 }
 
 [data-theme="dark"] .btn-submit:hover { 
-  box-shadow: 0 4px 12px rgba(255,255,255,0.12); 
+  box-shadow: 0 6px 20px rgba(255,255,255,0.12); 
 }
 
 .minimal-footer { margin-top: 2rem; }
@@ -1213,22 +1316,26 @@ p {
 /* --- Section Reveals --- */
 .reveal-item { 
   opacity: 0; 
-  transform: translateY(14px); 
+  transform: translate3d(0, 16px, 0); 
+  filter: blur(4px);
   transition: 
-    opacity var(--duration-reveal) var(--ease-out), 
-    transform var(--duration-reveal) var(--ease-out); 
-  will-change: opacity, transform;
+    opacity var(--duration-reveal) var(--ease-out-expo), 
+    transform var(--duration-reveal) var(--ease-out-expo),
+    filter var(--duration-reveal) var(--ease-out-expo); 
+  will-change: opacity, transform, filter;
 }
 
 .reveal-item.is-revealed { 
   opacity: 1; 
-  transform: translateY(0); 
+  transform: translate3d(0, 0, 0); 
+  filter: blur(0);
 }
 
 .reveal-group .reveal-item:nth-child(1) { transition-delay: 0ms; }
-.reveal-group .reveal-item:nth-child(2) { transition-delay: 50ms; }
-.reveal-group .reveal-item:nth-child(3) { transition-delay: 100ms; }
-.reveal-group .reveal-item:nth-child(4) { transition-delay: 150ms; }
+.reveal-group .reveal-item:nth-child(2) { transition-delay: 40ms; }
+.reveal-group .reveal-item:nth-child(3) { transition-delay: 80ms; }
+.reveal-group .reveal-item:nth-child(4) { transition-delay: 120ms; }
+.reveal-group .reveal-item:nth-child(5) { transition-delay: 160ms; }
 
 /* --- Responsive Adjustments & Height Safety --- */
 @media (max-height: 820px) {
@@ -1261,6 +1368,7 @@ p {
   html { scroll-snap-type: y proximity; }
   .snap-section { height: auto; min-height: 100dvh; padding: 5.5rem 1.5rem 3rem 1.5rem; }
   .immersive-grid, .split-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .image-column { max-width: 280px; margin: 0 auto; }
   .projects-track { padding-left: 1.5rem; padding-right: 1.5rem; margin-left: -1.5rem; width: 100vw; gap: 2rem; }
   .project-panel { width: 88vw; grid-template-columns: 1fr; gap: 1.5rem; padding: 1rem; }
   .project-info { align-items: flex-start; text-align: left; }
@@ -1294,5 +1402,10 @@ p {
   .reveal-item {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+  .dynamic-island {
+    animation: none !important;
   }
 }

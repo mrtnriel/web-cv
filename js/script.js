@@ -46,32 +46,55 @@ function playHapticSound(type = 'click') {
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    osc.connect(gain);
+    
+    // Lowpass filter to ensure soft, organic acoustic profile
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2400, now);
+
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(audioCtx.destination);
 
     if (type === 'click') {
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1400, now);
-      osc.frequency.exponentialRampToValueAtTime(350, now + 0.025);
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+      osc.frequency.setValueAtTime(1200, now);
+      osc.frequency.exponentialRampToValueAtTime(300, now + 0.025);
+      gain.gain.setValueAtTime(0.035, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
       osc.start(now);
       osc.stop(now + 0.025);
     } else if (type === 'switch') {
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(600, now);
-      osc.frequency.exponentialRampToValueAtTime(1200, now + 0.04);
-      gain.gain.setValueAtTime(0.05, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc.frequency.setValueAtTime(540, now);
+      osc.frequency.exponentialRampToValueAtTime(1080, now + 0.035);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
       osc.start(now);
-      osc.stop(now + 0.04);
+      osc.stop(now + 0.035);
     } else if (type === 'tick') {
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, now);
-      gain.gain.setValueAtTime(0.02, now);
+      osc.frequency.setValueAtTime(750, now);
+      gain.gain.setValueAtTime(0.018, now);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
       osc.start(now);
       osc.stop(now + 0.015);
+    } else if (type === 'slide') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.exponentialRampToValueAtTime(680, now + 0.028);
+      gain.gain.setValueAtTime(0.025, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
+      osc.start(now);
+      osc.stop(now + 0.028);
+    } else if (type === 'success') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(1040, now + 0.06);
+      gain.gain.setValueAtTime(0.045, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+      osc.start(now);
+      osc.stop(now + 0.06);
     }
   } catch (err) {
     // Graceful fallback if audio context isn't permitted by autoplay policy
@@ -190,12 +213,11 @@ function initClickParticles() {
   });
 }
 
-// 3. Dynamic Island Sliding Indicator & Scroll Progress
+// 3. Dynamic Island Sliding Indicator
 function initDynamicIsland() {
   const islandItems = document.querySelector('.island-items');
   const indicator = document.querySelector('.island-indicator');
   const navLinks = document.querySelectorAll('.island-link');
-  const progressBar = document.querySelector('.island-progress-bar');
   if (!islandItems || !indicator || !navLinks.length) return;
 
   function positionIndicator(targetLink) {
@@ -230,15 +252,23 @@ function initDynamicIsland() {
     const currentActive = document.querySelector('.island-link.active-nav') || navLinks[0];
     positionIndicator(currentActive);
   });
+}
 
-  // Scroll Progress Bar Update
-  window.addEventListener('scroll', () => {
-    if (!progressBar) return;
+// 4. Global Scroll Progress (Top of Website)
+function initScrollProgressBar() {
+  const progressBar = document.querySelector('.scroll-progress-bar');
+  if (!progressBar) return;
+
+  const updateProgress = () => {
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     const scrollTop = window.scrollY;
     const progressPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
     progressBar.style.width = `${Math.min(100, Math.max(0, progressPercent))}%`;
-  }, { passive: true });
+  };
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress, { passive: true });
+  updateProgress();
 }
 
 // 4. Scroll Reveal & Navigation Sync
@@ -259,7 +289,7 @@ function initScrollObserver() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
 
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -398,38 +428,69 @@ function initScrambleEffects() {
   });
 }
 
-// 7. Spotlight Proximity Mouse Tracking
+// 7. Spotlight Proximity Mouse Tracking (RAF Throttled for 60fps/120fps sync)
 function initSpotlightTracking() {
   const elements = document.querySelectorAll('.spotlight-card, .skill-pills span');
   elements.forEach(el => {
+    let ticking = false;
     el.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      el.style.setProperty('--mouse-x', `${x}px`);
-      el.style.setProperty('--mouse-y', `${y}px`);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          el.style.setProperty('--mouse-x', `${x.toFixed(1)}px`);
+          el.style.setProperty('--mouse-y', `${y.toFixed(1)}px`);
+          ticking = false;
+        });
+        ticking = true;
+      }
     });
   });
 }
 
-// 8. Magnetic Buttons (Kinetic Physics)
+// 8. Magnetic Buttons (Damped Spring Physics with RAF Loop)
 function initMagneticButtons() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
 
   const magneticBtns = document.querySelectorAll('.magnetic-btn');
   magneticBtns.forEach(btn => {
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    let isHovered = false;
+    let animId = null;
+
+    function renderMagnetic() {
+      // Damped spring interpolation (0.18 lerp factor)
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+
+      btn.style.transform = `translate3d(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px, 0)`;
+
+      if (isHovered || Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
+        animId = requestAnimationFrame(renderMagnetic);
+      } else {
+        btn.style.transform = '';
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    }
+
     btn.addEventListener('mousemove', (e) => {
       const rect = btn.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const deltaX = (e.clientX - centerX) * 0.22;
-      const deltaY = (e.clientY - centerY) * 0.22;
-      btn.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+      targetX = (e.clientX - centerX) * 0.28;
+      targetY = (e.clientY - centerY) * 0.28;
+      isHovered = true;
+      if (!animId) animId = requestAnimationFrame(renderMagnetic);
     });
 
     btn.addEventListener('mouseleave', () => {
-      btn.style.transform = '';
+      targetX = 0;
+      targetY = 0;
+      isHovered = false;
     });
   });
 }
@@ -484,7 +545,7 @@ function initProjectShowcase() {
   });
 }
 
-// 10. SALN Project Multi-Image Carousel
+// 10. SALN Project Multi-Image Carousel (Directional Transitions)
 function initProjectCarousel() {
   const container = document.querySelector('.carousel-media');
   if (!container) return;
@@ -498,18 +559,28 @@ function initProjectCarousel() {
   if (!slides.length) return;
   let currentIndex = 0;
 
-  function updateCarousel(newIndex) {
+  function updateCarousel(newIndex, direction = 'next') {
+    let targetIndex;
     if (newIndex < 0) {
-      currentIndex = slides.length - 1;
+      targetIndex = slides.length - 1;
     } else if (newIndex >= slides.length) {
-      currentIndex = 0;
+      targetIndex = 0;
     } else {
-      currentIndex = newIndex;
+      targetIndex = newIndex;
     }
 
+    if (targetIndex === currentIndex) return;
+
     slides.forEach((slide, idx) => {
-      slide.classList.toggle('is-active', idx === currentIndex);
+      slide.classList.remove('is-active', 'slide-from-left', 'slide-from-right');
+      if (idx === targetIndex) {
+        slide.classList.add('is-active');
+      } else if (idx === currentIndex) {
+        slide.classList.add(direction === 'next' ? 'slide-from-left' : 'slide-from-right');
+      }
     });
+
+    currentIndex = targetIndex;
 
     dots.forEach((dot, idx) => {
       const isActive = idx === currentIndex;
@@ -520,27 +591,28 @@ function initProjectCarousel() {
     if (counterCurrent) {
       counterCurrent.textContent = String(currentIndex + 1).padStart(2, '0');
     }
-    playHapticSound('tick');
+    playHapticSound('slide');
   }
 
   if (nextBtn) {
     nextBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      updateCarousel(currentIndex + 1);
+      updateCarousel(currentIndex + 1, 'next');
     });
   }
 
   if (prevBtn) {
     prevBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      updateCarousel(currentIndex - 1);
+      updateCarousel(currentIndex - 1, 'prev');
     });
   }
 
   dots.forEach((dot, idx) => {
     dot.addEventListener('click', (e) => {
       e.stopPropagation();
-      updateCarousel(idx);
+      const dir = idx > currentIndex ? 'next' : 'prev';
+      updateCarousel(idx, dir);
     });
   });
 
@@ -554,9 +626,9 @@ function initProjectCarousel() {
     const diffX = touchStartX - touchEndX;
     if (Math.abs(diffX) > 45) {
       if (diffX > 0) {
-        updateCarousel(currentIndex + 1);
+        updateCarousel(currentIndex + 1, 'next');
       } else {
-        updateCarousel(currentIndex - 1);
+        updateCarousel(currentIndex - 1, 'prev');
       }
     }
   }, { passive: true });
@@ -581,7 +653,7 @@ function initContactForm() {
       submitBtn.classList.remove('is-submitting');
       submitBtn.classList.add('is-success');
       submitBtn.innerHTML = `<span>Message Sent ✓</span>`;
-      playHapticSound('switch');
+      playHapticSound('success');
       form.reset();
 
       setTimeout(() => {
@@ -598,6 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCustomCursor();
   initClickParticles();
   initDynamicIsland();
+  initScrollProgressBar();
   initScrollObserver();
   initThemeToggle();
   initScrambleEffects();
