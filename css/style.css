@@ -719,7 +719,7 @@ p {
 /* The Frame & Aspect Ratio */
 .project-media { 
   width: 100%; 
-  aspect-ratio: 16/10; 
+  aspect-ratio: 16/9; 
   border-radius: var(--radius-md); 
   overflow: hidden; 
   border: 1px solid color-mix(in srgb, var(--gray-200) 50%, transparent); 
