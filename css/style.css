@@ -222,272 +222,84 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
-/* --- Precision HUD Crosshair Cursor (Desktop Only) --- */
+/* --- Custom Cursor (Desktop Only) --- */
 @media (hover: hover) and (pointer: fine) {
   body {
     cursor: none;
   }
-  a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .carousel-btn, .carousel-dot {
+  a, button, input, textarea, select, .skill-pills span, .project-panel, .timeline-node, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit {
     cursor: none !important;
   }
 }
 
-.hud-cursor-dot {
+.custom-cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
-  width: 4px;
-  height: 4px;
-  background-color: var(--ink);
-  box-shadow: 0 0 8px var(--particle-color-2);
+  width: 5px;
+  height: 5px;
+  background-color: var(--cursor-dot-color);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-out);
+  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
-.hud-cursor-frame {
+.custom-cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--cursor-ring-color);
+  border-radius: 50%;
   pointer-events: none;
   z-index: 9998;
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: 
     opacity var(--duration-fast) var(--ease-out),
-    width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    height 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    width var(--duration-normal) var(--ease-out),
+    height var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out),
+    background-color var(--duration-normal) var(--ease-out);
 }
 
-/* 4 Directional Laser Ticks */
-.hud-tick {
-  position: absolute;
-  background-color: var(--ink);
-  opacity: 0.65;
-  transition: opacity 0.2s ease, background-color 0.2s ease;
-}
-
-.hud-tick.tick-top {
-  top: 0;
-  left: 50%;
-  width: 1.5px;
-  height: 5px;
-  transform: translateX(-50%);
-}
-
-.hud-tick.tick-bottom {
-  bottom: 0;
-  left: 50%;
-  width: 1.5px;
-  height: 5px;
-  transform: translateX(-50%);
-}
-
-.hud-tick.tick-left {
-  left: 0;
-  top: 50%;
-  width: 5px;
-  height: 1.5px;
-  transform: translateY(-50%);
-}
-
-.hud-tick.tick-right {
-  right: 0;
-  top: 50%;
-  width: 5px;
-  height: 1.5px;
-  transform: translateY(-50%);
-}
-
-/* 4 Corner Framing Brackets */
-.hud-bracket {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border: 1px solid var(--ink);
-  opacity: 0.35;
-  transition: 
-    border-color 0.22s ease,
-    opacity 0.22s ease,
-    width 0.22s ease,
-    height 0.22s ease;
-}
-
-.hud-bracket.bracket-tl {
-  top: 2px;
-  left: 2px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.hud-bracket.bracket-tr {
-  top: 2px;
-  right: 2px;
-  border-left: none;
-  border-bottom: none;
-}
-
-.hud-bracket.bracket-bl {
-  bottom: 2px;
-  left: 2px;
-  border-right: none;
-  border-top: none;
-}
-
-.hud-bracket.bracket-br {
-  bottom: 2px;
-  right: 2px;
-  border-left: none;
-  border-top: none;
-}
-
-/* Hover State on Interactive Elements */
-.hud-cursor-frame.is-hovering {
-  width: 40px;
-  height: 40px;
-}
-
-.hud-cursor-frame.is-hovering .hud-bracket {
-  opacity: 1;
-  width: 8px;
-  height: 8px;
+.custom-cursor-ring.is-hovering {
+  width: 44px;
+  height: 44px;
   border-color: var(--particle-color-2);
-  box-shadow: 0 0 6px color-mix(in srgb, var(--particle-color-2) 40%, transparent);
+  background-color: var(--cursor-ring-hover-bg);
 }
 
-.hud-cursor-frame.is-hovering .hud-tick {
-  opacity: 0.85;
-  background-color: var(--particle-color-2);
+.custom-cursor-dot.is-active {
+  transform: translate(-50%, -50%) scale(0.65);
 }
 
-/* Click Active State */
-.hud-cursor-dot.is-active {
-  transform: translate(-50%, -50%) scale(1.4);
+.custom-cursor-ring.is-active {
+  transform: translate(-50%, -50%) scale(0.85);
 }
 
-.hud-cursor-frame.is-active {
-  transform: translate(-50%, -50%) scale(0.8);
-}
-
-/* --- Cyber HUD Reticle Snap Click Effect --- */
-.click-reticle {
+/* --- Click Particles --- */
+.click-particle {
   position: fixed;
   pointer-events: none;
   z-index: 9997;
-  width: 38px;
-  height: 38px;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: reticle-snap 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.click-reticle-corner {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border: 1.5px solid var(--ink);
-  transition: border-color 0.2s ease;
-}
-
-.click-reticle-corner.tl {
-  top: 0;
-  left: 0;
-  border-right: none;
-  border-bottom: none;
-}
-
-.click-reticle-corner.tr {
-  top: 0;
-  right: 0;
-  border-left: none;
-  border-bottom: none;
-}
-
-.click-reticle-corner.bl {
-  bottom: 0;
-  left: 0;
-  border-right: none;
-  border-top: none;
-}
-
-.click-reticle-corner.br {
-  bottom: 0;
-  right: 0;
-  border-left: none;
-  border-top: none;
-}
-
-.click-reticle-cross {
-  position: absolute;
-  background-color: var(--particle-color-2);
-  border-radius: 1px;
-}
-
-.click-reticle-cross.h {
-  width: 10px;
-  height: 1.5px;
-}
-
-.click-reticle-cross.v {
-  width: 1.5px;
-  height: 10px;
-}
-
-.click-reticle-dot {
-  position: absolute;
-  width: 3.5px;
-  height: 3.5px;
   border-radius: 50%;
-  background-color: var(--ink);
-  box-shadow: 0 0 8px var(--particle-color-2);
+  transform: translate(-50%, -50%);
+  animation: particle-burst var(--duration-slow) cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
 }
 
-@keyframes reticle-snap {
+@keyframes particle-burst {
   0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.6) rotate(-12deg);
-  }
-  25% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(0.85) rotate(0deg);
-  }
-  60% {
-    opacity: 0.95;
-    transform: translate(-50%, -50%) scale(0.95) rotate(0deg);
+    transform: translate(-50%, -50%) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.28) rotate(8deg);
-  }
-}
-
-.click-reticle-fleck {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9997;
-  width: 2.5px;
-  height: 2.5px;
-  border-radius: 50%;
-  background-color: var(--particle-color-2);
-  transform: translate(-50%, -50%);
-  animation: reticle-fleck-burst 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes reticle-fleck-burst {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) translate(0, 0) scale(1.2);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0);
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.1);
   }
 }
 
@@ -869,17 +681,25 @@ p {
 }
 
 .project-action-wrap {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  width: 100%;
   overflow: visible;
   position: relative;
   z-index: 5;
 }
 
+.alone-info .project-action-wrap {
+  justify-content: center;
+}
+
 .btn-action { 
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 0.5rem 1.15rem; 
+  justify-content: center;
+  gap: 8px; 
+  padding: 0.65rem 1.35rem; 
   border: 1px solid var(--gray-300); 
   background-color: var(--gray-100); 
   color: var(--ink); 
@@ -888,14 +708,23 @@ p {
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  line-height: 1;
   position: relative;
   z-index: 5;
   will-change: transform, background-color, border-color, box-shadow;
   transition: 
+    transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.btn-action span {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .btn-primary:hover { 
@@ -911,6 +740,7 @@ p {
 }
 
 .btn-action:hover {
+  transform: translate3d(0, -2px, 0);
   border-color: var(--ink);
   background-color: var(--gray-200);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
@@ -1176,14 +1006,12 @@ h4.masked-heading {
 }
 
 .text-column > .mask-wrap,
-.project-info > .mask-wrap,
 .timeline-content > .mask-wrap,
 .contact-info-col > .mask-wrap {
   margin-bottom: 1rem;
 }
 
 .text-column > .mask-wrap:last-child,
-.project-info > .mask-wrap:last-child,
 .timeline-content > .mask-wrap:last-child,
 .contact-info-col > .mask-wrap:last-child {
   margin-bottom: 0;
@@ -1592,7 +1420,17 @@ h4.masked-heading {
 .project-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; 
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.project-info > .mask-wrap {
+  margin-bottom: 0.75rem;
+  width: 100%;
+}
+
+.project-info > .mask-wrap:last-of-type {
+  margin-bottom: 0;
 }
 
 .artifact-stack { 
@@ -1602,23 +1440,24 @@ h4.masked-heading {
   text-transform: uppercase; 
   letter-spacing: 0.1em; 
   display: block; 
-  margin-bottom: 1rem; 
+  margin-bottom: 0; 
 }
 
 .project-info h3 { 
   font-size: clamp(2rem, 3vw, 2.5rem); 
-  line-height: 1.1;
-  margin-bottom: 1.25rem; 
+  line-height: 1.15;
+  margin-bottom: 0; 
   color: var(--ink); 
   font-weight: 600; 
   letter-spacing: -0.02em; 
 }
 
 .project-info p { 
-  font-size: 1.125rem; 
-  line-height: 1.7; 
+  font-size: 1.05rem; 
+  line-height: 1.65; 
   color: var(--gray-400); 
-  margin-bottom: 2rem; 
+  text-align: left;
+  margin-bottom: 0; 
 }
 
 .alone-info { 
@@ -1626,6 +1465,11 @@ h4.masked-heading {
   margin: 0 auto; 
   text-align: center; 
   align-items: center;
+}
+
+.alone-info p {
+  text-align: center;
+  text-align-last: center;
 }
 
 /* --- 03 Expertise --- */
@@ -2194,6 +2038,17 @@ h4.masked-heading {
     font-size: 11px;
   }
 
+  .project-action-wrap {
+    margin-top: 1.15rem;
+    width: 100%;
+  }
+
+  .project-action-wrap .btn-action {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+  }
+
   /* Expertise Mobile Layout */
   .edu-column, .skills-column {
     gap: 1.25rem;
@@ -2264,10 +2119,9 @@ h4.masked-heading {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .hud-cursor-dot,
-  .hud-cursor-frame,
-  .click-reticle,
-  .click-reticle-fleck,
+  .custom-cursor-dot,
+  .custom-cursor-ring,
+  .click-particle,
   .badge-dot {
     display: none !important;
   }

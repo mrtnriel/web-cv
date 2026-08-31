@@ -112,7 +112,7 @@ My CV/
 | Module | Implementation Details |
 | :--- | :--- |
 | **Web Audio Synthesizer** | Native Web Audio API oscillator synthesis with organic low-pass filtering and calibrated envelope shaping (`click`, `switch`, `tick`, `slide`, `success`), with state persisted in `localStorage`. |
-| **Custom Cursor** | Dual-element cursor (inner dot + lagging outer ring) driven by `requestAnimationFrame` with lerp interpolation (`0.22`). Automatically disabled on touch screens and when `prefers-reduced-motion` is active. |
+| **Custom Cursor** | Dual-element cursor (inner dot + spring outer ring) driven by `requestAnimationFrame` with lerp interpolation (`0.22`) and multi-color click particle bursts. Automatically disabled on touch screens and when `prefers-reduced-motion` is active. |
 | **Dynamic Island Pill** | Fluid layout-morphed indicator with hardware-accelerated transforms (`--ease-out-expo`), active micro-press scaling, and smooth scroll progress sync. |
 | **Spotlight Mouse Tracking** | High-performance `requestAnimationFrame`-throttled `--mouse-x` and `--mouse-y` calculations ensuring 60fps/120fps/144fps rendering without layout reflows. |
 | **Magnetic Pull Physics** | Physics-based spring lerp interpolation (`0.18` damping factor) with smooth decay and automatic RAF termination upon idle. |
