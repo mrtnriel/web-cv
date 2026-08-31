@@ -281,15 +281,13 @@ function initScrollObserver() {
   const revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
         const targets = entry.target.querySelectorAll('.reveal-item');
         targets.forEach(t => t.classList.add('is-revealed'));
-        if (entry.target.classList.contains('reveal-item')) {
-          entry.target.classList.add('is-revealed');
-        }
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+  }, { threshold: 0.18, rootMargin: '0px 0px -20px 0px' });
 
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -664,9 +662,91 @@ function initContactForm() {
   });
 }
 
+// 12. Pixelated Monochrome 00 -> 100% Preloader (Option 2)
+function initPreloader() {
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion || sessionStorage.getItem('mrtn_preloader_seen')) {
+    preloader.style.display = 'none';
+    document.body.classList.add('page-ready');
+    return;
+  }
+
+  const counterEl = document.getElementById('preloader-counter');
+  const progressBar = document.getElementById('preloader-progress');
+  const statusEl = document.getElementById('pixel-status');
+  if (!counterEl || !progressBar) return;
+
+  let currentCount = 0;
+  const duration = 3400; // Slower, relaxed tempo (3.4s)
+  const startTime = performance.now();
+  let lastSoundTick = 0;
+
+  function updateCounter(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progressRatio = Math.min(elapsed / duration, 1);
+    const easedProgress = 1 - Math.pow(1 - progressRatio, 3);
+    currentCount = Math.round(easedProgress * 100);
+
+    // Format as 2-digit zero-padded number (00, 08, 45, 100)
+    counterEl.textContent = currentCount < 10 ? `0${currentCount}` : currentCount;
+    progressBar.style.width = `${currentCount}%`;
+
+    // Dynamic 8-bit telemetry status transitions
+    if (statusEl) {
+      if (currentCount >= 35 && currentCount < 70 && statusEl.textContent !== 'SYNCING_MODULES') {
+        statusEl.textContent = 'SYNCING_MODULES';
+        playHapticSound('switch');
+      } else if (currentCount >= 70 && currentCount < 100 && statusEl.textContent !== 'INITIALIZING') {
+        statusEl.textContent = 'INITIALIZING';
+        playHapticSound('switch');
+      }
+    }
+
+    // Steady tactile audio tick
+    if (currentCount - lastSoundTick >= 5 && progressRatio < 0.96) {
+      playHapticSound('tick');
+      lastSoundTick = currentCount;
+    }
+
+    if (progressRatio < 1) {
+      requestAnimationFrame(updateCounter);
+    } else {
+      if (statusEl) {
+        statusEl.textContent = 'SYSTEM_READY';
+      }
+
+      // Reached 100% -> Hold for 450ms, then trigger smooth spatial dissolve & hero reveal
+      setTimeout(() => {
+        playHapticSound('success');
+        preloader.classList.add('is-loaded');
+        document.body.classList.add('page-ready');
+        sessionStorage.setItem('mrtn_preloader_seen', 'true');
+
+        // Trigger hero text scramble right as the hero floats into focus
+        setTimeout(() => {
+          const heroTargets = document.querySelectorAll('.hero-name .scramble-target');
+          heroTargets.forEach(target => {
+            target.dispatchEvent(new Event('mouseenter'));
+          });
+        }, 220);
+
+        setTimeout(() => {
+          preloader.remove();
+        }, 1000);
+      }, 450);
+    }
+  }
+
+  requestAnimationFrame(updateCounter);
+}
+
 // Master Initialization
 document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
+  initPreloader();
   initCustomCursor();
   initClickParticles();
   initDynamicIsland();
