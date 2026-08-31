@@ -617,12 +617,34 @@ p {
   border: 1px solid var(--gray-300); 
 }
 
+.project-action-wrap {
+  margin-top: 1rem;
+  overflow: visible;
+  position: relative;
+  z-index: 5;
+}
+
 .btn-action { 
-  padding: 0.5rem 1rem; 
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 1.15rem; 
   border: 1px solid var(--gray-300); 
-  background-color: transparent; 
+  background-color: var(--gray-100); 
   color: var(--ink); 
-  margin-top: 1rem; 
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 5;
+  will-change: transform, background-color, border-color, box-shadow;
+  transition: 
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .btn-primary:hover { 
@@ -630,11 +652,17 @@ p {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-.btn-secondary:hover, .btn-action:hover { 
+.btn-secondary:hover { 
   transform: translate3d(0, -2px, 0); 
   border-color: var(--ink); 
   background-color: var(--gray-100); 
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.btn-action:hover {
+  border-color: var(--ink);
+  background-color: var(--gray-200);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary:active, .btn-secondary:active, .btn-action:active { 
@@ -1495,6 +1523,9 @@ h4.masked-heading {
   display: flex; 
   flex-direction: column; 
   gap: 1.25rem; 
+  overflow: visible;
+  position: relative;
+  z-index: 5;
 }
 
 .icon-link { 
@@ -1504,13 +1535,21 @@ h4.masked-heading {
   font-family: var(--font-mono); 
   font-size: 12px; 
   color: var(--gray-400); 
+  text-decoration: none;
+  width: fit-content;
+  position: relative;
+  z-index: 5;
+  will-change: color, transform;
   transition: color var(--duration-fast) var(--ease-out); 
 }
 
 .icon-link .icon { 
   width: 18px; 
   height: 18px; 
-  transition: transform var(--duration-fast) var(--ease-out);
+  stroke: currentColor;
+  stroke-width: 2;
+  flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
 }
 
 .icon-link:hover { 
@@ -1518,7 +1557,8 @@ h4.masked-heading {
 }
 
 .icon-link:hover .icon {
-  transform: translateX(2px);
+  transform: scale(1.12);
+  color: var(--ink);
 }
 
 .contact-form-col { 
@@ -1715,6 +1755,217 @@ h4.masked-heading {
   .reveal-item { transform: translateY(8px); }
   .reveal-group .reveal-item:nth-child(n) { transition-delay: 0ms; }
   .room-cards-grid { grid-template-columns: 1fr; }
+}
+
+/* --- Mobile Smartphones (<= 600px) --- */
+@media (max-width: 600px) {
+  .snap-section { 
+    padding: max(4.75rem, calc(env(safe-area-inset-top, 0px) + 4rem)) 1.25rem max(2.5rem, calc(env(safe-area-inset-bottom, 0px) + 1.5rem)) 1.25rem; 
+  }
+
+  .section-header { 
+    margin-bottom: 1.25rem; 
+    padding-bottom: 0.65rem; 
+  }
+
+  /* Dynamic Island Mobile Fitting */
+  .island-wrapper {
+    top: 0.65rem;
+    padding: 0 0.35rem;
+  }
+
+  .dynamic-island {
+    padding: 0.25rem 0.35rem;
+    gap: 0.15rem;
+    max-width: calc(100vw - 0.7rem);
+  }
+
+  .island-items {
+    gap: 0.1rem;
+  }
+
+  .island-link {
+    padding: 0.3rem 0.5rem;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .island-divider {
+    margin: 0 0.15rem;
+    height: 12px;
+  }
+
+  .island-theme-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 11px;
+  }
+
+  /* Hero Mobile Typography & Buttons */
+  .hero-heading-block {
+    gap: 0.75rem;
+    padding: 0 0.25rem;
+  }
+
+  .hero-role {
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+
+  .hero-name {
+    font-size: clamp(2.35rem, 11vw, 3.8rem);
+    line-height: 1.05;
+  }
+
+  .hero-subtext {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .hero-cta-group {
+    margin-top: 1.5rem;
+    flex-direction: column;
+    width: 100%;
+    max-width: 280px;
+    gap: 0.65rem;
+    align-items: stretch;
+  }
+
+  .hero-cta-group .btn-primary,
+  .hero-cta-group .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 1.25rem;
+  }
+
+  /* About Mobile Layout */
+  .image-column {
+    max-width: 220px;
+    margin: 0 auto 1.25rem auto;
+  }
+
+  .text-column h2 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+
+  .statement-lead {
+    font-size: 1.15rem;
+    line-height: 1.5;
+  }
+
+  .statement-body {
+    font-size: 0.95rem;
+  }
+
+  .social-links {
+    gap: 1rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  /* Projects Mobile Layout & Touch Tracks */
+  .no-bottom-padding {
+    padding-top: 4.5rem;
+  }
+
+  .projects-track {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: -1rem;
+    gap: 1.25rem;
+    scroll-padding: 0 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .project-panel {
+    width: calc(100vw - 2rem);
+    padding: 0.85rem;
+    gap: 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .project-media {
+    border-radius: calc(var(--radius-sm) - 2px);
+    min-height: 200px;
+    max-height: 260px;
+  }
+
+  .project-info h3 {
+    font-size: 1.35rem;
+  }
+
+  .project-info p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .carousel-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  /* Expertise Mobile Layout */
+  .edu-column, .skills-column {
+    gap: 1.25rem;
+  }
+
+  .edu-degree {
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+
+  .edu-institution {
+    font-size: 1rem;
+  }
+
+  .edu-description {
+    font-size: 0.92rem;
+  }
+
+  .skill-pills span {
+    font-size: 10.5px;
+    padding: 0.35rem 0.65rem;
+  }
+
+  /* Contact Mobile Layout & Form Zoom Protection */
+  .contact-sub-info h3 {
+    font-size: 1.15rem;
+  }
+
+  .contact-sub-info p {
+    font-size: 0.92rem;
+  }
+
+  .contact-form-col {
+    padding: 1.25rem 1rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+    padding: 0.65rem 0.75rem;
+  }
+
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .minimal-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .footer-text {
+    font-size: 9px;
+    line-height: 1.4;
+    display: block;
+  }
 }
 
 /* --- Accessibility & Reduced Motion --- */

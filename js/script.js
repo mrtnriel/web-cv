@@ -462,9 +462,9 @@ function initMagneticButtons() {
     let animId = null;
 
     function renderMagnetic() {
-      // Damped spring interpolation (0.18 lerp factor)
-      currentX += (targetX - currentX) * 0.18;
-      currentY += (targetY - currentY) * 0.18;
+      // Damped spring interpolation (0.20 lerp factor)
+      currentX += (targetX - currentX) * 0.20;
+      currentY += (targetY - currentY) * 0.20;
 
       btn.style.transform = `translate3d(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px, 0)`;
 
@@ -472,17 +472,23 @@ function initMagneticButtons() {
         animId = requestAnimationFrame(renderMagnetic);
       } else {
         btn.style.transform = '';
+        btn.style.transition = '';
         cancelAnimationFrame(animId);
         animId = null;
       }
     }
 
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transition = 'none';
+      isHovered = true;
+    });
+
     btn.addEventListener('mousemove', (e) => {
       const rect = btn.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      targetX = (e.clientX - centerX) * 0.28;
-      targetY = (e.clientY - centerY) * 0.28;
+      targetX = (e.clientX - centerX) * 0.24;
+      targetY = (e.clientY - centerY) * 0.24;
       isHovered = true;
       if (!animId) animId = requestAnimationFrame(renderMagnetic);
     });
@@ -491,6 +497,7 @@ function initMagneticButtons() {
       targetX = 0;
       targetY = 0;
       isHovered = false;
+      btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
     });
   });
 }
