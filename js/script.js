@@ -421,8 +421,10 @@ function initScrambleEffects() {
   targets.forEach((target) => {
     const originalText = target.dataset.text || target.textContent;
     const fx = new TextScramble(target);
-    setTimeout(() => fx.setText(originalText), 200);
-    target.addEventListener('mouseenter', () => fx.setText(originalText));
+    target.addEventListener('mouseenter', () => {
+      fx.setText(originalText);
+      playHapticSound('tick');
+    });
   });
 }
 
@@ -662,8 +664,8 @@ function initContactForm() {
   });
 }
 
-// 12. Pixelated Monochrome 00 -> 100% Preloader (Option 2)
-function initPreloader() {
+// 12. Minimalist Studio Hairline Preloader (Option 3)
+function initStudioPreloader() {
   const preloader = document.getElementById('preloader');
   if (!preloader) return;
 
@@ -674,79 +676,72 @@ function initPreloader() {
     return;
   }
 
-  const counterEl = document.getElementById('preloader-counter');
-  const progressBar = document.getElementById('preloader-progress');
-  const statusEl = document.getElementById('pixel-status');
-  if (!counterEl || !progressBar) return;
+  const progressBar = document.getElementById('studio-progress');
+  const counterEl = document.getElementById('studio-counter');
+  const statusEl = document.getElementById('studio-status');
+  if (!progressBar || !counterEl) return;
 
   let currentCount = 0;
-  const duration = 3400; // Slower, relaxed tempo (3.4s)
+  const duration = 2100; // 2.1s calibrated studio tempo
   const startTime = performance.now();
   let lastSoundTick = 0;
 
-  function updateCounter(currentTime) {
+  function updateStudio(currentTime) {
     const elapsed = currentTime - startTime;
     const progressRatio = Math.min(elapsed / duration, 1);
     const easedProgress = 1 - Math.pow(1 - progressRatio, 3);
     currentCount = Math.round(easedProgress * 100);
 
-    // Format as 2-digit zero-padded number (00, 08, 45, 100)
-    counterEl.textContent = currentCount < 10 ? `0${currentCount}` : currentCount;
+    counterEl.textContent = currentCount < 10 ? `0${currentCount}%` : `${currentCount}%`;
     progressBar.style.width = `${currentCount}%`;
 
-    // Dynamic 8-bit telemetry status transitions
+    // Status transitions
     if (statusEl) {
-      if (currentCount >= 35 && currentCount < 70 && statusEl.textContent !== 'SYNCING_MODULES') {
-        statusEl.textContent = 'SYNCING_MODULES';
+      if (currentCount >= 50 && currentCount < 90 && statusEl.textContent !== 'SYSTEM_SYNCHRONIZED') {
+        statusEl.textContent = 'SYSTEM_SYNCHRONIZED';
         playHapticSound('switch');
-      } else if (currentCount >= 70 && currentCount < 100 && statusEl.textContent !== 'INITIALIZING') {
-        statusEl.textContent = 'INITIALIZING';
-        playHapticSound('switch');
+      } else if (currentCount >= 90 && statusEl.textContent !== 'PORTFOLIO // READY') {
+        statusEl.textContent = 'PORTFOLIO // READY';
       }
     }
 
-    // Steady tactile audio tick
-    if (currentCount - lastSoundTick >= 5 && progressRatio < 0.96) {
+    if (currentCount - lastSoundTick >= 7 && progressRatio < 0.95) {
       playHapticSound('tick');
       lastSoundTick = currentCount;
     }
 
     if (progressRatio < 1) {
-      requestAnimationFrame(updateCounter);
+      requestAnimationFrame(updateStudio);
     } else {
-      if (statusEl) {
-        statusEl.textContent = 'SYSTEM_READY';
-      }
-
-      // Reached 100% -> Hold for 450ms, then trigger smooth spatial dissolve & hero reveal
+      // Reached 100% -> Hold for 260ms, then soft spatial dissolve & hero reveal
       setTimeout(() => {
         playHapticSound('success');
         preloader.classList.add('is-loaded');
         document.body.classList.add('page-ready');
         sessionStorage.setItem('mrtn_preloader_seen', 'true');
 
-        // Trigger hero text scramble right as the hero floats into focus
+        // Trigger hero text scramble as hero floats into view
         setTimeout(() => {
           const heroTargets = document.querySelectorAll('.hero-name .scramble-target');
           heroTargets.forEach(target => {
             target.dispatchEvent(new Event('mouseenter'));
           });
-        }, 220);
+        }, 180);
 
         setTimeout(() => {
           preloader.remove();
-        }, 1000);
-      }, 450);
+        }, 900);
+      }, 260);
     }
   }
 
-  requestAnimationFrame(updateCounter);
+  requestAnimationFrame(updateStudio);
 }
 
 // Master Initialization
 document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
-  initPreloader();
+  initStudioPreloader();
   initCustomCursor();
   initClickParticles();
   initDynamicIsland();

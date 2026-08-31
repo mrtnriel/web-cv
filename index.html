@@ -17,39 +17,24 @@
 </head>
 <body>
 
-  <!-- System Preloader Overlay (Option 2: Pixelated Monochrome 00 -> 100%) -->
-  <div id="preloader" class="preloader-overlay pixel-preloader" aria-hidden="true">
-    <div class="pixel-box">
-      <!-- Pixel Corner Accents -->
-      <span class="pixel-corner tl"></span>
-      <span class="pixel-corner tr"></span>
-      <span class="pixel-corner bl"></span>
-      <span class="pixel-corner br"></span>
-
-      <div class="pixel-header">
-        <span class="pixel-tag"><span class="pixel-dot"></span> SYSTEM_INIT.EXE</span>
-        <span class="pixel-author">GABRIEL MARTIN MANALO</span>
+  <!-- Minimalist Studio Hairline Preloader (Option 3: Linear / Vercel Style) -->
+  <div id="preloader" class="studio-preloader" aria-hidden="true">
+    <div class="studio-loader-wrap">
+      <div class="studio-loader-meta">
+        <span class="studio-dot"></span>
+        <span class="studio-title">GABRIEL MARTIN MANALO</span>
+      </div>
+      
+      <div class="studio-hairline-track">
+        <div class="studio-hairline-fill" id="studio-progress"></div>
       </div>
 
-      <div class="pixel-counter-wrap">
-        <span class="pixel-num" id="preloader-counter">00</span>
-        <span class="pixel-symbol">%</span>
-      </div>
-
-      <!-- Segmented Pixel Progress Bar -->
-      <div class="pixel-bar-track">
-        <div class="pixel-bar-fill" id="preloader-progress"></div>
-      </div>
-
-      <div class="pixel-footer">
-        <span>MEM: 640K OK</span>
-        <span class="pixel-status-text" id="pixel-status">CALIBRATING</span>
-        <span>8-BIT MONO</span>
+      <div class="studio-loader-telemetry">
+        <span class="studio-status" id="studio-status">PORTFOLIO // 2026</span>
+        <span class="studio-count" id="studio-counter">00%</span>
       </div>
     </div>
   </div>
-
-  <!-- Custom Cursor Elements (Desktop) -->
   <div class="custom-cursor-dot" aria-hidden="true"></div>
   <div class="custom-cursor-ring" aria-hidden="true"></div>
 
