@@ -105,17 +105,17 @@ function playHapticSound(type = 'click') {
   }
 }
 
-// 1. Custom Cursor (Desktop Only with Spring Lerp)
+// 1. Precision HUD Crosshair Cursor (Desktop Only with Spring Lerp)
 function initCustomCursor() {
-  const dot = document.querySelector('.custom-cursor-dot');
-  const ring = document.querySelector('.custom-cursor-ring');
+  const dot = document.querySelector('.hud-cursor-dot');
+  const frame = document.querySelector('.hud-cursor-frame');
   
   const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!isFinePointer || prefersReducedMotion || !dot || !ring) return;
+  if (!isFinePointer || prefersReducedMotion || !dot || !frame) return;
 
   let mouseX = -100, mouseY = -100;
-  let ringX = -100, ringY = -100;
+  let frameX = -100, frameY = -100;
   let isVisible = false;
 
   window.addEventListener('mousemove', (e) => {
@@ -125,95 +125,107 @@ function initCustomCursor() {
     if (!isVisible) {
       isVisible = true;
       dot.style.opacity = '1';
-      ring.style.opacity = '1';
-      ringX = mouseX;
-      ringY = mouseY;
+      frame.style.opacity = '1';
+      frameX = mouseX;
+      frameY = mouseY;
     }
 
     dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
   });
 
   function renderCursor() {
-    ringX += (mouseX - ringX) * 0.22;
-    ringY += (mouseY - ringY) * 0.22;
-    ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+    frameX += (mouseX - frameX) * 0.24;
+    frameY += (mouseY - frameY) * 0.24;
+    frame.style.transform = `translate(${frameX}px, ${frameY}px) translate(-50%, -50%)`;
     requestAnimationFrame(renderCursor);
   }
   requestAnimationFrame(renderCursor);
 
-  const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link';
+  const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
-      ring.classList.add('is-hovering');
+      frame.classList.add('is-hovering');
     }
   });
 
   document.addEventListener('mouseout', (e) => {
     if (e.target.closest(interactiveSelector)) {
-      ring.classList.remove('is-hovering');
+      frame.classList.remove('is-hovering');
     }
   });
 
   window.addEventListener('mousedown', () => {
     dot.classList.add('is-active');
-    ring.classList.add('is-active');
+    frame.classList.add('is-active');
     playHapticSound('click');
   });
 
   window.addEventListener('mouseup', () => {
     dot.classList.remove('is-active');
-    ring.classList.remove('is-active');
+    frame.classList.remove('is-active');
   });
 
   document.addEventListener('mouseleave', () => {
     dot.style.opacity = '0';
-    ring.style.opacity = '0';
+    frame.style.opacity = '0';
     isVisible = false;
   });
 }
 
-// 2. Click Particles (Micro-bursts)
-function initClickParticles() {
+// 2. Click Feedback (Cyber HUD Reticle Snap & Lock System)
+function initClickReticle() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
 
-  const colors = [
-    'var(--particle-color-1)',
-    'var(--particle-color-2)',
-    'var(--particle-color-3)'
-  ];
-
   window.addEventListener('click', (e) => {
-    // Avoid particle bursts on form inputs to prevent distractions
     if (e.target.closest('input, textarea')) return;
 
-    const count = 7;
-    for (let i = 0; i < count; i++) {
-      const particle = document.createElement('span');
-      particle.className = 'click-particle';
+    const x = e.clientX;
+    const y = e.clientY;
 
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-      const distance = 24 + Math.random() * 32;
+    // 1. Cyber Reticle Container with 4 Corner Brackets, Crosshairs, & Laser Center
+    const reticle = document.createElement('div');
+    reticle.className = 'click-reticle';
+    reticle.style.left = `${x}px`;
+    reticle.style.top = `${y}px`;
+
+    reticle.innerHTML = `
+      <div class="click-reticle-corner tl"></div>
+      <div class="click-reticle-corner tr"></div>
+      <div class="click-reticle-corner bl"></div>
+      <div class="click-reticle-corner br"></div>
+      <div class="click-reticle-cross h"></div>
+      <div class="click-reticle-cross v"></div>
+      <div class="click-reticle-dot"></div>
+    `;
+
+    document.body.appendChild(reticle);
+    reticle.addEventListener('animationend', () => reticle.remove());
+
+    // 2. 4-Corner Diagonal Micro Flecks
+    const diagonalAngles = [
+      Math.PI / 4,        // 45deg
+      (3 * Math.PI) / 4,  // 135deg
+      (5 * Math.PI) / 4,  // 225deg
+      (7 * Math.PI) / 4   // 315deg
+    ];
+
+    diagonalAngles.forEach((angle) => {
+      const fleck = document.createElement('span');
+      fleck.className = 'click-reticle-fleck';
+      const distance = 22 + Math.random() * 8;
       const dx = `${Math.cos(angle) * distance}px`;
       const dy = `${Math.sin(angle) * distance}px`;
-      const size = `${3 + Math.random() * 3}px`;
-      const color = colors[Math.floor(Math.random() * colors.length)];
 
-      particle.style.width = size;
-      particle.style.height = size;
-      particle.style.backgroundColor = color;
-      particle.style.left = `${e.clientX}px`;
-      particle.style.top = `${e.clientY}px`;
-      particle.style.setProperty('--dx', dx);
-      particle.style.setProperty('--dy', dy);
+      fleck.style.left = `${x}px`;
+      fleck.style.top = `${y}px`;
+      fleck.style.setProperty('--dx', dx);
+      fleck.style.setProperty('--dy', dy);
 
-      document.body.appendChild(particle);
-
-      particle.addEventListener('animationend', () => {
-        particle.remove();
-      });
-    }
+      document.body.appendChild(fleck);
+      fleck.addEventListener('animationend', () => fleck.remove());
+    });
   });
 }
 
@@ -836,7 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
   initStudioPreloader();
   initCustomCursor();
-  initClickParticles();
+  initClickReticle();
   initDynamicIsland();
   initScrollProgressBar();
   initScrollObserver();

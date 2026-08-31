@@ -222,7 +222,7 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
-/* --- Custom Cursor (Desktop Only) --- */
+/* --- Precision HUD Crosshair Cursor (Desktop Only) --- */
 @media (hover: hover) and (pointer: fine) {
   body {
     cursor: none;
@@ -232,74 +232,262 @@ a {
   }
 }
 
-.custom-cursor-dot {
+.hud-cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
-  width: 6px;
-  height: 6px;
-  background-color: var(--cursor-dot-color);
+  width: 4px;
+  height: 4px;
+  background-color: var(--ink);
+  box-shadow: 0 0 8px var(--particle-color-2);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  transition: opacity var(--duration-fast) var(--ease-out);
 }
 
-.custom-cursor-ring {
+.hud-cursor-frame {
   position: fixed;
   top: 0;
   left: 0;
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid var(--cursor-ring-color);
-  border-radius: 50%;
+  width: 26px;
+  height: 26px;
   pointer-events: none;
   z-index: 9998;
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: 
     opacity var(--duration-fast) var(--ease-out),
-    width var(--duration-normal) var(--ease-out),
-    height var(--duration-normal) var(--ease-out),
-    border-color var(--duration-normal) var(--ease-out),
-    background-color var(--duration-normal) var(--ease-out);
+    width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.custom-cursor-ring.is-hovering {
-  width: 44px;
-  height: 44px;
+/* 4 Directional Laser Ticks */
+.hud-tick {
+  position: absolute;
+  background-color: var(--ink);
+  opacity: 0.65;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.hud-tick.tick-top {
+  top: 0;
+  left: 50%;
+  width: 1.5px;
+  height: 5px;
+  transform: translateX(-50%);
+}
+
+.hud-tick.tick-bottom {
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  height: 5px;
+  transform: translateX(-50%);
+}
+
+.hud-tick.tick-left {
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 1.5px;
+  transform: translateY(-50%);
+}
+
+.hud-tick.tick-right {
+  right: 0;
+  top: 50%;
+  width: 5px;
+  height: 1.5px;
+  transform: translateY(-50%);
+}
+
+/* 4 Corner Framing Brackets */
+.hud-bracket {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--ink);
+  opacity: 0.35;
+  transition: 
+    border-color 0.22s ease,
+    opacity 0.22s ease,
+    width 0.22s ease,
+    height 0.22s ease;
+}
+
+.hud-bracket.bracket-tl {
+  top: 2px;
+  left: 2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud-bracket.bracket-tr {
+  top: 2px;
+  right: 2px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.hud-bracket.bracket-bl {
+  bottom: 2px;
+  left: 2px;
+  border-right: none;
+  border-top: none;
+}
+
+.hud-bracket.bracket-br {
+  bottom: 2px;
+  right: 2px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Hover State on Interactive Elements */
+.hud-cursor-frame.is-hovering {
+  width: 40px;
+  height: 40px;
+}
+
+.hud-cursor-frame.is-hovering .hud-bracket {
+  opacity: 1;
+  width: 8px;
+  height: 8px;
   border-color: var(--particle-color-2);
-  background-color: var(--cursor-ring-hover-bg);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--particle-color-2) 40%, transparent);
 }
 
-.custom-cursor-dot.is-active {
-  transform: translate(-50%, -50%) scale(0.65);
+.hud-cursor-frame.is-hovering .hud-tick {
+  opacity: 0.85;
+  background-color: var(--particle-color-2);
 }
 
-.custom-cursor-ring.is-active {
-  transform: translate(-50%, -50%) scale(0.85);
+/* Click Active State */
+.hud-cursor-dot.is-active {
+  transform: translate(-50%, -50%) scale(1.4);
 }
 
-/* --- Click Particles --- */
-.click-particle {
+.hud-cursor-frame.is-active {
+  transform: translate(-50%, -50%) scale(0.8);
+}
+
+/* --- Cyber HUD Reticle Snap Click Effect --- */
+.click-reticle {
   position: fixed;
   pointer-events: none;
   z-index: 9997;
-  border-radius: 50%;
+  width: 38px;
+  height: 38px;
   transform: translate(-50%, -50%);
-  animation: particle-burst var(--duration-slow) cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: reticle-snap 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes particle-burst {
+.click-reticle-corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--ink);
+  transition: border-color 0.2s ease;
+}
+
+.click-reticle-corner.tl {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.click-reticle-corner.tr {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+.click-reticle-corner.bl {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+
+.click-reticle-corner.br {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+.click-reticle-cross {
+  position: absolute;
+  background-color: var(--particle-color-2);
+  border-radius: 1px;
+}
+
+.click-reticle-cross.h {
+  width: 10px;
+  height: 1.5px;
+}
+
+.click-reticle-cross.v {
+  width: 1.5px;
+  height: 10px;
+}
+
+.click-reticle-dot {
+  position: absolute;
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background-color: var(--ink);
+  box-shadow: 0 0 8px var(--particle-color-2);
+}
+
+@keyframes reticle-snap {
   0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.6) rotate(-12deg);
+  }
+  25% {
     opacity: 1;
-    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    transform: translate(-50%, -50%) scale(0.85) rotate(0deg);
+  }
+  60% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(0.95) rotate(0deg);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.1);
+    transform: translate(-50%, -50%) scale(1.28) rotate(8deg);
+  }
+}
+
+.click-reticle-fleck {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9997;
+  width: 2.5px;
+  height: 2.5px;
+  border-radius: 50%;
+  background-color: var(--particle-color-2);
+  transform: translate(-50%, -50%);
+  animation: reticle-fleck-burst 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes reticle-fleck-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0);
   }
 }
 
@@ -2076,9 +2264,10 @@ h4.masked-heading {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .custom-cursor-dot,
-  .custom-cursor-ring,
-  .click-particle,
+  .hud-cursor-dot,
+  .hud-cursor-frame,
+  .click-reticle,
+  .click-reticle-fleck,
   .badge-dot {
     display: none !important;
   }
