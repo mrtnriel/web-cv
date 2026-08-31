@@ -1,6 +1,6 @@
 /**
- * Gabriel Martin R. Manalo — Interaction & Motion Engine 2.0
- * Pure Vanilla Architecture • Web Audio Synthesis • Kinetic Physics
+ * Gabriel Martin R. Manalo — Interaction & Motion Engine 3.0
+ * Architecture: Emil Kowalski Motion Craft • Sonner Micro-Feedback • Web Audio Synthesis
  */
 
 // Global Audio Engine (Web Audio API - Zero External Dependencies)
@@ -27,7 +27,12 @@ function initAudioFeedback() {
       isSoundEnabled = !isSoundEnabled;
       localStorage.setItem('portfolio-sound', String(isSoundEnabled));
       updateSoundUI();
-      if (isSoundEnabled) playHapticSound('switch');
+      if (isSoundEnabled) {
+        playHapticSound('switch');
+        showToast('Sound effects enabled', '🔊');
+      } else {
+        showToast('Sound effects muted', '🔇');
+      }
     });
   }
 }
@@ -47,7 +52,6 @@ function playHapticSound(type = 'click') {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     
-    // Lowpass filter to ensure soft, organic acoustic profile
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(2400, now);
@@ -58,50 +62,104 @@ function playHapticSound(type = 'click') {
 
     if (type === 'click') {
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1200, now);
-      osc.frequency.exponentialRampToValueAtTime(300, now + 0.025);
+      osc.frequency.setValueAtTime(1100, now);
+      osc.frequency.exponentialRampToValueAtTime(320, now + 0.022);
+      gain.gain.setValueAtTime(0.03, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+      osc.start(now);
+      osc.stop(now + 0.022);
+    } else if (type === 'switch') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(480, now);
+      osc.frequency.exponentialRampToValueAtTime(960, now + 0.03);
       gain.gain.setValueAtTime(0.035, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+      osc.start(now);
+      osc.stop(now + 0.03);
+    } else if (type === 'tick') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(780, now);
+      gain.gain.setValueAtTime(0.015, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.012);
+      osc.start(now);
+      osc.stop(now + 0.012);
+    } else if (type === 'slide') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(380, now);
+      osc.frequency.exponentialRampToValueAtTime(620, now + 0.025);
+      gain.gain.setValueAtTime(0.022, now);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
       osc.start(now);
       osc.stop(now + 0.025);
-    } else if (type === 'switch') {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(540, now);
-      osc.frequency.exponentialRampToValueAtTime(1080, now + 0.035);
-      gain.gain.setValueAtTime(0.04, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
-      osc.start(now);
-      osc.stop(now + 0.035);
-    } else if (type === 'tick') {
+    } else if (type === 'copy') {
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(750, now);
-      gain.gain.setValueAtTime(0.018, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.015);
+      osc.frequency.setValueAtTime(640, now);
+      osc.frequency.exponentialRampToValueAtTime(1280, now + 0.045);
+      gain.gain.setValueAtTime(0.038, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
       osc.start(now);
-      osc.stop(now + 0.015);
-    } else if (type === 'slide') {
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(420, now);
-      osc.frequency.exponentialRampToValueAtTime(680, now + 0.028);
-      gain.gain.setValueAtTime(0.025, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
-      osc.start(now);
-      osc.stop(now + 0.028);
+      osc.stop(now + 0.045);
     } else if (type === 'success') {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(520, now);
-      osc.frequency.exponentialRampToValueAtTime(1040, now + 0.06);
-      gain.gain.setValueAtTime(0.045, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+      osc.frequency.exponentialRampToValueAtTime(1040, now + 0.055);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
       osc.start(now);
-      osc.stop(now + 0.06);
+      osc.stop(now + 0.055);
     }
   } catch (err) {
-    // Graceful fallback if audio context isn't permitted by autoplay policy
+    // Autoplay audio fallback
   }
 }
 
-// 1. Custom Cursor (Desktop Only with Spring Lerp)
+// 1. Sonner-Style Toast Notification Engine
+function showToast(message, icon = '✓') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-pill';
+  toast.innerHTML = `<span class="toast-icon">${icon}</span> <span class="toast-msg">${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('is-exiting');
+    setTimeout(() => toast.remove(), 260);
+  }, 2600);
+}
+
+// 2. Interactive Copy to Clipboard
+function initCopyButtons() {
+  const copyTargets = document.querySelectorAll('[data-copy]');
+  copyTargets.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const textToCopy = btn.getAttribute('data-copy');
+      if (!textToCopy) return;
+
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        playHapticSound('copy');
+        showToast(`Copied to clipboard: ${textToCopy}`, '📋');
+
+        const originalText = btn.innerHTML;
+        btn.classList.add('is-copied');
+        btn.innerHTML = `<span style="color: var(--accent-emerald);">Copied ✓</span>`;
+
+        setTimeout(() => {
+          btn.classList.remove('is-copied');
+          btn.innerHTML = originalText;
+        }, 2200);
+      } catch (err) {
+        showToast(`Selected: ${textToCopy}`, 'ℹ️');
+      }
+    });
+  });
+}
+
+// 3. Custom Cursor (Desktop Only with Precision Lerp)
 function initCustomCursor() {
   const dot = document.querySelector('.custom-cursor-dot');
   const ring = document.querySelector('.custom-cursor-ring');
@@ -137,7 +195,7 @@ function initCustomCursor() {
   }
   requestAnimationFrame(renderCursor);
 
-  const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot';
+  const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .badge-chip, .channel-card, .copy-btn';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
@@ -169,7 +227,7 @@ function initCustomCursor() {
   });
 }
 
-// 2. Click Particles (Micro-bursts)
+// 4. Click Particles (Micro-bursts)
 function initClickParticles() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
@@ -181,19 +239,18 @@ function initClickParticles() {
   ];
 
   window.addEventListener('click', (e) => {
-    // Avoid particle bursts on form inputs to prevent distractions
     if (e.target.closest('input, textarea')) return;
 
-    const count = 7;
+    const count = 6;
     for (let i = 0; i < count; i++) {
       const particle = document.createElement('span');
       particle.className = 'click-particle';
 
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-      const distance = 24 + Math.random() * 32;
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+      const distance = 20 + Math.random() * 28;
       const dx = `${Math.cos(angle) * distance}px`;
       const dy = `${Math.sin(angle) * distance}px`;
-      const size = `${3 + Math.random() * 3}px`;
+      const size = `${3 + Math.random() * 2.5}px`;
       const color = colors[Math.floor(Math.random() * colors.length)];
 
       particle.style.width = size;
@@ -213,7 +270,7 @@ function initClickParticles() {
   });
 }
 
-// 3. Dynamic Island Sliding Indicator
+// 5. Dynamic Island Sliding Indicator
 function initDynamicIsland() {
   const islandItems = document.querySelector('.island-items');
   const indicator = document.querySelector('.island-indicator');
@@ -234,11 +291,9 @@ function initDynamicIsland() {
     indicator.classList.add('is-visible');
   }
 
-  // Initial position on active nav
   const activeLink = document.querySelector('.island-link.active-nav') || navLinks[0];
-  setTimeout(() => positionIndicator(activeLink), 100);
+  setTimeout(() => positionIndicator(activeLink), 120);
 
-  // Hover transitions
   navLinks.forEach(link => {
     link.addEventListener('mouseenter', () => positionIndicator(link));
   });
@@ -254,7 +309,7 @@ function initDynamicIsland() {
   });
 }
 
-// 4. Global Scroll Progress (Top of Website)
+// 6. Global Scroll Progress (Top of Website)
 function initScrollProgressBar() {
   const progressBar = document.querySelector('.scroll-progress-bar');
   if (!progressBar) return;
@@ -271,7 +326,7 @@ function initScrollProgressBar() {
   updateProgress();
 }
 
-// 4. Scroll Reveal & Navigation Sync
+// 7. Scroll Reveal & Navigation Sync
 function initScrollObserver() {
   const sections = document.querySelectorAll('.snap-section');
   const navLinks = document.querySelectorAll('.island-link');
@@ -287,7 +342,7 @@ function initScrollObserver() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.18, rootMargin: '0px 0px -20px 0px' });
+  }, { threshold: 0.15, rootMargin: '0px 0px -20px 0px' });
 
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -311,7 +366,7 @@ function initScrollObserver() {
         }
       }
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.35 });
 
   sections.forEach(section => {
     revealObserver.observe(section);
@@ -319,7 +374,7 @@ function initScrollObserver() {
   });
 }
 
-// 5. Light / Dark Theme Toggle
+// 8. Light / Dark Theme Toggle
 function initThemeToggle() {
   const toggleBtn = document.getElementById('theme-toggle');
 
@@ -348,17 +403,19 @@ function initThemeToggle() {
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
       const isCurrentlyLight = document.documentElement.getAttribute('data-theme') === 'light';
-      applyTheme(isCurrentlyLight ? 'dark' : 'light');
+      const nextTheme = isCurrentlyLight ? 'dark' : 'light';
+      applyTheme(nextTheme);
       playHapticSound('switch');
+      showToast(`Switched to ${nextTheme} mode`, nextTheme === 'light' ? '☀️' : '🌙');
     });
   }
 }
 
-// 6. Text Scramble Animation
+// 9. Text Scramble Animation (Safe & Stable)
 class TextScramble {
   constructor(el) {
     this.el = el;
-    this.chars = '!<>-_\\/[]{}—=+*^?#________';
+    this.chars = '!<>-_\\/[]{}—=+*^?#01';
     this.update = this.update.bind(this);
   }
   
@@ -377,8 +434,8 @@ class TextScramble {
     for (let i = 0; i < length; i++) {
       const from = oldText[i] || '';
       const to = newText[i] || '';
-      const start = Math.floor(Math.random() * 16);
-      const end = start + Math.floor(Math.random() * 16);
+      const start = Math.floor(Math.random() * 12);
+      const end = start + Math.floor(Math.random() * 14);
       this.queue.push({ from, to, start, end });
     }
     
@@ -397,11 +454,11 @@ class TextScramble {
         complete++;
         output += to;
       } else if (this.frame >= start) {
-        if (!char || Math.random() < 0.25) {
+        if (!char || Math.random() < 0.28) {
           char = this.chars[Math.floor(Math.random() * this.chars.length)];
           this.queue[i].char = char;
         }
-        output += `<span style="opacity: 0.4;">${char}</span>`;
+        output += `<span style="opacity: 0.35;">${char}</span>`;
       } else {
         output += from;
       }
@@ -417,7 +474,7 @@ class TextScramble {
 }
 
 function initScrambleEffects() {
-  const targets = document.querySelectorAll('.scramble-target');
+  const targets = document.querySelectorAll('.scramble-target, .scramble-line');
   targets.forEach((target) => {
     const originalText = target.dataset.text || target.textContent;
     const fx = new TextScramble(target);
@@ -428,7 +485,7 @@ function initScrambleEffects() {
   });
 }
 
-// 7. Spotlight Proximity Mouse Tracking (RAF Throttled for 60fps/120fps sync)
+// 10. Spotlight Mouse Tracking
 function initSpotlightTracking() {
   const elements = document.querySelectorAll('.spotlight-card, .skill-pills span');
   elements.forEach(el => {
@@ -449,7 +506,7 @@ function initSpotlightTracking() {
   });
 }
 
-// 8. Magnetic Buttons (Damped Spring Physics with RAF Loop)
+// 11. Magnetic Buttons (Damped Spring Physics)
 function initMagneticButtons() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
@@ -462,7 +519,6 @@ function initMagneticButtons() {
     let animId = null;
 
     function renderMagnetic() {
-      // Damped spring interpolation (0.20 lerp factor)
       currentX += (targetX - currentX) * 0.20;
       currentY += (targetY - currentY) * 0.20;
 
@@ -472,14 +528,12 @@ function initMagneticButtons() {
         animId = requestAnimationFrame(renderMagnetic);
       } else {
         btn.style.transform = '';
-        btn.style.transition = '';
         cancelAnimationFrame(animId);
         animId = null;
       }
     }
 
     btn.addEventListener('mouseenter', () => {
-      btn.style.transition = 'none';
       isHovered = true;
     });
 
@@ -498,22 +552,32 @@ function initMagneticButtons() {
       targetY = 0;
       isHovered = false;
       btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+      setTimeout(() => { btn.style.transition = ''; }, 400);
     });
   });
 }
 
-// 9. Project Track Showcase & Slider
+// 12. Project Track Showcase & Counter Sync
 function initProjectShowcase() {
   const track = document.querySelector('.projects-track');
   const prevBtn = document.getElementById('project-prev-btn');
   const nextBtn = document.getElementById('project-next-btn');
+  const counterPill = document.getElementById('track-counter');
   const panels = document.querySelectorAll('.project-panel');
   if (!track || !panels.length) return;
+
+  const updateCounter = () => {
+    if (!counterPill) return;
+    const scrollLeft = track.scrollLeft;
+    const panelWidth = panels[0].offsetWidth;
+    const activeIndex = Math.min(panels.length - 1, Math.max(0, Math.round(scrollLeft / panelWidth)));
+    counterPill.textContent = `0${activeIndex + 1} / 0${panels.length}`;
+  };
 
   const getScrollDistance = () => {
     const panel = track.querySelector('.project-panel');
     if (!panel) return 600;
-    const gap = window.innerWidth <= 900 ? 32 : (window.innerWidth <= 1200 ? 48 : 128);
+    const gap = window.innerWidth <= 960 ? 24 : 96;
     return panel.offsetWidth + gap;
   };
 
@@ -532,6 +596,8 @@ function initProjectShowcase() {
       playHapticSound('tick');
     });
   }
+
+  track.addEventListener('scroll', updateCounter, { passive: true });
 
   // Keyboard Arrow Navigation
   window.addEventListener('keydown', (e) => {
@@ -552,7 +618,7 @@ function initProjectShowcase() {
   });
 }
 
-// 10. SALN Project Multi-Image Carousel (Directional Transitions)
+// 13. SALN Project Multi-Image Carousel
 function initProjectCarousel() {
   const container = document.querySelector('.carousel-media');
   if (!container) return;
@@ -641,37 +707,82 @@ function initProjectCarousel() {
   }, { passive: true });
 }
 
-// 11. Contact Form Submission
+// 14. Contact Form Handler with Validation
 function initContactForm() {
-  const form = document.querySelector('.contact-form');
-  const submitBtn = document.querySelector('.btn-submit');
+  const form = document.getElementById('main-contact-form') || document.querySelector('.contact-form');
+  const submitBtn = document.getElementById('contact-submit-btn') || document.querySelector('.btn-submit');
   if (!form || !submitBtn) return;
+
+  const validateField = (input) => {
+    const group = input.closest('.form-group');
+    const feedback = group ? group.querySelector('.field-feedback') : null;
+    let isValid = true;
+    let errorMsg = '';
+
+    if (input.required && !input.value.trim()) {
+      isValid = false;
+      errorMsg = 'This field is required.';
+    } else if (input.type === 'email' && input.value.trim()) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(input.value.trim())) {
+        isValid = false;
+        errorMsg = 'Please enter a valid email address.';
+      }
+    }
+
+    if (group) group.classList.toggle('has-error', !isValid);
+    if (feedback) feedback.textContent = errorMsg;
+    return isValid;
+  };
+
+  const inputs = form.querySelectorAll('input, textarea');
+  inputs.forEach(input => {
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => {
+      const group = input.closest('.form-group');
+      if (group && group.classList.contains('has-error')) {
+        validateField(input);
+      }
+    });
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (submitBtn.classList.contains('is-submitting')) return;
 
+    let isFormValid = true;
+    inputs.forEach(input => {
+      if (!validateField(input)) isFormValid = false;
+    });
+
+    if (!isFormValid) {
+      playHapticSound('tick');
+      showToast('Please check the required fields', '⚠️');
+      return;
+    }
+
     submitBtn.classList.add('is-submitting');
     const originalContent = submitBtn.innerHTML;
-    submitBtn.innerHTML = `<span>Sending...</span>`;
+    submitBtn.innerHTML = `<span>Sending inquiry...</span>`;
     playHapticSound('click');
 
     setTimeout(() => {
       submitBtn.classList.remove('is-submitting');
       submitBtn.classList.add('is-success');
-      submitBtn.innerHTML = `<span>Message Sent ✓</span>`;
+      submitBtn.innerHTML = `<span>Message Sent Successfully ✓</span>`;
       playHapticSound('success');
+      showToast('Thank you! Your message has been sent.', '✉️');
       form.reset();
 
       setTimeout(() => {
         submitBtn.classList.remove('is-success');
         submitBtn.innerHTML = originalContent;
-      }, 3000);
-    }, 700);
+      }, 3500);
+    }, 800);
   });
 }
 
-// 12. Minimalist Studio Hairline Preloader (Option 3)
+// 15. Minimalist Studio Hairline Preloader (Snappy 1.2s Tempo)
 function initStudioPreloader() {
   const preloader = document.getElementById('preloader');
   if (!preloader) return;
@@ -689,7 +800,7 @@ function initStudioPreloader() {
   if (!progressBar || !counterEl) return;
 
   let currentCount = 0;
-  const duration = 2100; // 2.1s calibrated studio tempo
+  const duration = 1200; // Calibrated snappy 1.2s tempo
   const startTime = performance.now();
   let lastSoundTick = 0;
 
@@ -702,7 +813,6 @@ function initStudioPreloader() {
     counterEl.textContent = currentCount < 10 ? `0${currentCount}%` : `${currentCount}%`;
     progressBar.style.width = `${currentCount}%`;
 
-    // Status transitions
     if (statusEl) {
       if (currentCount >= 50 && currentCount < 90 && statusEl.textContent !== 'SYSTEM_SYNCHRONIZED') {
         statusEl.textContent = 'SYSTEM_SYNCHRONIZED';
@@ -712,7 +822,7 @@ function initStudioPreloader() {
       }
     }
 
-    if (currentCount - lastSoundTick >= 7 && progressRatio < 0.95) {
+    if (currentCount - lastSoundTick >= 10 && progressRatio < 0.95) {
       playHapticSound('tick');
       lastSoundTick = currentCount;
     }
@@ -720,25 +830,23 @@ function initStudioPreloader() {
     if (progressRatio < 1) {
       requestAnimationFrame(updateStudio);
     } else {
-      // Reached 100% -> Hold for 260ms, then soft spatial dissolve & hero reveal
       setTimeout(() => {
         playHapticSound('success');
         preloader.classList.add('is-loaded');
         document.body.classList.add('page-ready');
         sessionStorage.setItem('mrtn_preloader_seen', 'true');
 
-        // Trigger hero text scramble as hero floats into view
         setTimeout(() => {
-          const heroTargets = document.querySelectorAll('.hero-name .scramble-target');
-          heroTargets.forEach(target => {
-            target.dispatchEvent(new Event('mouseenter'));
+          const heroLines = document.querySelectorAll('.scramble-line, .hero-name');
+          heroLines.forEach(line => {
+            line.dispatchEvent(new Event('mouseenter'));
           });
-        }, 180);
+        }, 150);
 
         setTimeout(() => {
           preloader.remove();
-        }, 900);
-      }, 260);
+        }, 800);
+      }, 180);
     }
   }
 
@@ -749,6 +857,7 @@ function initStudioPreloader() {
 document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
   initStudioPreloader();
+  initCopyButtons();
   initCustomCursor();
   initClickParticles();
   initDynamicIsland();

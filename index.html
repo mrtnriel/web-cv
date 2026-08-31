@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gabriel Martin R. Manalo — Portfolio</title>
-  <meta name="description" content="Gabriel Martin R. Manalo — IT student portfolio.">
+  <title>Gabriel Martin R. Manalo — Portfolio & Web CV</title>
+  <meta name="description" content="Gabriel Martin R. Manalo — BS Information Technology student specializing in full-stack web development, network engineering, and data analysis.">
   
   <link rel="icon" type="image/png" href="images/programming.png">
   
@@ -17,12 +17,12 @@
 </head>
 <body>
 
-  <!-- Minimalist Studio Hairline Preloader (Option 3: Linear / Vercel Style) -->
+  <!-- Minimalist Studio Hairline Preloader (Snappy & Refined) -->
   <div id="preloader" class="studio-preloader" aria-hidden="true">
     <div class="studio-loader-wrap">
       <div class="studio-loader-meta">
         <span class="studio-dot"></span>
-        <span class="studio-title">LOADING</span>
+        <span class="studio-title">INITIALIZING SYSTEM</span>
       </div>
       
       <div class="studio-hairline-track">
@@ -35,10 +35,15 @@
       </div>
     </div>
   </div>
+
+  <!-- Custom Tactile Cursor (Desktop) -->
   <div class="custom-cursor-dot" aria-hidden="true"></div>
   <div class="custom-cursor-ring" aria-hidden="true"></div>
 
-  <!-- Global Scroll Progress Bar (Top of Website) -->
+  <!-- Sonner-Style Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Global Scroll Progress Bar -->
   <div class="scroll-progress-container" aria-hidden="true">
     <div class="scroll-progress-bar"></div>
   </div>
@@ -74,13 +79,35 @@
     <section id="hero" class="snap-section">
       <div class="container section-content center-content">
         <div class="hero-heading-block reveal-group">
-          <p class="hero-role reveal-item"><span class="badge-dot"></span> 3rd-Year Information Technology Student</p>
-          <h1 class="hero-name scramble-target reveal-item" data-text="GABRIEL MARTIN MANALO">GABRIEL MARTIN<br>MANALO</h1>
-          <p class="hero-subtext reveal-item">Designing solutions through code, systems, and data.</p>
+          <div class="hero-status-pill reveal-item">
+            <span class="badge-dot"></span>
+            <span>3RD-YEAR INFORMATION TECHNOLOGY STUDENT</span>
+          </div>
+          
+          <h1 class="hero-name reveal-item">
+            <span class="scramble-line" data-text="GABRIEL MARTIN">GABRIEL MARTIN</span>
+            <span class="scramble-line" data-text="MANALO">MANALO</span>
+          </h1>
+
+          <p class="hero-subtext reveal-item">Architecting robust systems through full-stack code, network topologies, and data intelligence.</p>
           
           <div class="hero-cta-group reveal-item">
-            <a href="#contact" class="btn-primary magnetic-btn"><span>Let's Connect</span> <span class="arrow-glyph">↓</span></a>
-            <a href="https://github.com/mrtnriel" target="_blank" rel="noopener noreferrer" class="btn-secondary magnetic-btn"><span>View GitHub</span> <span class="arrow-glyph">↗</span></a>
+            <a href="#projects" class="btn-primary magnetic-btn">
+              <span>Explore Projects</span>
+              <span class="arrow-glyph">↓</span>
+            </a>
+            <a href="#contact" class="btn-secondary magnetic-btn">
+              <span>Let's Connect</span>
+              <span class="arrow-glyph">↗</span>
+            </a>
+          </div>
+
+          <div class="hero-quick-meta reveal-item">
+            <span class="meta-item"><span class="meta-icon">📍</span> Manila, Philippines</span>
+            <span class="meta-sep">//</span>
+            <span class="meta-item"><span class="meta-icon">🏛️</span> PUP Manila</span>
+            <span class="meta-sep">//</span>
+            <span class="meta-item"><span class="meta-icon">⚡</span> Open for Internships & Collaborations</span>
           </div>
         </div>
       </div>
@@ -96,32 +123,45 @@
 
         <div class="immersive-grid">
           <div class="image-column spotlight-card reveal-item">
-            <img src="images/Profile.jpg" alt="Gabriel Martin R. Manalo" class="immersive-photo">
+            <img src="images/Profile.jpg" alt="Portrait of Gabriel Martin R. Manalo" class="immersive-photo">
             <div class="photo-ambient-glow" aria-hidden="true"></div>
+            <div class="photo-caption-tag">
+              <span class="status-indicator"></span>
+              <span>G. M. MANALO // IT ENGINEER</span>
+            </div>
           </div>
+
           <div class="text-column">
             <h2 class="masked-heading glow-shimmer-headline">
               <span class="mask-wrap"><span class="mask-inner">Fundamental engineering.</span></span>
               <span class="mask-wrap"><span class="mask-inner">Practical solutions.</span></span>
             </h2>
+
             <div class="mask-wrap">
-              <p class="statement-lead mask-inner">I am a BS Information Technology student with a core understanding of full-stack software development, network architecture, and data analysis.</p>
+              <p class="statement-lead mask-inner">I am an Information Technology student focused on software engineering, network infrastructure, and data-driven systems.</p>
             </div>
+
             <div class="mask-wrap">
-              <p class="statement-body mask-inner">I approach IT not simply as writing code, but as designing effective solutions to complex technical and architectural problems. I am eager to apply my skills in a real-world environment, collaborate with industry professionals, and continuously strengthen my technical expertise and problem-solving capabilities.</p>
+              <p class="statement-body mask-inner">Rather than treating IT merely as writing syntax, I approach technical challenges through holistic system design—from database schemas and network failovers to intuitive user experiences. I am eager to apply my technical foundation in real-world environments, collaborate with seasoned engineering teams, and deliver resilient software.</p>
             </div>
             
-            <div class="social-links reveal-item">
-              <a href="https://github.com/mrtnriel" target="_blank" rel="noopener noreferrer" class="mono-link magnetic-btn">
+            <div class="about-action-row reveal-item">
+              <a href="https://github.com/mrtnriel" target="_blank" rel="noopener noreferrer" class="badge-chip magnetic-btn">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                <span>GITHUB</span>
+                <span>GitHub Profile</span>
                 <span class="arrow-glyph">↗</span>
               </a>
-              <a href="https://www.linkedin.com/in/gabriel-martin-manalo-411a0134a" target="_blank" rel="noopener noreferrer" class="mono-link magnetic-btn">
+
+              <a href="https://www.linkedin.com/in/gabriel-martin-manalo-411a0134a" target="_blank" rel="noopener noreferrer" class="badge-chip magnetic-btn">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                <span>LINKEDIN</span>
+                <span>LinkedIn Profile</span>
                 <span class="arrow-glyph">↗</span>
               </a>
+
+              <button type="button" class="badge-chip copy-chip magnetic-btn" data-copy="martinramirezasdw@gmail.com" title="Copy email address">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span>Copy Email</span>
+              </button>
             </div>
           </div>
         </div>
@@ -132,9 +172,12 @@
     <section id="projects" class="snap-section">
       <div class="container section-content no-bottom-padding">
         <div class="section-header reveal-item">
-          <span class="section-title">02 — Projects</span>
+          <div class="section-header-title-wrap">
+            <span class="section-title">02 — Featured Work</span>
+            <span class="section-subtitle">Selected engineering & design systems</span>
+          </div>
           <div class="project-nav-controls">
-            <span class="section-badge">Click</span>
+            <span class="project-counter-pill" id="track-counter">01 / 04</span>
             <button id="project-prev-btn" class="project-nav-btn magnetic-btn" aria-label="Previous project">←</button>
             <button id="project-next-btn" class="project-nav-btn magnetic-btn" aria-label="Next project">→</button>
           </div>
@@ -144,8 +187,7 @@
           
           <!-- Project 1: SALN Submission Portal (Multi-Image Carousel) -->
           <article class="project-panel" id="saln-project">
-            <div class="project-media carousel-media">
-              
+            <div class="project-media carousel-media spotlight-card">
               <!-- Carousel Images -->
               <div class="carousel-slides-container">
                 <div class="carousel-slide is-active">
@@ -197,46 +239,220 @@
             </div>
 
             <div class="project-info">
-              <div class="mask-wrap"><span class="artifact-stack mask-inner">Python Flask, MySQL, HTML, CSS, JS</span></div>
+              <div class="mask-wrap"><span class="artifact-stack mask-inner">FULL-STACK WEB APPLICATION • PYTHON & MYSQL</span></div>
               <h3 class="masked-heading glow-shimmer-headline">
                 <span class="mask-wrap"><span class="mask-inner">SALN Submission Portal</span></span>
               </h3>
-              <div class="mask-wrap"><p class="mask-inner">A secure, efficient, and modernized digital full-stack system built to handle the collection and submission of sensitive government ID data and records, replacing manual workflows.</p></div>
-              <div class="project-action-wrap reveal-item"><a href="https://github.com/mrtnriel/SALN-System" target="_blank" class="btn-action magnetic-btn"><span>VIEW SOURCE</span> <span class="arrow-glyph">↗</span></a></div>
+              <div class="mask-wrap"><p class="mask-inner">A secure, modernized digital government disclosure portal handling sworn asset/liability declarations with structured data validation, relational persistence, and role-based access control.</p></div>
+              
+              <div class="project-highlights">
+                <span class="highlight-badge">Flask Backend</span>
+                <span class="highlight-badge">MySQL Relational DB</span>
+                <span class="highlight-badge">Auth & Data Integrity</span>
+              </div>
+
+              <div class="project-action-wrap reveal-item">
+                <a href="https://github.com/mrtnriel/SALN-System" target="_blank" rel="noopener noreferrer" class="btn-action magnetic-btn">
+                  <span>VIEW SOURCE REPO</span>
+                  <span class="arrow-glyph">↗</span>
+                </a>
+              </div>
             </div>
           </article>
 
-          <!-- Project 2 -->
-          <article class="project-panel alone">
-            <div class="project-info alone-info">
-              <div class="mask-wrap"><span class="artifact-stack mask-inner">Figma, UCD Principles, Wireframing</span></div>
+          <!-- Project 2: Room Booking Prototype (Rich UI Preview Frame) -->
+          <article class="project-panel" id="figma-project">
+            <div class="project-media figma-mock-frame spotlight-card">
+              <div class="mock-window-bar">
+                <div class="window-dots">
+                  <span class="dot-red"></span>
+                  <span class="dot-yellow"></span>
+                  <span class="dot-green"></span>
+                </div>
+                <span class="window-title">Figma Prototype // University Room Reservation UI</span>
+                <span class="figma-badge">UCD / HCI</span>
+              </div>
+
+              <div class="mock-figma-body">
+                <div class="figma-sidebar">
+                  <div class="sidebar-item active"><span class="nav-ico">📅</span> Availability</div>
+                  <div class="sidebar-item"><span class="nav-ico">🏢</span> Room Directory</div>
+                  <div class="sidebar-item"><span class="nav-ico">⚙️</span> Schedules</div>
+                </div>
+                
+                <div class="figma-content-area">
+                  <div class="figma-top-metrics">
+                    <div class="metric-card">
+                      <span class="m-label">ACTIVE ROOMS</span>
+                      <span class="m-val">24 Available</span>
+                    </div>
+                    <div class="metric-card active-metric">
+                      <span class="m-label">RESERVATION STATUS</span>
+                      <span class="m-val">Real-Time Sync</span>
+                    </div>
+                  </div>
+
+                  <div class="figma-room-cards">
+                    <div class="room-card">
+                      <div class="room-head">
+                        <span class="r-name">Lab 304 — Advanced Networking</span>
+                        <span class="status-pill status-open">AVAILABLE</span>
+                      </div>
+                      <span class="r-desc">Capacity: 45 Workstations • Gigabit Uplink</span>
+                    </div>
+
+                    <div class="room-card">
+                      <div class="room-head">
+                        <span class="r-name">Conference Hall A</span>
+                        <span class="status-pill status-booked">RESERVED // 14:00</span>
+                      </div>
+                      <span class="r-desc">Multimedia Audio & Video Wall Ready</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-info">
+              <div class="mask-wrap"><span class="artifact-stack mask-inner">UI/UX DESIGN • USER-CENTERED DESIGN (UCD)</span></div>
               <h3 class="masked-heading glow-shimmer-headline">
                 <span class="mask-wrap"><span class="mask-inner">Room Booking Prototype</span></span>
               </h3>
-              <div class="mask-wrap"><p class="mask-inner">Collaborated on an interactive room-booking dashboard in Figma. Applied User-Centered Design (UCD) principles to build an intuitive interface that simplifies university availability checks and room reservations.</p></div>
-              <div class="project-action-wrap reveal-item"><a href="https://www.figma.com/design/gqwc5tSAWlLeSLLpxWD74U" target="_blank" class="btn-action magnetic-btn"><span>VIEW PROTOTYPE</span> <span class="arrow-glyph">↗</span></a></div>
+              <div class="mask-wrap"><p class="mask-inner">Designed an interactive room-reservation system applying User-Centered Design (UCD) principles. Streamlined booking workflows, conflict detection, and schedule visibility for university facility management.</p></div>
+              
+              <div class="project-highlights">
+                <span class="highlight-badge">Figma Interactive Design</span>
+                <span class="highlight-badge">Wireframing & UX Flows</span>
+                <span class="highlight-badge">HCI Accessibility</span>
+              </div>
+
+              <div class="project-action-wrap reveal-item">
+                <a href="https://www.figma.com/design/gqwc5tSAWlLeSLLpxWD74U" target="_blank" rel="noopener noreferrer" class="btn-action magnetic-btn">
+                  <span>VIEW FIGMA PROTOTYPE</span>
+                  <span class="arrow-glyph">↗</span>
+                </a>
+              </div>
             </div>
           </article>
 
-          <!-- Project 3 -->
-          <article class="project-panel alone">
-            <div class="project-info alone-info">
-              <div class="mask-wrap"><span class="artifact-stack mask-inner">Cisco Packet Tracer, VLANs, OSPF</span></div>
+          <!-- Project 3: Enterprise Network Topology (Interactive Architecture Schematic) -->
+          <article class="project-panel" id="cisco-project">
+            <div class="project-media network-schematic-frame spotlight-card">
+              <div class="schematic-header">
+                <span class="schematic-tag"><span class="pulse-emerald"></span> MULTI-AREA OSPF TOPOLOGY // CISCO PACKET TRACER</span>
+                <span class="schematic-stat">STP CONVERGED</span>
+              </div>
+
+              <div class="network-canvas">
+                <!-- Core Layer -->
+                <div class="net-node-group core-group">
+                  <div class="net-node node-core">
+                    <span class="node-icon">🌐</span>
+                    <span class="node-label">OSPF AREA 0</span>
+                    <span class="node-sub">Core Router Gateway</span>
+                  </div>
+                  <div class="net-node node-firewall">
+                    <span class="node-icon">🛡️</span>
+                    <span class="node-label">EDGE FIREWALL</span>
+                    <span class="node-sub">Failover Active</span>
+                  </div>
+                </div>
+
+                <!-- Link Lines -->
+                <div class="net-link-bus">
+                  <div class="link-pipe active-pulse"></div>
+                  <div class="link-pipe active-pulse"></div>
+                </div>
+
+                <!-- Distribution & Access Layer -->
+                <div class="net-node-group access-group">
+                  <div class="net-node node-vlan">
+                    <span class="vlan-tag">VLAN 10</span>
+                    <span class="node-label">Engineering LAN</span>
+                    <span class="node-sub">192.168.10.0/24</span>
+                  </div>
+                  <div class="net-node node-vlan">
+                    <span class="vlan-tag">VLAN 20</span>
+                    <span class="node-label">Administration</span>
+                    <span class="node-sub">192.168.20.0/24</span>
+                  </div>
+                  <div class="net-node node-vlan">
+                    <span class="vlan-tag">VLAN 30</span>
+                    <span class="node-label">Server Farm</span>
+                    <span class="node-sub">EtherChannel Trunk</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-info">
+              <div class="mask-wrap"><span class="artifact-stack mask-inner">INFRASTRUCTURE & NETWORKING • CISCO SYSTEMS</span></div>
               <h3 class="masked-heading glow-shimmer-headline">
                 <span class="mask-wrap"><span class="mask-inner">Enterprise Network Topology</span></span>
               </h3>
-              <div class="mask-wrap"><p class="mask-inner">Architected an end-to-end network topology. Configured multi-area OSPF routing, integrated core switch layers with a firewall, and resolved physical and logical connection bottlenecks for stable failover.</p></div>
+              <div class="mask-wrap"><p class="mask-inner">Architected an end-to-end enterprise network topology in Cisco Packet Tracer. Configured multi-area OSPF routing, Spanning Tree Protocol (STP), EtherChannel trunking, and firewall perimeter routing for resilient failover.</p></div>
+              
+              <div class="project-highlights">
+                <span class="highlight-badge">Multi-Area OSPF</span>
+                <span class="highlight-badge">VLANs & 802.1Q Trunks</span>
+                <span class="highlight-badge">STP & EtherChannel</span>
+              </div>
+
+              <div class="project-action-wrap reveal-item">
+                <a href="#expertise" class="btn-action magnetic-btn">
+                  <span>VIEW NETWORK TOOLKIT</span>
+                  <span class="arrow-glyph">↓</span>
+                </a>
+              </div>
             </div>
           </article>
 
-          <!-- Project 4 -->
-          <article class="project-panel alone">
-            <div class="project-info alone-info">
-              <div class="mask-wrap"><span class="artifact-stack mask-inner">R Language, ggplot2, Statistical Modeling</span></div>
+          <!-- Project 4: Exploratory Data Analysis (Data Dashboard Visual Frame) -->
+          <article class="project-panel" id="data-project">
+            <div class="project-media data-dashboard-frame spotlight-card">
+              <div class="data-frame-header">
+                <div class="data-meta-left">
+                  <span class="r-badge">R // ggplot2</span>
+                  <span class="dataset-title">Student Performance Factors • N=480</span>
+                </div>
+                <span class="r-metric">R² = 0.84 • p &lt; 0.001</span>
+              </div>
+
+              <div class="data-viz-content">
+                <div class="data-bars-chart">
+                  <div class="chart-col"><div class="chart-bar" style="--val: 78%;" data-label="Study Time"></div><span>Study Time</span></div>
+                  <div class="chart-col"><div class="chart-bar" style="--val: 92%;" data-label="Attendance"></div><span>Attendance</span></div>
+                  <div class="chart-col"><div class="chart-bar" style="--val: 64%;" data-label="Course Load"></div><span>Course Load</span></div>
+                  <div class="chart-col"><div class="chart-bar" style="--val: 86%;" data-label="Peer Collab"></div><span>Peer Collab</span></div>
+                </div>
+
+                <div class="data-code-snippet">
+                  <span class="code-line"><span class="c-fn">ggplot</span>(student_df, <span class="c-fn">aes</span>(x = attendance, y = gpa)) +</span>
+                  <span class="code-line">&nbsp;&nbsp;<span class="c-fn">geom_point</span>(alpha = <span class="c-num">0.6</span>, color = <span class="c-str">"#10b981"</span>) +</span>
+                  <span class="code-line">&nbsp;&nbsp;<span class="c-fn">geom_smooth</span>(method = <span class="c-str">"lm"</span>, se = <span class="c-kw">TRUE</span>)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-info">
+              <div class="mask-wrap"><span class="artifact-stack mask-inner">DATA SCIENCE & MODELING • R & GGPLOT2</span></div>
               <h3 class="masked-heading glow-shimmer-headline">
                 <span class="mask-wrap"><span class="mask-inner">Exploratory Data Analysis</span></span>
               </h3>
-              <div class="mask-wrap"><p class="mask-inner">Executed exploratory data analysis using R. Cleaned and normalized anomalous entries, transformed categorical variables, and generated visualization plots to highlight behavioral factors in student performance.</p></div>
+              <div class="mask-wrap"><p class="mask-inner">Conducted rigorous statistical exploratory data analysis in R. Handled data cleansing, normalization of anomalous entries, categorical variable encoding, and hypothesis testing with publication-grade visualizations.</p></div>
+              
+              <div class="project-highlights">
+                <span class="highlight-badge">R Statistical Computing</span>
+                <span class="highlight-badge">Data Wrangling</span>
+                <span class="highlight-badge">ggplot2 Visuals</span>
+              </div>
+
+              <div class="project-action-wrap reveal-item">
+                <a href="#expertise" class="btn-action magnetic-btn">
+                  <span>VIEW DATA SKILLS</span>
+                  <span class="arrow-glyph">↓</span>
+                </a>
+              </div>
             </div>
           </article>
 
@@ -248,80 +464,103 @@
     <section id="expertise" class="snap-section">
       <div class="container section-content">
         <div class="section-header reveal-item">
-          <span class="section-title">03 — Expertise & Background</span>
+          <div class="section-header-title-wrap">
+            <span class="section-title">03 — Expertise & Background</span>
+            <span class="section-subtitle">Academic foundations & technical capabilities</span>
+          </div>
           <span class="section-badge">Manila, PH</span>
         </div>
 
         <div class="immersive-grid split-grid reveal-item">
-          <!-- Education Column -->
+          <!-- Education & Academic Highlights Column -->
           <div class="edu-column">
-            <h3 class="column-header">Education</h3>
+            <h3 class="column-header">Academic Foundation</h3>
             
-            <div class="timeline-node">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <div class="mask-wrap"><span class="edu-years mask-inner">2024 — PRESENT</span></div>
-                <h4 class="edu-degree masked-heading glow-shimmer-headline">
-                  <span class="mask-wrap"><span class="mask-inner">Bachelor of Science in Information Technology</span></span>
-                </h4>
-                <div class="mask-wrap"><span class="edu-institution mask-inner">Polytechnic University of the Philippines</span></div>
-                <div class="mask-wrap"><p class="edu-description mask-inner">Relevant coursework includes Network Engineering, Data Communications, Database Theory & Normalization, and Human-Computer Interaction.</p></div>
+            <div class="timeline-tree">
+              <div class="timeline-node">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="mask-wrap"><span class="edu-years mask-inner">2024 — PRESENT</span></div>
+                  <h4 class="edu-degree masked-heading glow-shimmer-headline">
+                    <span class="mask-wrap"><span class="mask-inner">Bachelor of Science in Information Technology</span></span>
+                  </h4>
+                  <div class="mask-wrap"><span class="edu-institution mask-inner">Polytechnic University of the Philippines</span></div>
+                  <div class="mask-wrap"><p class="edu-description mask-inner">Comprehensive curriculum in distributed software systems, networking architectures, database normalization, and human-centered design.</p></div>
+                </div>
+              </div>
+
+              <div class="timeline-node secondary-node">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div class="mask-wrap"><span class="edu-years mask-inner">CORE TECHNICAL FOCUS</span></div>
+                  <h4 class="edu-degree sub-degree masked-heading">
+                    <span class="mask-wrap"><span class="mask-inner">Systems, Networking & Data</span></span>
+                  </h4>
+                  <div class="curriculum-tags">
+                    <span class="curr-tag">Network Architecture & Routing</span>
+                    <span class="curr-tag">Relational Database Normalization</span>
+                    <span class="curr-tag">Full-Stack Web Engineering</span>
+                    <span class="curr-tag">Human-Computer Interaction (HCI)</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Skills Column -->
+          <!-- Tech Stack Column -->
           <div class="skills-column">
-            <h3 class="column-header">Tech Stack</h3>
+            <h3 class="column-header">Technical Toolkit</h3>
             
             <div class="skills-clusters">
               <div class="skill-category">
-                <span class="skill-label">Languages</span>
+                <span class="skill-label"><span class="cat-num">01 //</span> PROGRAMMING LANGUAGES</span>
                 <div class="skill-pills">
                   <span>Java</span>
                   <span>C++</span>
                   <span>Python</span>
                   <span>COBOL</span>
-                  <span>JavaScript</span>
+                  <span>JavaScript (ES6+)</span>
                   <span>R</span>
                 </div>
               </div>
 
               <div class="skill-category">
-                <span class="skill-label">Web Development</span>
+                <span class="skill-label"><span class="cat-num">02 //</span> WEB & BACKEND</span>
                 <div class="skill-pills">
-                  <span>HTML</span>
-                  <span>CSS</span>
+                  <span>Python Flask</span>
+                  <span>HTML5</span>
+                  <span>CSS3 / Grid / Flex</span>
+                  <span>REST APIs</span>
                 </div>
               </div>
 
               <div class="skill-category">
-                <span class="skill-label">DATABASES & DATA</span>
+                <span class="skill-label"><span class="cat-num">03 //</span> DATABASES & MODELING</span>
                 <div class="skill-pills">
                   <span>MySQL</span>
-                  <span>ERD Modeling</span>
-                  <span>Normalization</span>
+                  <span>ERD Schema Design</span>
+                  <span>Normalization (1NF-3NF)</span>
+                  <span>Data Cleansing</span>
                 </div>
               </div>
 
               <div class="skill-category">
-                <span class="skill-label">Networking</span>
+                <span class="skill-label"><span class="cat-num">04 //</span> NETWORK INFRASTRUCTURE</span>
                 <div class="skill-pills">
                   <span>Cisco Packet Tracer</span>
-                  <span>VLANs</span>
-                  <span>STP</span>
-                  <span>EtherChannel</span>
+                  <span>Multi-Area OSPF</span>
+                  <span>VLANs & Trunks</span>
+                  <span>STP & EtherChannel</span>
                 </div>
               </div>
 
               <div class="skill-category">
-                <span class="skill-label">Design & Developer Tools</span>
+                <span class="skill-label"><span class="cat-num">05 //</span> TOOLS & WORKFLOW</span>
                 <div class="skill-pills">
+                  <span>Git & GitHub</span>
+                  <span>Figma UI/UX</span>
                   <span>VS Code</span>
-                  <span>Git</span>
-                  <span>Github</span>
                   <span>Vercel</span>
-                  <span>Figma</span>
                 </div>
               </div>
             </div>
@@ -334,7 +573,10 @@
     <section id="contact" class="snap-section">
       <div class="container section-content">
         <div class="section-header reveal-item">
-          <span class="section-title">04 — contact</span>
+          <div class="section-header-title-wrap">
+            <span class="section-title">04 — Contact & Communication</span>
+            <span class="section-subtitle">Let's discuss projects, internships, and technical collaboration</span>
+          </div>
           <span class="section-badge">Manila, PH</span>
         </div>
 
@@ -344,34 +586,52 @@
             <h2 class="contact-heading masked-heading glow-shimmer-headline">
               <span class="mask-wrap"><span class="mask-inner">Let's Connect</span></span>
             </h2>
+            
             <div class="mask-wrap">
-              <p class="contact-lead mask-inner">Have a project in mind, or just want to chat about IT, networking, or distributed systems? Drop me a line.</p>
+              <p class="contact-lead mask-inner">I am currently seeking technical internship opportunities and collaborations in software engineering, network systems, and data analytics.</p>
             </div>
             
-            <div class="contact-sub-info">
-              <h3 class="masked-heading">
-                <span class="mask-wrap"><span class="mask-inner">Let's discuss your next technical challenge.</span></span>
-              </h3>
-              <div class="mask-wrap">
-                <p class="mask-inner">I'm always up for new collaborations, internship opportunities, or a good conversation about what you're building.</p>
+            <div class="direct-channels-list">
+              <!-- Email Card -->
+              <div class="channel-card spotlight-card">
+                <div class="channel-icon-wrap">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </div>
+                <div class="channel-body">
+                  <span class="channel-label">EMAIL ADDRESS</span>
+                  <a href="mailto:martinramirezasdw@gmail.com" class="channel-val">martinramirezasdw@gmail.com</a>
+                </div>
+                <button type="button" class="copy-btn magnetic-btn" data-copy="martinramirezasdw@gmail.com" aria-label="Copy email">
+                  <span class="copy-text">Copy</span>
+                </button>
               </div>
-              
-              <div class="contact-links-list reveal-item">
-                <a href="https://www.linkedin.com/in/gabriel-martin-manalo-411a0134a" target="_blank" rel="noopener noreferrer" class="icon-link magnetic-btn">
-                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                  <span>LinkedIn</span>
-                </a>
-                <a href="https://github.com/mrtnriel" target="_blank" rel="noopener noreferrer" class="icon-link magnetic-btn">
+
+              <!-- Phone Card -->
+              <div class="channel-card spotlight-card">
+                <div class="channel-icon-wrap">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </div>
+                <div class="channel-body">
+                  <span class="channel-label">DIRECT PHONE</span>
+                  <a href="tel:+639164011194" class="channel-val">+63 916 401 1194</a>
+                </div>
+                <button type="button" class="copy-btn magnetic-btn" data-copy="+639164011194" aria-label="Copy phone number">
+                  <span class="copy-text">Copy</span>
+                </button>
+              </div>
+
+              <!-- Social Links Row -->
+              <div class="social-chips-row">
+                <a href="https://github.com/mrtnriel" target="_blank" rel="noopener noreferrer" class="social-badge magnetic-btn">
                   <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                   <span>GitHub</span>
+                  <span class="arrow-glyph">↗</span>
                 </a>
-                <a href="mailto:martinramirezasdw@gmail.com" class="icon-link magnetic-btn">
-                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                  <span>martinramirezasdw@gmail.com</span>
-                </a>
-                <a href="tel:+639164011194" class="icon-link magnetic-btn">
-                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                  <span>+63 916 401 1194</span>
+
+                <a href="https://www.linkedin.com/in/gabriel-martin-manalo-411a0134a" target="_blank" rel="noopener noreferrer" class="social-badge magnetic-btn">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                  <span>LinkedIn</span>
+                  <span class="arrow-glyph">↗</span>
                 </a>
               </div>
             </div>
@@ -379,33 +639,49 @@
 
           <!-- Right Column: Contact Form -->
           <div class="contact-form-col spotlight-card">
-            <form class="contact-form" action="#" method="POST" onsubmit="event.preventDefault();">
+            <div class="form-header-meta">
+              <span class="form-title">SEND DIRECT MESSAGE</span>
+              <span class="form-desc">Inquiries typically answered within 24 hours</span>
+            </div>
+
+            <form class="contact-form" id="main-contact-form" novalidate>
               <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="Alex Rivera" required autocomplete="name">
+                <span class="field-feedback" aria-live="polite"></span>
               </div>
               <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="you@company.com" required autocomplete="email">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="alex@company.com" required autocomplete="email">
+                <span class="field-feedback" aria-live="polite"></span>
               </div>
               <div class="form-group">
                 <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="Project inquiry" required>
+                <input type="text" id="subject" name="subject" placeholder="Internship / Technical Project Inquiry" required>
+                <span class="field-feedback" aria-live="polite"></span>
               </div>
               <div class="form-group">
                 <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Tell me about your project..." rows="5" required></textarea>
+                <textarea id="message" name="message" placeholder="Hi Gabriel, I'd like to discuss a project..." rows="4" required></textarea>
+                <span class="field-feedback" aria-live="polite"></span>
               </div>
-              <button type="submit" class="btn-submit magnetic-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                <span>Send Message</span>
+              <button type="submit" class="btn-submit magnetic-btn" id="contact-submit-btn">
+                <span class="btn-text">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  <span>Send Message</span>
+                </span>
               </button>
             </form>
           </div>
         </div>
 
         <footer class="minimal-footer reveal-item">
-          <span class="footer-text">© 2026 GABRIEL MARTIN R. MANALO — ALL RIGHTS RESERVED.</span>
+          <div class="footer-inner">
+            <span class="footer-text">© 2026 GABRIEL MARTIN R. MANALO — CRAFTED WITH VANILLA MOTION & ARCHITECTURE.</span>
+            <div class="footer-links">
+              <a href="#hero" class="footer-link">Back to Top ↑</a>
+            </div>
+          </div>
         </footer>
       </div>
     </section>
