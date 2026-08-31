@@ -49,6 +49,7 @@
   <!-- Dynamic Island Navigation -->
   <header class="island-wrapper" aria-label="Main Navigation">
     <nav id="dynamic-island" class="dynamic-island hero-entrance-island">
+      <!-- Navigation Links -->
       <div class="island-items">
         <div class="island-indicator" aria-hidden="true"></div>
         <a href="#hero" class="island-link active-nav">Home</a>
@@ -57,12 +58,31 @@
         <a href="#expertise" class="island-link">Expertise</a>
         <a href="#contact" class="island-link">Contact</a>
       </div>
+
       <span class="island-divider" aria-hidden="true"></span>
-      <button id="sound-toggle" class="island-theme-btn" aria-label="Toggle sound effects" title="Toggle audio feedback">
-        <span class="sound-icon">🔊</span>
+
+      <!-- Sound Toggle (SVG) -->
+      <button id="sound-toggle" class="island-theme-btn magnetic-btn" aria-label="Toggle sound effects" title="Toggle audio feedback">
+        <svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
       </button>
-      <button id="theme-toggle" class="island-theme-btn" aria-label="Toggle theme" title="Toggle theme">
-        <span class="theme-icon">☾</span>
+
+      <!-- Theme Toggle (SVG) -->
+      <button id="theme-toggle" class="island-theme-btn magnetic-btn" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
       </button>
     </nav>
   </header>
@@ -75,7 +95,10 @@
       <div class="container section-content center-content">
         <div class="hero-heading-block reveal-group">
           <p class="hero-role reveal-item"><span class="badge-dot"></span> 3rd-Year Information Technology Student</p>
-          <h1 class="hero-name scramble-target reveal-item" data-text="GABRIEL MARTIN MANALO">GABRIEL MARTIN<br>MANALO</h1>
+          <h1 class="hero-name reveal-item" id="hero-heading">
+            <span class="scramble-line" data-text="GABRIEL MARTIN">GABRIEL MARTIN</span>
+            <span class="scramble-line" data-text="MANALO">MANALO</span>
+          </h1>
           <p class="hero-subtext reveal-item">Designing solutions through code, systems, and data.</p>
           
           <div class="hero-cta-group reveal-item">

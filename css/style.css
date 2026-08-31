@@ -29,6 +29,16 @@
   --radius-pill: 9999px;
   --dot-color: rgba(255, 255, 255, 0.05);
 
+  /* Dynamic Island Tokens (Dark Theme) */
+  --island-bg: rgba(18, 18, 22, 0.72);
+  --island-border: rgba(255, 255, 255, 0.1);
+  --island-border-hover: rgba(255, 255, 255, 0.18);
+  --island-shadow: none;
+  --island-shadow-scrolled: none;
+  --indicator-bg: var(--ink);
+  --indicator-text: var(--bg);
+  --indicator-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+
   /* Motion Tokens */
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -58,6 +68,16 @@
   --particle-color-1: #0a0a0a;
   --particle-color-2: #ec4899;
   --particle-color-3: #f43f5e;
+
+  /* Dynamic Island Tokens (Light Theme) */
+  --island-bg: rgba(255, 255, 255, 0.82);
+  --island-border: rgba(0, 0, 0, 0.08);
+  --island-border-hover: rgba(0, 0, 0, 0.16);
+  --island-shadow: none;
+  --island-shadow-scrolled: none;
+  --indicator-bg: var(--ink);
+  --indicator-text: var(--bg);
+  --indicator-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
 }
 
 *, *::before, *::after { 
@@ -78,7 +98,6 @@ html {
 body { 
   font-family: var(--font-sans); 
   line-height: 1.6; 
-  transition: background-color var(--duration-slow) var(--ease-out), color var(--duration-slow) var(--ease-out); 
 }
 
 ::selection { 
@@ -297,6 +316,32 @@ a {
   z-index: 0;
 }
 
+/* --- Cinematic Theme Transition (Butter-Smooth Expanding Ripple) --- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-ripple-expand 0.65s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+  will-change: clip-path;
+}
+
+@keyframes theme-ripple-expand {
+  0% {
+    clip-path: circle(0px at var(--ripple-x, 85vw) var(--ripple-y, 30px));
+  }
+  100% {
+    clip-path: circle(var(--ripple-radius, 180vmax) at var(--ripple-x, 85vw) var(--ripple-y, 30px));
+  }
+}
+
 /* --- Dynamic Island Navigation --- */
 .island-wrapper { 
   position: fixed; 
@@ -308,6 +353,7 @@ a {
   z-index: 1000; 
   pointer-events: none; 
   padding: 0 1rem; 
+  transition: top var(--duration-normal) var(--ease-out);
 }
 
 .dynamic-island { 
@@ -315,14 +361,14 @@ a {
   position: relative;
   display: inline-flex; 
   align-items: center; 
-  gap: 0.25rem; 
-  padding: 0.35rem 0.45rem; 
-  background-color: color-mix(in srgb, var(--bg) 85%, transparent); 
-  backdrop-filter: blur(20px); 
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--gray-200); 
+  gap: 0.35rem; 
+  padding: 0.32rem 0.45rem; 
+  background-color: var(--island-bg); 
+  backdrop-filter: blur(24px) saturate(180%); 
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--island-border); 
   border-radius: var(--radius-pill); 
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--island-shadow);
   opacity: 0;
   transform: translate3d(0, -22px, 0) scale(0.96);
   transition: 
@@ -330,12 +376,22 @@ a {
     transform 0.95s cubic-bezier(0.16, 1, 0.3, 1),
     border-color var(--duration-normal) var(--ease-out), 
     background-color var(--duration-normal) var(--ease-out), 
-    box-shadow var(--duration-normal) var(--ease-out);
+    box-shadow var(--duration-normal) var(--ease-out),
+    padding var(--duration-normal) var(--ease-out);
 }
 
 body.page-ready .dynamic-island {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
+}
+
+.dynamic-island:hover {
+  border-color: var(--island-border-hover);
+}
+
+.dynamic-island.is-scrolled {
+  box-shadow: var(--island-shadow-scrolled);
+  border-color: color-mix(in srgb, var(--island-border) 80%, var(--ink) 20%);
 }
 
 .island-items { 
@@ -352,7 +408,8 @@ body.page-ready .dynamic-island {
   left: 0;
   height: 100%;
   border-radius: var(--radius-pill);
-  background-color: var(--ink);
+  background-color: var(--indicator-bg);
+  box-shadow: var(--indicator-shadow);
   pointer-events: none;
   z-index: 1;
   opacity: 0;
@@ -372,10 +429,11 @@ body.page-ready .dynamic-island {
   z-index: 2;
   font-family: var(--font-mono);
   font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.04em;
-  color: var(--gray-500);
+  color: var(--gray-400);
   text-decoration: none;
-  padding: 0.35rem 0.8rem;
+  padding: 0.36rem 0.78rem;
   border-radius: var(--radius-pill);
   will-change: color, transform;
   transition: 
@@ -393,7 +451,7 @@ body.page-ready .dynamic-island {
 }
 
 .island-link.active-nav { 
-  color: var(--bg); 
+  color: var(--indicator-text); 
   font-weight: 600; 
 }
 
@@ -402,28 +460,28 @@ body.page-ready .dynamic-island {
   width: 1px; 
   height: 16px; 
   background-color: var(--gray-200); 
-  margin: 0 0.3rem; 
+  margin: 0 0.15rem; 
   flex-shrink: 0; 
 }
 
 .island-theme-btn { 
   position: relative;
   z-index: 2;
-  width: 28px; 
-  height: 28px; 
+  width: 30px; 
+  height: 30px; 
   border-radius: 50%; 
-  border: none; 
+  border: 1px solid transparent; 
   background: transparent; 
-  color: var(--gray-500); 
-  font-size: 13px; 
+  color: var(--gray-400); 
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  will-change: transform, color, background-color;
+  will-change: transform, color, background-color, border-color;
   transition: 
     color var(--duration-fast) var(--ease-out), 
     background-color var(--duration-fast) var(--ease-out), 
+    border-color var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-spring); 
   flex-shrink: 0; 
 }
@@ -431,25 +489,30 @@ body.page-ready .dynamic-island {
 .island-theme-btn:hover { 
   color: var(--ink); 
   background-color: var(--gray-100); 
-  transform: scale(1.12); 
+  border-color: var(--gray-200);
+  transform: scale(1.08); 
 }
 
 .island-theme-btn:active { 
-  transform: scale(0.90); 
+  transform: scale(0.92); 
 }
 
-.island-theme-btn .theme-icon,
-.island-theme-btn .sound-icon {
-  display: inline-block;
-  transition: transform var(--duration-fast) var(--ease-out-expo);
+.topbar-icon {
+  width: 14.5px;
+  height: 14.5px;
+  stroke-width: 2;
+  stroke: currentColor;
+  fill: none;
+  display: block;
+  transition: transform var(--duration-fast) var(--ease-out-expo), stroke var(--duration-fast) var(--ease-out);
 }
 
-.island-theme-btn:hover .theme-icon {
-  transform: rotate(15deg) scale(1.05);
+.island-theme-btn:hover .topbar-icon {
+  transform: rotate(12deg) scale(1.06);
 }
 
 .island-theme-btn.is-muted { 
-  opacity: 0.5; 
+  opacity: 0.55; 
 }
 
 /* --- Global Scroll Progress Bar (Top of Website) --- */
@@ -736,17 +799,40 @@ p {
 }
 
 .hero-name { 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: clamp(3rem, 8vw, 6rem); 
   font-weight: 700; 
-  line-height: 1; 
+  line-height: 1.05; 
   letter-spacing: -0.03em; 
   user-select: none;
   text-align: center;
-  transition: text-shadow 0.4s ease;
+  cursor: default;
 }
 
-.hero-name.is-decrypting {
-  text-shadow: 0 0 24px color-mix(in srgb, var(--particle-color-2) 60%, transparent);
+.scramble-line {
+  display: block;
+  white-space: nowrap;
+  position: relative;
+  will-change: transform;
+}
+
+.scramble-glyph {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.12s ease, opacity 0.12s ease;
+}
+
+.scramble-glyph.is-glitching {
+  color: var(--gray-400);
+  opacity: 0.65;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.scramble-glyph.is-resolved {
+  color: var(--ink);
+  opacity: 1;
 }
 
 .hero-subtext { 
@@ -763,6 +849,7 @@ p {
 }
 
 .hero-role,
+.hero-name,
 .hero-subtext,
 .hero-cta-group {
   opacity: 0;
@@ -782,18 +869,25 @@ body.page-ready .hero-role {
   transition-delay: 0.08s;
 }
 
+body.page-ready .hero-name {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+  transition-delay: 0.16s;
+}
+
 body.page-ready .hero-subtext {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   filter: blur(0);
-  transition-delay: 0.2s;
+  transition-delay: 0.26s;
 }
 
 body.page-ready .hero-cta-group {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   filter: blur(0);
-  transition-delay: 0.32s;
+  transition-delay: 0.36s;
 }
 
 /* --- 01 About --- */
@@ -1775,30 +1869,34 @@ h4.masked-heading {
   }
 
   .dynamic-island {
-    padding: 0.25rem 0.35rem;
+    padding: 0.25rem 0.3rem;
     gap: 0.15rem;
     max-width: calc(100vw - 0.7rem);
   }
 
   .island-items {
-    gap: 0.1rem;
+    gap: 0.08rem;
   }
 
   .island-link {
-    padding: 0.3rem 0.5rem;
+    padding: 0.28rem 0.45rem;
     font-size: 10px;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
   }
 
   .island-divider {
-    margin: 0 0.15rem;
-    height: 12px;
+    margin: 0 0.12rem;
+    height: 13px;
   }
 
   .island-theme-btn {
-    width: 25px;
-    height: 25px;
-    font-size: 11px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .topbar-icon {
+    width: 13px;
+    height: 13px;
   }
 
   /* Hero Mobile Typography & Buttons */
@@ -2007,5 +2105,9 @@ h4.masked-heading {
   .preloader-overlay,
   .studio-preloader {
     display: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 }

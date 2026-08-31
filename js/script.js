@@ -7,6 +7,9 @@
 let audioCtx = null;
 let isSoundEnabled = true;
 
+const SOUND_ON_SVG = `<svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+const SOUND_OFF_SVG = `<svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+
 function initAudioFeedback() {
   const savedSound = localStorage.getItem('portfolio-sound');
   isSoundEnabled = savedSound !== null ? savedSound === 'true' : true;
@@ -14,9 +17,10 @@ function initAudioFeedback() {
   const soundBtn = document.getElementById('sound-toggle');
   const updateSoundUI = () => {
     if (soundBtn) {
-      const icon = soundBtn.querySelector('.sound-icon');
-      if (icon) icon.textContent = isSoundEnabled ? '🔊' : '🔇';
+      soundBtn.innerHTML = isSoundEnabled ? SOUND_ON_SVG : SOUND_OFF_SVG;
       soundBtn.classList.toggle('is-muted', !isSoundEnabled);
+      soundBtn.setAttribute('title', isSoundEnabled ? 'Mute sound effects' : 'Enable sound effects');
+      soundBtn.setAttribute('aria-label', isSoundEnabled ? 'Mute sound effects' : 'Enable sound effects');
     }
   };
   updateSoundUI();
@@ -137,7 +141,7 @@ function initCustomCursor() {
   }
   requestAnimationFrame(renderCursor);
 
-  const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot';
+  const interactiveSelector = 'a, button, input, textarea, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
@@ -254,16 +258,21 @@ function initDynamicIsland() {
   });
 }
 
-// 4. Global Scroll Progress (Top of Website)
+// 4. Global Scroll Progress (Top of Website) & Dynamic Island Scroll State
 function initScrollProgressBar() {
   const progressBar = document.querySelector('.scroll-progress-bar');
-  if (!progressBar) return;
+  const dynamicIsland = document.getElementById('dynamic-island');
 
   const updateProgress = () => {
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     const scrollTop = window.scrollY;
     const progressPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    progressBar.style.width = `${Math.min(100, Math.max(0, progressPercent))}%`;
+    if (progressBar) {
+      progressBar.style.width = `${Math.min(100, Math.max(0, progressPercent))}%`;
+    }
+    if (dynamicIsland) {
+      dynamicIsland.classList.toggle('is-scrolled', scrollTop > 25);
+    }
   };
 
   window.addEventListener('scroll', updateProgress, { passive: true });
@@ -319,14 +328,18 @@ function initScrollObserver() {
   });
 }
 
-// 5. Light / Dark Theme Toggle
+// 5. Light / Dark Theme Toggle (Expanding Circular Origin Ripple)
+const MOON_SVG = `<svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+const SUN_SVG = `<svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+
 function initThemeToggle() {
   const toggleBtn = document.getElementById('theme-toggle');
 
   const updateIcon = (theme) => {
     if (toggleBtn) {
-      const icon = toggleBtn.querySelector('.theme-icon');
-      if (icon) icon.textContent = theme === 'light' ? '☾' : '☼';
+      toggleBtn.innerHTML = theme === 'light' ? MOON_SVG : SUN_SVG;
+      toggleBtn.setAttribute('title', theme === 'light' ? 'Switch to Dark theme' : 'Switch to Light theme');
+      toggleBtn.setAttribute('aria-label', theme === 'light' ? 'Switch to Dark theme' : 'Switch to Light theme');
     }
   };
 
@@ -342,23 +355,56 @@ function initThemeToggle() {
     }
   };
 
+  // Initial load theme setup
   const savedTheme = localStorage.getItem('portfolio-theme');
   applyTheme(savedTheme || 'dark');
 
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isCurrentlyLight = document.documentElement.getAttribute('data-theme') === 'light';
-      applyTheme(isCurrentlyLight ? 'dark' : 'light');
+      const targetTheme = isCurrentlyLight ? 'dark' : 'light';
+
       playHapticSound('switch');
+
+      if (!document.startViewTransition || prefersReducedMotion) {
+        applyTheme(targetTheme);
+        return;
+      }
+
+      // Calculate origin coordinates for expanding circular wave
+      const rect = toggleBtn.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const right = window.innerWidth - x;
+      const bottom = window.innerHeight - y;
+      const maxRadius = Math.hypot(
+        Math.max(x, right),
+        Math.max(y, bottom)
+      );
+
+      // Overshoot radius by 35% so the circle sweeps cleanly past the bottom corners without decelerating into them
+      const safeRadius = maxRadius * 1.35;
+
+      // Pass coordinates to GPU-accelerated CSS @keyframes
+      document.documentElement.style.setProperty('--ripple-x', `${x.toFixed(1)}px`);
+      document.documentElement.style.setProperty('--ripple-y', `${y.toFixed(1)}px`);
+      document.documentElement.style.setProperty('--ripple-radius', `${safeRadius.toFixed(1)}px`);
+
+      document.startViewTransition(() => {
+        applyTheme(targetTheme);
+      });
     });
   }
 }
 
-// 6. Text Scramble Animation
+// 6. Polished High-Precision Text Scramble / Decrypt Engine
 class TextScramble {
   constructor(el) {
     this.el = el;
-    this.chars = '!<>-_\\/[]{}—=+*^?#________';
+    this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#@*&!~';
+    this.isAnimating = false;
+    this.frameRequest = null;
     this.update = this.update.bind(this);
   }
   
@@ -369,21 +415,34 @@ class TextScramble {
       return Promise.resolve();
     }
 
-    const oldText = this.el.innerText;
-    const length = Math.max(oldText.length, newText.length);
+    if (this.frameRequest) {
+      cancelAnimationFrame(this.frameRequest);
+    }
+
+    const targetText = String(newText);
+    const length = targetText.length;
     const promise = new Promise((resolve) => (this.resolve = resolve));
     this.queue = [];
     
     for (let i = 0; i < length; i++) {
-      const from = oldText[i] || '';
-      const to = newText[i] || '';
-      const start = Math.floor(Math.random() * 16);
-      const end = start + Math.floor(Math.random() * 16);
-      this.queue.push({ from, to, start, end });
+      const targetChar = targetText[i];
+      if (targetChar === ' ') {
+        this.queue.push({ targetChar: ' ', start: 0, end: 0, isSpace: true, char: ' ' });
+        continue;
+      }
+      const start = Math.floor(i * 1.6);
+      const end = start + 7 + Math.floor(Math.random() * 5);
+      this.queue.push({
+        targetChar,
+        start,
+        end,
+        isSpace: false,
+        char: ''
+      });
     }
     
-    cancelAnimationFrame(this.frameRequest);
     this.frame = 0;
+    this.isAnimating = true;
     this.update();
     return promise;
   }
@@ -391,23 +450,33 @@ class TextScramble {
   update() {
     let output = '';
     let complete = 0;
+
     for (let i = 0, n = this.queue.length; i < n; i++) {
-      let { from, to, start, end, char } = this.queue[i];
-      if (this.frame >= end) {
+      const item = this.queue[i];
+
+      if (item.isSpace) {
         complete++;
-        output += to;
-      } else if (this.frame >= start) {
-        if (!char || Math.random() < 0.25) {
-          char = this.chars[Math.floor(Math.random() * this.chars.length)];
-          this.queue[i].char = char;
+        output += '&nbsp;';
+        continue;
+      }
+
+      if (this.frame >= item.end) {
+        complete++;
+        output += `<span class="scramble-glyph is-resolved">${item.targetChar}</span>`;
+      } else if (this.frame >= item.start) {
+        if (!item.char || Math.random() < 0.38) {
+          item.char = this.chars[Math.floor(Math.random() * this.chars.length)];
         }
-        output += `<span style="opacity: 0.4;">${char}</span>`;
+        output += `<span class="scramble-glyph is-glitching">${item.char}</span>`;
       } else {
-        output += from;
+        output += `<span class="scramble-glyph is-glitching">${item.targetChar}</span>`;
       }
     }
+
     this.el.innerHTML = output;
+
     if (complete === this.queue.length) {
+      this.isAnimating = false;
       this.resolve();
     } else {
       this.frameRequest = requestAnimationFrame(this.update);
@@ -416,16 +485,34 @@ class TextScramble {
   }
 }
 
+let triggerHeroScramble = null;
+
 function initScrambleEffects() {
-  const targets = document.querySelectorAll('.scramble-target');
-  targets.forEach((target) => {
-    const originalText = target.dataset.text || target.textContent;
-    const fx = new TextScramble(target);
-    target.addEventListener('mouseenter', () => {
-      fx.setText(originalText);
-      playHapticSound('tick');
+  const heroHeading = document.getElementById('hero-heading');
+  const lines = heroHeading ? heroHeading.querySelectorAll('.scramble-line') : [];
+  
+  if (!lines.length) return;
+
+  const scramblers = Array.from(lines).map(line => ({
+    el: line,
+    text: line.getAttribute('data-text') || line.textContent.trim(),
+    fx: new TextScramble(line)
+  }));
+
+  triggerHeroScramble = (withSound = true) => {
+    if (scramblers.some(s => s.fx.isAnimating)) return;
+    if (withSound) playHapticSound('tick');
+
+    scramblers.forEach((s, idx) => {
+      setTimeout(() => {
+        s.fx.setText(s.text);
+      }, idx * 90);
     });
-  });
+  };
+
+  if (heroHeading) {
+    heroHeading.addEventListener('mouseenter', () => triggerHeroScramble(true));
+  }
 }
 
 // 7. Spotlight Proximity Mouse Tracking (RAF Throttled for 60fps/120fps sync)
@@ -680,6 +767,9 @@ function initStudioPreloader() {
   if (prefersReducedMotion || sessionStorage.getItem('mrtn_preloader_seen')) {
     preloader.style.display = 'none';
     document.body.classList.add('page-ready');
+    setTimeout(() => {
+      if (typeof triggerHeroScramble === 'function') triggerHeroScramble(false);
+    }, 180);
     return;
   }
 
@@ -727,13 +817,9 @@ function initStudioPreloader() {
         document.body.classList.add('page-ready');
         sessionStorage.setItem('mrtn_preloader_seen', 'true');
 
-        // Trigger hero text scramble as hero floats into view
         setTimeout(() => {
-          const heroTargets = document.querySelectorAll('.hero-name .scramble-target');
-          heroTargets.forEach(target => {
-            target.dispatchEvent(new Event('mouseenter'));
-          });
-        }, 180);
+          if (typeof triggerHeroScramble === 'function') triggerHeroScramble(false);
+        }, 220);
 
         setTimeout(() => {
           preloader.remove();
