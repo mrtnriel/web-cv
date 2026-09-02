@@ -173,47 +173,453 @@ function initCustomCursor() {
   });
 }
 
-// 2. Click Particles (Micro-bursts)
-function initClickParticles() {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) return;
+// 2. React Bits Interactive WebGL Particles Background
+let particlesBackgroundInstance = null;
 
-  const colors = [
-    'var(--particle-color-1)',
-    'var(--particle-color-2)',
-    'var(--particle-color-3)'
-  ];
+class ParticlesBackground {
+  constructor(containerId = 'particles-background', options = {}) {
+    this.container = document.getElementById(containerId);
+    if (!this.container) return;
 
-  window.addEventListener('click', (e) => {
-    // Avoid particle bursts on form inputs to prevent distractions
-    if (e.target.closest('input, textarea')) return;
-
-    const count = 7;
-    for (let i = 0; i < count; i++) {
-      const particle = document.createElement('span');
-      particle.className = 'click-particle';
-
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-      const distance = 24 + Math.random() * 32;
-      const dx = `${Math.cos(angle) * distance}px`;
-      const dy = `${Math.sin(angle) * distance}px`;
-      const size = `${3 + Math.random() * 3}px`;
-      const color = colors[Math.floor(Math.random() * colors.length)];
-
-      particle.style.width = size;
-      particle.style.height = size;
-      particle.style.backgroundColor = color;
-      particle.style.left = `${e.clientX}px`;
-      particle.style.top = `${e.clientY}px`;
-      particle.style.setProperty('--dx', dx);
-      particle.style.setProperty('--dy', dy);
-
-      document.body.appendChild(particle);
-
-      particle.addEventListener('animationend', () => {
-        particle.remove();
-      });
+    this.canvas = document.getElementById('particles-canvas');
+    if (!this.canvas) {
+      this.canvas = document.createElement('canvas');
+      this.canvas.id = 'particles-canvas';
+      this.container.appendChild(this.canvas);
     }
+
+    this.options = {
+      particleSpread: options.particleSpread || 10,
+      speed: options.speed !== undefined ? options.speed : 0.16,
+      moveParticlesOnHover: options.moveParticlesOnHover !== undefined ? options.moveParticlesOnHover : true,
+      particleHoverFactor: options.particleHoverFactor !== undefined ? options.particleHoverFactor : 1.0,
+      alphaParticles: options.alphaParticles !== undefined ? options.alphaParticles : true,
+      particleBaseSize: options.particleBaseSize || 90,
+      sizeRandomness: options.sizeRandomness !== undefined ? options.sizeRandomness : 1.0,
+      cameraDistance: options.cameraDistance || 20,
+      disableRotation: options.disableRotation || false,
+      ...options
+    };
+
+    this.gl = this.canvas.getContext('webgl', {
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance'
+    }) || this.canvas.getContext('experimental-webgl');
+
+    if (!this.gl) {
+      console.warn('WebGL not supported for particles background.');
+      return;
+    }
+
+    this.mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    this.time = 0;
+    this.animationId = null;
+    this.isTabVisible = true;
+
+    this.init();
+  }
+
+  getResponsiveParticleCount() {
+    const w = window.innerWidth;
+    if (w < 768) return 650;
+    if (w < 1200) return 1200;
+    return 1800;
+  }
+
+  getThemeColors() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      return [
+        [0.02, 0.02, 0.04], // Deep obsidian ink
+        [0.08, 0.08, 0.12], // Midnight charcoal
+        [0.15, 0.15, 0.20], // Slate ink
+        [0.25, 0.25, 0.32]  // Medium charcoal
+      ];
+    }
+    return [
+      [1.00, 1.00, 1.00],
+      [0.92, 0.92, 0.96],
+      [0.78, 0.78, 0.82],
+      [0.55, 0.55, 0.60]
+    ];
+  }
+
+  init() {
+    this.initShaders();
+    this.initBuffers();
+    this.bindEvents();
+    this.resize();
+    this.start();
+  }
+
+  initShaders() {
+    const gl = this.gl;
+
+    const vsSource = `
+      attribute vec3 aPosition;
+      attribute vec3 aColor;
+      attribute float aSize;
+      attribute float aAlpha;
+
+      uniform mat4 uProjection;
+      uniform mat4 uView;
+      uniform mat4 uModel;
+      uniform vec2 uMouse;
+      uniform float uHoverFactor;
+      uniform float uPixelRatio;
+      uniform float uBaseSize;
+      uniform float uTime;
+
+      varying vec3 vColor;
+      varying float vAlpha;
+
+      void main() {
+        vColor = aColor;
+        vAlpha = aAlpha;
+
+        vec4 worldPos = uModel * vec4(aPosition, 1.0);
+
+        // Organic individual floating drift in 3D space
+        worldPos.y += sin(uTime * 1.5 + aPosition.x * 0.7 + aPosition.z * 0.4) * 0.45;
+        worldPos.x += cos(uTime * 1.1 + aPosition.y * 0.6 + aPosition.z * 0.3) * 0.35;
+        worldPos.z += sin(uTime * 1.3 + aPosition.x * 0.5 + aPosition.y * 0.5) * 0.35;
+
+        // Subtle 3D cursor displacement
+        vec2 diff = worldPos.xy - uMouse;
+        float dist = length(diff);
+        if (dist < 8.0 && dist > 0.0) {
+          float force = (1.0 - dist / 8.0) * uHoverFactor;
+          worldPos.xy += normalize(diff) * force * 1.5;
+        }
+
+        vec4 viewPos = uView * worldPos;
+        gl_Position = uProjection * viewPos;
+
+        // Attenuate point size by camera depth
+        float pointSize = (aSize * uBaseSize * uPixelRatio) / max(1.0, -viewPos.z);
+        gl_PointSize = clamp(pointSize, 1.0, 150.0);
+      }
+    `;
+
+    const fsSource = `
+      precision mediump float;
+
+      varying vec3 vColor;
+      varying float vAlpha;
+      uniform int uAlphaParticles;
+
+      void main() {
+        vec2 coord = gl_PointCoord - vec2(0.5);
+        float dist = length(coord);
+        if (dist > 0.5) {
+          discard;
+        }
+
+        float edgeAlpha = smoothstep(0.5, 0.22, dist);
+        float finalAlpha = vAlpha * edgeAlpha;
+
+        if (uAlphaParticles == 1) {
+          finalAlpha *= (1.0 - dist * 1.05);
+        }
+
+        gl_FragColor = vec4(vColor, clamp(finalAlpha, 0.0, 1.0));
+      }
+    `;
+
+    const vs = this.compileShader(gl.VERTEX_SHADER, vsSource);
+    const fs = this.compileShader(gl.FRAGMENT_SHADER, fsSource);
+
+    this.program = gl.createProgram();
+    gl.attachShader(this.program, vs);
+    gl.attachShader(this.program, fs);
+    gl.linkProgram(this.program);
+
+    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+      console.error('Shader program link error:', gl.getProgramInfoLog(this.program));
+      return;
+    }
+
+    this.uniforms = {
+      uProjection: gl.getUniformLocation(this.program, 'uProjection'),
+      uView: gl.getUniformLocation(this.program, 'uView'),
+      uModel: gl.getUniformLocation(this.program, 'uModel'),
+      uMouse: gl.getUniformLocation(this.program, 'uMouse'),
+      uHoverFactor: gl.getUniformLocation(this.program, 'uHoverFactor'),
+      uPixelRatio: gl.getUniformLocation(this.program, 'uPixelRatio'),
+      uBaseSize: gl.getUniformLocation(this.program, 'uBaseSize'),
+      uAlphaParticles: gl.getUniformLocation(this.program, 'uAlphaParticles'),
+      uTime: gl.getUniformLocation(this.program, 'uTime')
+    };
+
+    this.attributes = {
+      aPosition: gl.getAttribLocation(this.program, 'aPosition'),
+      aColor: gl.getAttribLocation(this.program, 'aColor'),
+      aSize: gl.getAttribLocation(this.program, 'aSize'),
+      aAlpha: gl.getAttribLocation(this.program, 'aAlpha')
+    };
+  }
+
+  compileShader(type, source) {
+    const gl = this.gl;
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+    }
+    return shader;
+  }
+
+  initBuffers() {
+    const gl = this.gl;
+    this.particleCount = this.getResponsiveParticleCount();
+    const count = this.particleCount;
+    const spread = this.options.particleSpread;
+    const palette = this.getThemeColors();
+    const aspect = Math.max(1.15, this.aspect || (window.innerWidth / Math.max(1, window.innerHeight)));
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const alphas = new Float32Array(count);
+
+    for (let i = 0; i < count; i++) {
+      // 3D Ellipsoidal cloud scaled for widescreen viewport coverage
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = Math.cbrt(Math.random()) * spread;
+
+      positions[i * 3 + 0] = r * Math.sin(phi) * Math.cos(theta) * aspect * 1.35;
+      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 1.15;
+      positions[i * 3 + 2] = r * Math.cos(phi) * 1.0;
+
+      const color = palette[Math.floor(Math.random() * palette.length)];
+      colors[i * 3 + 0] = color[0];
+      colors[i * 3 + 1] = color[1];
+      colors[i * 3 + 2] = color[2];
+
+      sizes[i] = (1.0 - this.options.sizeRandomness) + Math.random() * this.options.sizeRandomness;
+      alphas[i] = isLight ? (0.45 + Math.random() * 0.52) : (0.28 + Math.random() * 0.70);
+    }
+
+    this.posBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+    this.colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.DYNAMIC_DRAW);
+
+    this.sizeBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.sizeBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, sizes, gl.STATIC_DRAW);
+
+    this.alphaBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.alphaBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, alphas, gl.DYNAMIC_DRAW);
+  }
+
+  updateColors() {
+    if (!this.gl || !this.colorBuffer) return;
+    const gl = this.gl;
+    const palette = this.getThemeColors();
+    const count = this.particleCount;
+    const colors = new Float32Array(count * 3);
+    const alphas = new Float32Array(count);
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+    for (let i = 0; i < count; i++) {
+      const color = palette[Math.floor(Math.random() * palette.length)];
+      colors[i * 3 + 0] = color[0];
+      colors[i * 3 + 1] = color[1];
+      colors[i * 3 + 2] = color[2];
+
+      alphas[i] = isLight ? (0.45 + Math.random() * 0.52) : (0.28 + Math.random() * 0.70);
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.DYNAMIC_DRAW);
+
+    if (this.alphaBuffer) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.alphaBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, alphas, gl.DYNAMIC_DRAW);
+    }
+  }
+
+  bindEvents() {
+    this.onResize = () => this.resize();
+    window.addEventListener('resize', this.onResize, { passive: true });
+
+    this.onPointerMove = (e) => {
+      if (!this.options.moveParticlesOnHover) return;
+      const aspect = Math.max(1.15, this.aspect || (window.innerWidth / Math.max(1, window.innerHeight)));
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = -(e.clientY / window.innerHeight) * 2 + 1;
+      this.mouse.targetX = x * (this.options.particleSpread * 0.9 * aspect);
+      this.mouse.targetY = y * (this.options.particleSpread * 0.9);
+    };
+    window.addEventListener('pointermove', this.onPointerMove, { passive: true });
+
+    this.onVisibilityChange = () => {
+      this.isTabVisible = !document.hidden;
+      if (this.isTabVisible && !this.animationId) {
+        this.start();
+      }
+    };
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+  }
+
+  resize() {
+    const gl = this.gl;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    this.canvas.width = Math.floor(width * dpr);
+    this.canvas.height = Math.floor(height * dpr);
+    this.canvas.style.width = `${width}px`;
+    this.canvas.style.height = `${height}px`;
+
+    gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    this.aspect = width / Math.max(1, height);
+    this.dpr = dpr;
+
+    const newCount = this.getResponsiveParticleCount();
+    if (newCount !== this.particleCount) {
+      this.initBuffers();
+    }
+  }
+
+  createPerspectiveMatrix(fovRad, aspect, near, far) {
+    const f = 1.0 / Math.tan(fovRad / 2);
+    const nf = 1 / (near - far);
+    return new Float32Array([
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (far + near) * nf, -1,
+      0, 0, (2 * far * near) * nf, 0
+    ]);
+  }
+
+  createLookAtMatrix(eyeZ) {
+    return new Float32Array([
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, -eyeZ, 1
+    ]);
+  }
+
+  createRotationMatrix(radX, radY) {
+    const cosX = Math.cos(radX), sinX = Math.sin(radX);
+    const cosY = Math.cos(radY), sinY = Math.sin(radY);
+
+    return new Float32Array([
+      cosY, sinX * sinY, -cosX * sinY, 0,
+      0, cosX, sinX, 0,
+      sinY, -sinX * cosY, cosX * cosY, 0,
+      0, 0, 0, 1
+    ]);
+  }
+
+  start() {
+    const gl = this.gl;
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.disable(gl.DEPTH_TEST);
+
+    let lastTime = performance.now();
+
+    const render = (now) => {
+      if (!this.isTabVisible) {
+        this.animationId = null;
+        return;
+      }
+
+      const delta = Math.min((now - lastTime) * 0.001, 0.1);
+      lastTime = now;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReducedMotion && !this.options.disableRotation) {
+        this.time += delta * this.options.speed;
+      }
+
+      this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.06;
+      this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.06;
+
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.useProgram(this.program);
+
+      const fov = (45 * Math.PI) / 180;
+      const projection = this.createPerspectiveMatrix(fov, this.aspect, 0.1, 100.0);
+      const view = this.createLookAtMatrix(this.options.cameraDistance);
+      const model = this.createRotationMatrix(this.time * 0.45, this.time * 0.75);
+
+      gl.uniformMatrix4fv(this.uniforms.uProjection, false, projection);
+      gl.uniformMatrix4fv(this.uniforms.uView, false, view);
+      gl.uniformMatrix4fv(this.uniforms.uModel, false, model);
+
+      gl.uniform2f(this.uniforms.uMouse, this.mouse.x, this.mouse.y);
+      gl.uniform1f(this.uniforms.uHoverFactor, this.options.particleHoverFactor);
+      gl.uniform1f(this.uniforms.uPixelRatio, this.dpr || 1.0);
+      gl.uniform1f(this.uniforms.uBaseSize, this.options.particleBaseSize);
+      gl.uniform1i(this.uniforms.uAlphaParticles, this.options.alphaParticles ? 1 : 0);
+      gl.uniform1f(this.uniforms.uTime, this.time);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
+      gl.enableVertexAttribArray(this.attributes.aPosition);
+      gl.vertexAttribPointer(this.attributes.aPosition, 3, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+      gl.enableVertexAttribArray(this.attributes.aColor);
+      gl.vertexAttribPointer(this.attributes.aColor, 3, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.sizeBuffer);
+      gl.enableVertexAttribArray(this.attributes.aSize);
+      gl.vertexAttribPointer(this.attributes.aSize, 1, gl.FLOAT, false, 0, 0);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.alphaBuffer);
+      gl.enableVertexAttribArray(this.attributes.aAlpha);
+      gl.vertexAttribPointer(this.attributes.aAlpha, 1, gl.FLOAT, false, 0, 0);
+
+      gl.drawArrays(gl.POINTS, 0, this.particleCount);
+
+      this.animationId = requestAnimationFrame(render);
+    };
+
+    this.animationId = requestAnimationFrame(render);
+  }
+
+  destroy() {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('pointermove', this.onPointerMove);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  }
+}
+
+function initParticlesBackground() {
+  particlesBackgroundInstance = new ParticlesBackground('particles-background', {
+    particleSpread: 24,
+    speed: 0.18,
+    moveParticlesOnHover: true,
+    particleHoverFactor: 1.25,
+    alphaParticles: true,
+    particleBaseSize: 110,
+    sizeRandomness: 1.0,
+    cameraDistance: 20,
+    disableRotation: false
   });
 }
 
@@ -293,6 +699,9 @@ function initScrollObserver() {
         entry.target.classList.add('is-revealed');
         const targets = entry.target.querySelectorAll('.reveal-item');
         targets.forEach(t => t.classList.add('is-revealed'));
+        if (entry.target.id === 'hero' && typeof triggerHeroTypewriter === 'function') {
+          triggerHeroTypewriter();
+        }
         observer.unobserve(entry.target);
       }
     });
@@ -352,6 +761,9 @@ function initThemeToggle() {
       document.documentElement.removeAttribute('data-theme');
       localStorage.setItem('portfolio-theme', 'dark');
       updateIcon('dark');
+    }
+    if (particlesBackgroundInstance) {
+      particlesBackgroundInstance.updateColors();
     }
   };
 
@@ -513,6 +925,110 @@ function initScrambleEffects() {
   if (heroHeading) {
     heroHeading.addEventListener('mouseenter', () => triggerHeroScramble(true));
   }
+}
+
+// 6b. Rotating Dynamic Role & Subtext Typewriter
+let triggerHeroTypewriter = null;
+
+function initTypewriterEffect() {
+  const el = document.getElementById('hero-subtext');
+  if (!el) return;
+
+  const textEl = el.querySelector('.typewriter-text');
+  const cursorEl = el.querySelector('.typewriter-cursor');
+  
+  let phrases = [];
+  try {
+    const raw = el.getAttribute('data-phrases');
+    if (raw) phrases = JSON.parse(raw);
+  } catch (e) {
+    phrases = [];
+  }
+
+  if (!phrases.length) {
+    const single = el.getAttribute('data-text') || (textEl ? textEl.textContent.trim() : '');
+    phrases = [single || "Designing solutions through code, systems, and data."];
+  }
+  
+  if (!textEl) return;
+
+  let phraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  let isRunning = false;
+  let timerId = null;
+
+  function tick() {
+    const currentPhrase = phrases[phraseIndex % phrases.length];
+    
+    if (isDeleting) {
+      charIndex--;
+      textEl.textContent = currentPhrase.substring(0, charIndex);
+      if (cursorEl) cursorEl.classList.add('is-typing');
+
+      if (charIndex === 0) {
+        isDeleting = false;
+        phraseIndex++;
+        if (cursorEl) cursorEl.classList.remove('is-typing');
+        // Pause briefly before typing the next phrase
+        timerId = setTimeout(tick, 450);
+        return;
+      }
+      // Backspace speed: quick & smooth (~26ms)
+      timerId = setTimeout(tick, 26);
+    } else {
+      charIndex++;
+      textEl.textContent = currentPhrase.substring(0, charIndex);
+      const char = currentPhrase[charIndex - 1];
+
+      if (charIndex === currentPhrase.length) {
+        isDeleting = true;
+        if (cursorEl) cursorEl.classList.remove('is-typing');
+        // Finished phrase: Hold and let the user read it comfortably (~2400ms)
+        timerId = setTimeout(tick, 2400);
+        return;
+      }
+
+      if (cursorEl) cursorEl.classList.add('is-typing');
+
+      // Natural typing cadence: ~55ms avg, with small pauses at punctuation
+      let delay = 48 + Math.random() * 26;
+      if (char === ',') delay = 180;
+      else if (char === '.' && charIndex < currentPhrase.length) delay = 240;
+
+      timerId = setTimeout(tick, delay);
+    }
+  }
+
+  triggerHeroTypewriter = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      textEl.textContent = phrases[0];
+      if (cursorEl) cursorEl.classList.remove('is-typing');
+      return;
+    }
+
+    if (isRunning) return;
+    isRunning = true;
+    textEl.textContent = '';
+    charIndex = 0;
+    isDeleting = false;
+
+    // Initial delay before first keystroke
+    timerId = setTimeout(tick, 400);
+  };
+
+  // Pause loop when tab is in background to conserve CPU
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (timerId) clearTimeout(timerId);
+      isRunning = false;
+    } else {
+      if (!isRunning && typeof triggerHeroTypewriter === 'function') {
+        triggerHeroTypewriter();
+      }
+    }
+  });
 }
 
 // 7. Spotlight Proximity Mouse Tracking (RAF Throttled for 60fps/120fps sync)
@@ -728,7 +1244,57 @@ function initProjectCarousel() {
   }, { passive: true });
 }
 
-// 11. Contact Form Submission
+// 11. Contact Cards Quick Copy Clipboard Handler
+function initContactCopy() {
+  const copyButtons = document.querySelectorAll('.contact-copy-btn');
+  copyButtons.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const textToCopy = btn.getAttribute('data-copy-target') || '';
+      if (!textToCopy) return;
+
+      const card = btn.closest('.contact-action-card');
+      const triggerSuccess = () => {
+        playHapticSound('success');
+        btn.classList.add('is-copied');
+        if (card) card.classList.add('is-card-active');
+        setTimeout(() => {
+          btn.classList.remove('is-copied');
+          if (card) card.classList.remove('is-card-active');
+        }, 1800);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          triggerSuccess();
+          return;
+        } catch (err) {
+          // Fallback below
+        }
+      }
+
+      // Fallback for non-HTTPS / clipboard permission failure
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        triggerSuccess();
+      } catch (err) {
+        console.error('Failed to copy', err);
+      }
+      document.body.removeChild(textarea);
+    });
+  });
+}
+
+// 12. Contact Form Submission
 function initContactForm() {
   const form = document.querySelector('.contact-form');
   const submitBtn = document.querySelector('.btn-submit');
@@ -819,6 +1385,7 @@ function initStudioPreloader() {
 
         setTimeout(() => {
           if (typeof triggerHeroScramble === 'function') triggerHeroScramble(false);
+          if (typeof triggerHeroTypewriter === 'function') triggerHeroTypewriter();
         }, 220);
 
         setTimeout(() => {
@@ -836,15 +1403,17 @@ document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
   initStudioPreloader();
   initCustomCursor();
-  initClickParticles();
+  initParticlesBackground();
   initDynamicIsland();
   initScrollProgressBar();
   initScrollObserver();
   initThemeToggle();
   initScrambleEffects();
+  initTypewriterEffect();
   initSpotlightTracking();
   initMagneticButtons();
   initProjectShowcase();
   initProjectCarousel();
+  initContactCopy();
   initContactForm();
-});
+});
