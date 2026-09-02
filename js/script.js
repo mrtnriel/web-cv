@@ -1376,7 +1376,7 @@ function initStudioPreloader() {
     if (progressRatio < 1) {
       requestAnimationFrame(updateStudio);
     } else {
-      // Reached 100% -> Hold for 260ms, then soft spatial dissolve & hero reveal
+      // Reached 100% -> Hold for 380ms, then soft spatial dissolve & hero reveal
       setTimeout(() => {
         playHapticSound('success');
         preloader.classList.add('is-loaded');
@@ -1386,12 +1386,12 @@ function initStudioPreloader() {
         setTimeout(() => {
           if (typeof triggerHeroScramble === 'function') triggerHeroScramble(false);
           if (typeof triggerHeroTypewriter === 'function') triggerHeroTypewriter();
-        }, 220);
+        }, 420);
 
         setTimeout(() => {
           preloader.remove();
-        }, 900);
-      }, 260);
+        }, 1450);
+      }, 380);
     }
   }
 
@@ -1401,9 +1401,9 @@ function initStudioPreloader() {
 // Master Initialization
 document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
+  initParticlesBackground();
   initStudioPreloader();
   initCustomCursor();
-  initParticlesBackground();
   initDynamicIsland();
   initScrollProgressBar();
   initScrollObserver();
