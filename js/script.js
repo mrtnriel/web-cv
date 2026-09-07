@@ -1115,8 +1115,9 @@ function initProjectShowcase() {
 
   const getScrollDistance = () => {
     const panel = track.querySelector('.project-panel');
-    if (!panel) return 600;
-    const gap = window.innerWidth <= 900 ? 32 : (window.innerWidth <= 1200 ? 48 : 128);
+    if (!panel) return track.clientWidth || 600;
+    const style = window.getComputedStyle(track);
+    const gap = parseFloat(style.columnGap || style.gap) || 0;
     return panel.offsetWidth + gap;
   };
 

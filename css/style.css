@@ -1300,20 +1300,18 @@ h4.masked-heading {
   display: flex; 
   overflow-x: auto; 
   scroll-snap-type: x mandatory; 
-  gap: 8rem; 
+  gap: 5rem; 
   padding-bottom: 2rem; 
   scrollbar-width: none; 
-  width: 100vw; 
-  margin-left: calc(-50vw + 50%); 
-  padding-left: calc(50vw - 550px);
-  padding-right: calc(50vw - 550px); 
+  width: 100%; 
 }
 
 .projects-track::-webkit-scrollbar { display: none; }
 
 .project-panel { 
-  scroll-snap-align: center; 
-  width: 1100px; 
+  scroll-snap-align: start; 
+  width: 100%; 
+  min-width: 100%; 
   flex-shrink: 0; 
   display: grid; 
   grid-template-columns: 1.4fr 1fr; 
@@ -2119,12 +2117,7 @@ h4.masked-heading {
 }
 
 @media (max-width: 1200px) {
-  .projects-track {
-    padding-left: calc(50vw - 450px);
-    padding-right: calc(50vw - 450px);
-  }
   .project-panel {
-    width: 900px;
     gap: 3rem;
   }
 }
@@ -2134,8 +2127,8 @@ h4.masked-heading {
   .snap-section { height: auto; min-height: 100dvh; padding: 5.5rem 1.5rem 3rem 1.5rem; }
   .immersive-grid, .split-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
   .image-column { max-width: 280px; margin: 0 auto; }
-  .projects-track { padding-left: 1.5rem; padding-right: 1.5rem; margin-left: -1.5rem; width: 100vw; gap: 2rem; }
-  .project-panel { width: 88vw; grid-template-columns: 1fr; gap: 1.5rem; padding: 1rem; }
+  .projects-track { padding-left: 0; padding-right: 0; margin-left: 0; width: 100%; gap: 3rem; }
+  .project-panel { width: 100%; min-width: 100%; grid-template-columns: 1fr; gap: 1.5rem; padding: 0.5rem 0; }
   .project-info { align-items: flex-start; text-align: left; }
   .contact-form-col { padding: 1.5rem; }
   .island-wrapper { padding: 0 0.5rem; }
@@ -2264,17 +2257,18 @@ h4.masked-heading {
   }
 
   .projects-track {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin-left: -1rem;
-    gap: 1.25rem;
-    scroll-padding: 0 1rem;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    gap: 2rem;
+    scroll-padding: 0;
     -webkit-overflow-scrolling: touch;
   }
 
   .project-panel {
-    width: calc(100vw - 2rem);
-    padding: 0.85rem;
+    width: 100%;
+    min-width: 100%;
+    padding: 0.5rem 0;
     gap: 1rem;
     border-radius: var(--radius-sm);
   }
