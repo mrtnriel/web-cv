@@ -141,7 +141,7 @@ function initCustomCursor() {
   }
   requestAnimationFrame(renderCursor);
 
-  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit';
+  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
@@ -216,6 +216,9 @@ class ParticlesBackground {
     this.time = 0;
     this.animationId = null;
     this.isTabVisible = true;
+    this.targetScrollY = window.scrollY || 0;
+    this.scrollY = this.targetScrollY;
+    this.scrollVelocity = 0;
 
     this.init();
   }
@@ -270,13 +273,14 @@ class ParticlesBackground {
       uniform float uPixelRatio;
       uniform float uBaseSize;
       uniform float uTime;
+      uniform float uScrollY;
+      uniform float uSpreadY;
 
       varying vec3 vColor;
       varying float vAlpha;
 
       void main() {
         vColor = aColor;
-        vAlpha = aAlpha;
 
         vec4 worldPos = uModel * vec4(aPosition, 1.0);
 
@@ -284,6 +288,13 @@ class ParticlesBackground {
         worldPos.y += sin(uTime * 1.5 + aPosition.x * 0.7 + aPosition.z * 0.4) * 0.45;
         worldPos.x += cos(uTime * 1.1 + aPosition.y * 0.6 + aPosition.z * 0.3) * 0.35;
         worldPos.z += sin(uTime * 1.3 + aPosition.x * 0.5 + aPosition.y * 0.5) * 0.35;
+
+        // Natural vertical scroll movement coupled to page progression with seamless continuous wrapping
+        float halfSpreadY = uSpreadY * 0.5;
+        float shiftedY = worldPos.y - uScrollY;
+        // Positive modulo wrapping to ensure rock-solid cross-platform GPU compatibility
+        float wrappedY = mod(mod(shiftedY + halfSpreadY, uSpreadY) + uSpreadY, uSpreadY) - halfSpreadY;
+        worldPos.y = wrappedY;
 
         // Subtle 3D cursor displacement
         vec2 diff = worldPos.xy - uMouse;
@@ -299,6 +310,11 @@ class ParticlesBackground {
         // Attenuate point size by camera depth
         float pointSize = (aSize * uBaseSize * uPixelRatio) / max(1.0, -viewPos.z);
         gl_PointSize = clamp(pointSize, 1.0, 150.0);
+
+        // Smooth boundary fade to ensure zero visible popping as particles seamlessly wrap
+        float edgeNorm = clamp(abs(wrappedY) / halfSpreadY, 0.0, 1.0);
+        float edgeAlpha = smoothstep(1.0, 0.78, edgeNorm);
+        vAlpha = aAlpha * edgeAlpha;
       }
     `;
 
@@ -349,7 +365,9 @@ class ParticlesBackground {
       uPixelRatio: gl.getUniformLocation(this.program, 'uPixelRatio'),
       uBaseSize: gl.getUniformLocation(this.program, 'uBaseSize'),
       uAlphaParticles: gl.getUniformLocation(this.program, 'uAlphaParticles'),
-      uTime: gl.getUniformLocation(this.program, 'uTime')
+      uTime: gl.getUniformLocation(this.program, 'uTime'),
+      uScrollY: gl.getUniformLocation(this.program, 'uScrollY'),
+      uSpreadY: gl.getUniformLocation(this.program, 'uSpreadY')
     };
 
     this.attributes = {
@@ -387,17 +405,17 @@ class ParticlesBackground {
     const sizes = new Float32Array(count);
     const alphas = new Float32Array(count);
 
-    for (let i = 0; i < count; i++) {
-      // 3D Ellipsoidal cloud scaled for widescreen viewport coverage
-      const u = Math.random();
-      const v = Math.random();
-      const theta = u * 2.0 * Math.PI;
-      const phi = Math.acos(2.0 * v - 1.0);
-      const r = Math.cbrt(Math.random()) * spread;
+    const spreadY = spread * 2.2;
+    this.spreadY = spreadY;
 
-      positions[i * 3 + 0] = r * Math.sin(phi) * Math.cos(theta) * aspect * 1.35;
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 1.15;
-      positions[i * 3 + 2] = r * Math.cos(phi) * 1.0;
+    for (let i = 0; i < count; i++) {
+      // 3D Spatial distribution: elliptical cylinder for widescreen viewport coverage with uniform vertical density
+      const angle = Math.random() * 2.0 * Math.PI;
+      const r = Math.sqrt(Math.random()) * spread;
+
+      positions[i * 3 + 0] = r * Math.cos(angle) * aspect * 1.35;
+      positions[i * 3 + 1] = (Math.random() * 2.0 - 1.0) * (spreadY * 0.5);
+      positions[i * 3 + 2] = r * Math.sin(angle) * 1.0;
 
       const color = palette[Math.floor(Math.random() * palette.length)];
       colors[i * 3 + 0] = color[0];
@@ -455,6 +473,11 @@ class ParticlesBackground {
   bindEvents() {
     this.onResize = () => this.resize();
     window.addEventListener('resize', this.onResize, { passive: true });
+
+    this.onScroll = () => {
+      this.targetScrollY = window.scrollY || 0;
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
 
     this.onPointerMove = (e) => {
       if (!this.options.moveParticlesOnHover) return;
@@ -550,6 +573,17 @@ class ParticlesBackground {
         this.time += delta * this.options.speed;
       }
 
+      // Smooth scroll interpolation with spring damping for natural inertia
+      const prevScroll = this.scrollY;
+      const scrollEase = prefersReducedMotion ? 1.0 : 0.08;
+      this.scrollY += (this.targetScrollY - this.scrollY) * scrollEase;
+      this.scrollVelocity = (this.scrollY - prevScroll) / Math.max(0.001, delta * 60);
+
+      // Convert page scroll pixels to natural 3D world units
+      const viewHeight = 2.0 * this.options.cameraDistance * Math.tan((45 * Math.PI / 180) / 2);
+      const parallaxFactor = 0.55;
+      const scrollUnits = (this.scrollY / Math.max(1, window.innerHeight)) * (viewHeight * parallaxFactor);
+
       this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.06;
       this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.06;
 
@@ -561,7 +595,12 @@ class ParticlesBackground {
       const fov = (45 * Math.PI) / 180;
       const projection = this.createPerspectiveMatrix(fov, this.aspect, 0.1, 100.0);
       const view = this.createLookAtMatrix(this.options.cameraDistance);
-      const model = this.createRotationMatrix(this.time * 0.45, this.time * 0.75);
+
+      // 3D Rotation: gentle organic breathing sway with subtle velocity pitch tilt + continuous celestial yaw
+      const tiltX = prefersReducedMotion ? 0 : Math.max(-0.10, Math.min(0.10, this.scrollVelocity * 0.0003));
+      const radX = (Math.sin(this.time * 0.35) * 0.06) + tiltX;
+      const radY = this.time * 0.35;
+      const model = this.createRotationMatrix(radX, radY);
 
       gl.uniformMatrix4fv(this.uniforms.uProjection, false, projection);
       gl.uniformMatrix4fv(this.uniforms.uView, false, view);
@@ -573,6 +612,8 @@ class ParticlesBackground {
       gl.uniform1f(this.uniforms.uBaseSize, this.options.particleBaseSize);
       gl.uniform1i(this.uniforms.uAlphaParticles, this.options.alphaParticles ? 1 : 0);
       gl.uniform1f(this.uniforms.uTime, this.time);
+      gl.uniform1f(this.uniforms.uScrollY, scrollUnits);
+      gl.uniform1f(this.uniforms.uSpreadY, this.spreadY || (this.options.particleSpread * 2.2));
 
       gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
       gl.enableVertexAttribArray(this.attributes.aPosition);
@@ -604,6 +645,7 @@ class ParticlesBackground {
       this.animationId = null;
     }
     window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('scroll', this.onScroll);
     window.removeEventListener('pointermove', this.onPointerMove);
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
   }
@@ -1033,7 +1075,7 @@ function initTypewriterEffect() {
 
 // 7. Spotlight Proximity Mouse Tracking (RAF Throttled for 60fps/120fps sync)
 function initSpotlightTracking() {
-  const elements = document.querySelectorAll('.spotlight-card, .skill-pills span');
+  const elements = document.querySelectorAll('.spotlight-card, .skill-pills span, .tech-pill, .tech-capsule');
   elements.forEach(el => {
     let ticking = false;
     el.addEventListener('mousemove', (e) => {

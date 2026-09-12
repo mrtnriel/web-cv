@@ -1542,7 +1542,7 @@ h4.masked-heading {
 .project-info h3 { 
   font-size: clamp(2rem, 3vw, 2.5rem); 
   line-height: 1.15;
-  margin-bottom: 0; 
+  margin-bottom: 0.85rem; 
   color: var(--ink); 
   font-weight: 600; 
   letter-spacing: -0.02em; 
@@ -1568,9 +1568,10 @@ h4.masked-heading {
   text-align-last: center;
 }
 
-/* --- 03 Expertise --- */
+/* --- 03 Education & 04 Tech Stack --- */
 .split-grid { gap: 6rem; align-items: stretch; }
-.edu-column, .skills-column { display: flex; flex-direction: column; gap: 2.5rem; }
+.edu-grid, .tech-grid { align-items: center; }
+.edu-column, .tech-column, .skills-column { display: flex; flex-direction: column; gap: 2.5rem; }
 
 .column-header { 
   font-family: var(--font-mono); 
@@ -1620,46 +1621,61 @@ h4.masked-heading {
 .timeline-content > .mask-wrap:nth-child(3) { margin-bottom: 1.25rem; }
 .timeline-content > .mask-wrap:last-child { margin-bottom: 0; }
 
-.skills-clusters { display: flex; flex-direction: column; gap: 2rem; }
-.skill-category { 
+/* --- 04 Tech Stack --- */
+.tech-grid { 
+  align-items: center; 
+}
+
+.tech-column { 
   display: flex; 
   flex-direction: column; 
-  gap: 0.85rem; 
-  opacity: 0;
-  transform: translate3d(0, 14px, 0);
-  filter: blur(4px);
-  will-change: opacity, transform, filter;
-  transition: 
-    opacity var(--duration-reveal) var(--ease-out-expo),
-    transform var(--duration-reveal) var(--ease-out-expo),
-    filter var(--duration-reveal) var(--ease-out-expo);
+  width: 100%; 
+  padding-left: 2rem;
 }
 
-.is-revealed .skill-category,
-.snap-section.is-revealed .skill-category {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  filter: blur(0);
+.tech-clusters { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1.75rem; 
 }
 
-.skills-clusters .skill-category:nth-child(1) { transition-delay: 120ms; }
-.skills-clusters .skill-category:nth-child(2) { transition-delay: 200ms; }
-.skills-clusters .skill-category:nth-child(3) { transition-delay: 280ms; }
-.skills-clusters .skill-category:nth-child(4) { transition-delay: 360ms; }
+.tech-group { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.6rem; 
+}
 
-.skill-label { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; }
-.skill-pills { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+.tech-group-label { 
+  font-family: var(--font-mono); 
+  font-size: 11px; 
+  color: var(--gray-500); 
+  text-transform: uppercase; 
+  letter-spacing: 0.08em; 
+  font-weight: 500; 
+}
 
-.skill-pills span {
+.tech-pills, .tech-capsules { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 0.65rem; 
+}
+
+.tech-pill, .tech-capsule {
   position: relative;
-  overflow: hidden;
-  font-size: 0.95rem;
-  padding: 0.4rem 0.9rem;
-  border-radius: var(--radius-sm); 
-  background-color: var(--gray-50); 
-  border: 1px solid var(--gray-300); 
-  color: var(--ink); 
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 450;
+  color: var(--ink);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-300);
   cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
   will-change: transform, border-color, box-shadow;
   transition: 
     transform var(--duration-fast) var(--ease-spring),
@@ -1668,14 +1684,14 @@ h4.masked-heading {
     box-shadow var(--duration-fast) var(--ease-out);
 }
 
-.skill-pills span::before {
+.tech-pill::before, .tech-capsule::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background: radial-gradient(
     75px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    color-mix(in srgb, var(--ink) 20%, transparent),
+    color-mix(in srgb, var(--ink) 14%, transparent),
     transparent 70%
   );
   opacity: 0;
@@ -1683,21 +1699,22 @@ h4.masked-heading {
   transition: opacity 0.25s ease;
 }
 
-.skill-pills span:hover::before {
+.tech-pill:hover::before, .tech-capsule:hover::before {
   opacity: 1;
 }
 
-.skill-pills span:hover {
+.tech-pill:hover, .tech-capsule:hover {
   border-color: var(--ink);
   transform: translate3d(0, -2px, 0);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--ink) 10%, transparent);
 }
 
-.skill-pills span:active {
+.tech-pill:active, .tech-capsule:active {
   transform: translate3d(0, 0, 0) scale(0.96);
+  transition-duration: var(--duration-instant);
 }
 
-/* --- 04 Contact --- */
+/* --- 05 Contact --- */
 .contact-layout { 
   display: grid; 
   grid-template-columns: 1fr 1fr; 
@@ -2125,7 +2142,8 @@ h4.masked-heading {
 @media (max-width: 900px) {
   html { scroll-snap-type: y proximity; }
   .snap-section { height: auto; min-height: 100dvh; padding: 5.5rem 1.5rem 3rem 1.5rem; }
-  .immersive-grid, .split-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .immersive-grid, .split-grid, .edu-grid, .tech-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .tech-column { padding-left: 0; }
   .image-column { max-width: 280px; margin: 0 auto; }
   .projects-track { padding-left: 0; padding-right: 0; margin-left: 0; width: 100%; gap: 3rem; }
   .project-panel { width: 100%; min-width: 100%; grid-template-columns: 1fr; gap: 1.5rem; padding: 0.5rem 0; }
@@ -2184,6 +2202,29 @@ h4.masked-heading {
   .topbar-icon {
     width: 13px;
     height: 13px;
+  }
+
+  @media (max-width: 440px) {
+    .dynamic-island {
+      padding: 0.22rem 0.25rem;
+      gap: 0.1rem;
+    }
+    .island-items {
+      gap: 0.04rem;
+    }
+    .island-link {
+      padding: 0.22rem 0.32rem;
+      font-size: 9px;
+      letter-spacing: 0;
+    }
+    .island-theme-btn {
+      width: 24px;
+      height: 24px;
+    }
+    .topbar-icon {
+      width: 12px;
+      height: 12px;
+    }
   }
 
   /* Hero Mobile Typography & Buttons */
@@ -2283,6 +2324,7 @@ h4.masked-heading {
 
   .project-info h3 {
     font-size: 1.35rem;
+    margin-bottom: 0.65rem;
   }
 
   .project-info p {
@@ -2308,8 +2350,8 @@ h4.masked-heading {
     padding: 0.75rem 1.25rem;
   }
 
-  /* Expertise Mobile Layout */
-  .edu-column, .skills-column {
+  /* Education & Tech Stack Mobile Layout */
+  .edu-column {
     gap: 1.25rem;
   }
 
@@ -2326,9 +2368,27 @@ h4.masked-heading {
     font-size: 0.92rem;
   }
 
-  .skill-pills span {
-    font-size: 10.5px;
-    padding: 0.35rem 0.65rem;
+  /* Tech Stack Mobile Layout */
+  .tech-clusters {
+    gap: 1.25rem;
+  }
+
+  .tech-group {
+    gap: 0.5rem;
+  }
+
+  .tech-group-label {
+    font-size: 10px;
+  }
+
+  .tech-pills, .tech-capsules {
+    gap: 0.5rem;
+  }
+
+  .tech-pill, .tech-capsule {
+    font-size: 0.85rem;
+    padding: 0.32rem 0.72rem;
+    border-radius: var(--radius-sm);
   }
 
   /* Contact Mobile Layout & Form Zoom Protection */
