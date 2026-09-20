@@ -84,7 +84,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   font-size: 16px;
   background-color: var(--bg);
   color: var(--ink);
@@ -367,8 +367,8 @@ a {
   gap: 0.35rem; 
   padding: 0.32rem 0.45rem; 
   background-color: var(--island-bg); 
-  backdrop-filter: blur(24px) saturate(180%); 
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(160%); 
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
   border: 1px solid var(--island-border); 
   border-radius: var(--radius-pill); 
   box-shadow: var(--island-shadow);
@@ -439,7 +439,6 @@ body.page-ready .dynamic-island {
   text-decoration: none;
   padding: 0.36rem 0.78rem;
   border-radius: var(--radius-pill);
-  will-change: color, transform;
   transition: 
     color var(--duration-fast) var(--ease-out), 
     transform var(--duration-instant) var(--ease-out);
@@ -481,7 +480,6 @@ body.page-ready .dynamic-island {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  will-change: transform, color, background-color, border-color;
   transition: 
     color var(--duration-fast) var(--ease-out), 
     background-color var(--duration-fast) var(--ease-out), 
@@ -556,7 +554,6 @@ body.page-ready .dynamic-island {
   transition: 
     opacity 1.35s cubic-bezier(0.16, 1, 0.3, 1),
     visibility 1.35s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, visibility;
 }
 
 body.page-ready .snap-container,
@@ -666,7 +663,6 @@ p {
 /* --- Buttons & Magnetic Elements --- */
 .magnetic-btn {
   display: inline-flex;
-  will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
 }
@@ -706,7 +702,7 @@ p {
 }
 
 .project-action-wrap {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -739,7 +735,6 @@ p {
   line-height: 1;
   position: relative;
   z-index: 5;
-  will-change: transform, background-color, border-color, box-shadow;
   transition: 
     transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
@@ -799,7 +794,6 @@ p {
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-md);
   overflow: hidden;
-  will-change: transform, box-shadow, border-color;
   transition: 
     border-color var(--duration-normal) var(--ease-out), 
     box-shadow var(--duration-normal) var(--ease-out), 
@@ -828,7 +822,6 @@ p {
   opacity: 0;
   pointer-events: none;
   z-index: 1;
-  will-change: opacity, background;
   transition: opacity 0.3s ease;
 }
 
@@ -887,7 +880,6 @@ p {
   display: block;
   white-space: nowrap;
   position: relative;
-  will-change: transform;
 }
 
 .scramble-glyph {
@@ -957,39 +949,32 @@ p {
 .hero-cta-group {
   opacity: 0;
   transform: translate3d(0, 22px, 0);
-  filter: blur(6px);
-  will-change: opacity, transform, filter;
   transition: 
     opacity 1.35s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1.45s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 1.35s ease;
+    transform 1.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.page-ready .hero-role {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  filter: blur(0);
   transition-delay: 0.18s;
 }
 
 body.page-ready .hero-name {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  filter: blur(0);
   transition-delay: 0.36s;
 }
 
 body.page-ready .hero-subtext {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  filter: blur(0);
   transition-delay: 0.54s;
 }
 
 body.page-ready .hero-cta-group {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  filter: blur(0);
   transition-delay: 0.72s;
 }
 
@@ -1021,7 +1006,6 @@ body.page-ready .hero-cta-group {
   object-position: center center;
   filter: grayscale(100%); 
   border-radius: inherit; 
-  will-change: transform, filter;
   transition: 
     transform var(--duration-slow) var(--ease-out-expo), 
     filter var(--duration-normal) var(--ease-out);
@@ -1106,19 +1090,15 @@ h4.masked-heading {
   display: block;
   transform: translate3d(0, 115%, 0);
   opacity: 0;
-  filter: blur(6px);
-  will-change: transform, opacity, filter;
   transition: 
     transform 0.82s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.65s ease-out,
-    filter 0.75s var(--ease-out-expo);
+    opacity 0.65s ease-out;
 }
 
 .is-revealed .mask-inner,
 .snap-section.is-revealed .mask-inner {
   transform: translate3d(0, 0%, 0);
   opacity: 1;
-  filter: blur(0);
 }
 
 /* Staggered Line Cascade */
@@ -1175,7 +1155,6 @@ h4.masked-heading {
   transition: 
     transform 0.82s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.65s ease-out,
-    filter 0.75s var(--ease-out-expo),
     background-position 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
 }
 
@@ -1250,7 +1229,7 @@ h4.masked-heading {
 /* --- 02 Projects --- */
 .no-bottom-padding { 
   justify-content: flex-start; 
-  padding-top: 10vh; 
+  padding-top: clamp(2.5rem, 8vh, 5rem); 
 }
 
 .project-nav-controls {
@@ -1317,9 +1296,16 @@ h4.masked-heading {
   grid-template-columns: 1.4fr 1fr; 
   gap: 5rem; 
   align-items: center; 
+  min-height: 320px;
 }
 
-.project-panel.alone { grid-template-columns: 1fr; }
+.project-panel.alone { 
+  grid-template-columns: 1fr; 
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* The Frame & Aspect Ratio - Perfectly fit to 1910x968 captures */
 .project-media { 
@@ -1358,7 +1344,8 @@ h4.masked-heading {
   text-decoration: none;
 }
 
-.project-panel:hover .project-media-link img {
+.project-panel:hover .project-media-link img,
+.project-panel:hover .project-media > img {
   transform: scale(1.025);
 }
 
@@ -1454,7 +1441,6 @@ h4.masked-heading {
   font-family: var(--font-mono);
   font-size: 12px;
   cursor: pointer;
-  will-change: transform;
   transition: 
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
@@ -1494,7 +1480,6 @@ h4.masked-heading {
   background-color: color-mix(in srgb, var(--ink) 35%, transparent);
   cursor: pointer;
   padding: 0;
-  will-change: width, transform, background-color;
   transition: 
     background-color var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-spring),
@@ -1518,10 +1503,11 @@ h4.masked-heading {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  min-width: 0;
 }
 
 .project-info > .mask-wrap {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
   width: 100%;
 }
 
@@ -1550,7 +1536,7 @@ h4.masked-heading {
 
 .project-info p { 
   font-size: 1.05rem; 
-  line-height: 1.65; 
+  line-height: 1.6; 
   color: var(--gray-400); 
   text-align: left;
   margin-bottom: 0; 
@@ -1560,12 +1546,17 @@ h4.masked-heading {
   max-width: 650px; 
   margin: 0 auto; 
   text-align: center; 
-  align-items: center;
+  align-items: center; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .alone-info p {
   text-align: center;
   text-align-last: center;
+  max-width: 580px;
+  margin: 0 auto;
 }
 
 /* --- 03 Education & 04 Tech Stack --- */
@@ -1598,7 +1589,6 @@ h4.masked-heading {
   height: 7px;
   border-radius: 50%;
   background-color: var(--gray-400);
-  will-change: transform, background-color, box-shadow;
   transition: 
     transform var(--duration-fast) var(--ease-spring), 
     background-color var(--duration-fast) var(--ease-out),
@@ -1676,7 +1666,6 @@ h4.masked-heading {
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
-  will-change: transform, border-color, box-shadow;
   transition: 
     transform var(--duration-fast) var(--ease-spring),
     border-color var(--duration-fast) var(--ease-out),
@@ -1787,7 +1776,6 @@ h4.masked-heading {
     background-color var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-spring),
     box-shadow var(--duration-fast) var(--ease-out);
-  will-change: transform, border-color, box-shadow;
 }
 
 .contact-action-card:hover,
@@ -2048,7 +2036,6 @@ h4.masked-heading {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  will-change: transform, box-shadow, background-color;
   transition: 
     transform var(--duration-fast) var(--ease-out), 
     box-shadow var(--duration-fast) var(--ease-out),
@@ -2097,18 +2084,14 @@ h4.masked-heading {
 .reveal-item { 
   opacity: 0; 
   transform: translate3d(0, 16px, 0); 
-  filter: blur(4px);
   transition: 
     opacity var(--duration-reveal) var(--ease-out-expo), 
-    transform var(--duration-reveal) var(--ease-out-expo),
-    filter var(--duration-reveal) var(--ease-out-expo); 
-  will-change: opacity, transform, filter;
+    transform var(--duration-reveal) var(--ease-out-expo); 
 }
 
 .reveal-item.is-revealed { 
   opacity: 1; 
   transform: translate3d(0, 0, 0); 
-  filter: blur(0);
 }
 
 .reveal-group .reveal-item:nth-child(1) { transition-delay: 0ms; }
@@ -2134,6 +2117,9 @@ h4.masked-heading {
 }
 
 @media (max-width: 1200px) {
+  .projects-track {
+    gap: 3.5rem;
+  }
   .project-panel {
     gap: 3rem;
   }
@@ -2146,7 +2132,8 @@ h4.masked-heading {
   .tech-column { padding-left: 0; }
   .image-column { max-width: 280px; margin: 0 auto; }
   .projects-track { padding-left: 0; padding-right: 0; margin-left: 0; width: 100%; gap: 3rem; }
-  .project-panel { width: 100%; min-width: 100%; grid-template-columns: 1fr; gap: 1.5rem; padding: 0.5rem 0; }
+  .project-panel { width: 100%; min-width: 100%; grid-template-columns: 1fr; gap: 1.5rem; padding: 0.5rem 0; min-height: auto; }
+  .project-panel.alone { min-height: auto; display: block; }
   .project-info { align-items: flex-start; text-align: left; }
   .contact-form-col { padding: 1.5rem; }
   .island-wrapper { padding: 0 0.5rem; }
@@ -2310,8 +2297,14 @@ h4.masked-heading {
     width: 100%;
     min-width: 100%;
     padding: 0.5rem 0;
-    gap: 1rem;
+    gap: 1.25rem;
+    min-height: auto;
     border-radius: var(--radius-sm);
+  }
+
+  .project-panel.alone {
+    min-height: auto;
+    display: block;
   }
 
   .project-media {

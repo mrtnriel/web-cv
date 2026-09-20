@@ -105,7 +105,7 @@ function playHapticSound(type = 'click') {
   }
 }
 
-// 1. Custom Cursor (Desktop Only with Spring Lerp)
+// 1. Custom Cursor (Desktop Only with Spring Lerp & Idle Sleep)
 function initCustomCursor() {
   const dot = document.querySelector('.custom-cursor-dot');
   const ring = document.querySelector('.custom-cursor-ring');
@@ -117,6 +117,20 @@ function initCustomCursor() {
   let mouseX = -100, mouseY = -100;
   let ringX = -100, ringY = -100;
   let isVisible = false;
+  let isLoopRunning = false;
+
+  function renderCursor() {
+    ringX += (mouseX - ringX) * 0.22;
+    ringY += (mouseY - ringY) * 0.22;
+    ring.style.transform = `translate3d(${ringX.toFixed(1)}px, ${ringY.toFixed(1)}px, 0) translate(-50%, -50%)`;
+    dot.style.transform = `translate3d(${mouseX.toFixed(1)}px, ${mouseY.toFixed(1)}px, 0) translate(-50%, -50%)`;
+
+    if (Math.abs(mouseX - ringX) > 0.15 || Math.abs(mouseY - ringY) > 0.15) {
+      requestAnimationFrame(renderCursor);
+    } else {
+      isLoopRunning = false;
+    }
+  }
 
   window.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
@@ -130,16 +144,11 @@ function initCustomCursor() {
       ringY = mouseY;
     }
 
-    dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
-  });
-
-  function renderCursor() {
-    ringX += (mouseX - ringX) * 0.22;
-    ringY += (mouseY - ringY) * 0.22;
-    ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-    requestAnimationFrame(renderCursor);
-  }
-  requestAnimationFrame(renderCursor);
+    if (!isLoopRunning) {
+      isLoopRunning = true;
+      requestAnimationFrame(renderCursor);
+    }
+  }, { passive: true });
 
   const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit';
   
@@ -225,9 +234,9 @@ class ParticlesBackground {
 
   getResponsiveParticleCount() {
     const w = window.innerWidth;
-    if (w < 768) return 650;
-    if (w < 1200) return 1200;
-    return 1800;
+    if (w < 768) return 300;
+    if (w < 1200) return 550;
+    return 850;
   }
 
   getThemeColors() {
@@ -309,7 +318,7 @@ class ParticlesBackground {
 
         // Attenuate point size by camera depth
         float pointSize = (aSize * uBaseSize * uPixelRatio) / max(1.0, -viewPos.z);
-        gl_PointSize = clamp(pointSize, 1.0, 150.0);
+        gl_PointSize = clamp(pointSize, 2.0, 64.0);
 
         // Smooth boundary fade to ensure zero visible popping as particles seamlessly wrap
         float edgeNorm = clamp(abs(wrappedY) / halfSpreadY, 0.0, 1.0);
@@ -327,16 +336,17 @@ class ParticlesBackground {
 
       void main() {
         vec2 coord = gl_PointCoord - vec2(0.5);
-        float dist = length(coord);
-        if (dist > 0.5) {
+        float distSq = dot(coord, coord);
+        if (distSq > 0.25) {
           discard;
         }
 
-        float edgeAlpha = smoothstep(0.5, 0.22, dist);
+        float dist = sqrt(distSq);
+        float edgeAlpha = smoothstep(0.5, 0.12, dist);
         float finalAlpha = vAlpha * edgeAlpha;
 
         if (uAlphaParticles == 1) {
-          finalAlpha *= (1.0 - dist * 1.05);
+          finalAlpha *= (1.0 - dist * 0.75);
         }
 
         gl_FragColor = vec4(vColor, clamp(finalAlpha, 0.0, 1.0));
@@ -423,7 +433,7 @@ class ParticlesBackground {
       colors[i * 3 + 2] = color[2];
 
       sizes[i] = (1.0 - this.options.sizeRandomness) + Math.random() * this.options.sizeRandomness;
-      alphas[i] = isLight ? (0.45 + Math.random() * 0.52) : (0.28 + Math.random() * 0.70);
+      alphas[i] = isLight ? (0.55 + Math.random() * 0.45) : (0.45 + Math.random() * 0.55);
     }
 
     this.posBuffer = gl.createBuffer();
@@ -458,7 +468,7 @@ class ParticlesBackground {
       colors[i * 3 + 1] = color[1];
       colors[i * 3 + 2] = color[2];
 
-      alphas[i] = isLight ? (0.45 + Math.random() * 0.52) : (0.28 + Math.random() * 0.70);
+      alphas[i] = isLight ? (0.55 + Math.random() * 0.45) : (0.45 + Math.random() * 0.55);
     }
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
@@ -500,7 +510,7 @@ class ParticlesBackground {
 
   resize() {
     const gl = this.gl;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -654,12 +664,12 @@ class ParticlesBackground {
 function initParticlesBackground() {
   particlesBackgroundInstance = new ParticlesBackground('particles-background', {
     particleSpread: 24,
-    speed: 0.18,
+    speed: 0.16,
     moveParticlesOnHover: true,
     particleHoverFactor: 1.25,
     alphaParticles: true,
-    particleBaseSize: 110,
-    sizeRandomness: 1.0,
+    particleBaseSize: 72,
+    sizeRandomness: 0.85,
     cameraDistance: 20,
     disableRotation: false
   });
@@ -1073,15 +1083,21 @@ function initTypewriterEffect() {
   });
 }
 
-// 7. Spotlight Proximity Mouse Tracking (RAF Throttled for 60fps/120fps sync)
+// 7. Spotlight Proximity Mouse Tracking (Zero-Reflow Cached Bounds)
 function initSpotlightTracking() {
   const elements = document.querySelectorAll('.spotlight-card, .skill-pills span, .tech-pill, .tech-capsule');
   elements.forEach(el => {
     let ticking = false;
+    let rect = null;
+
+    el.addEventListener('mouseenter', () => {
+      rect = el.getBoundingClientRect();
+    }, { passive: true });
+
     el.addEventListener('mousemove', (e) => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const rect = el.getBoundingClientRect();
+          if (!rect) rect = el.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
           el.style.setProperty('--mouse-x', `${x.toFixed(1)}px`);
@@ -1090,11 +1106,15 @@ function initSpotlightTracking() {
         });
         ticking = true;
       }
-    });
+    }, { passive: true });
+
+    el.addEventListener('mouseleave', () => {
+      rect = null;
+    }, { passive: true });
   });
 }
 
-// 8. Magnetic Buttons (Damped Spring Physics with RAF Loop)
+// 8. Magnetic Buttons (Damped Spring Physics with Cached Bounds)
 function initMagneticButtons() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
@@ -1105,6 +1125,7 @@ function initMagneticButtons() {
     let currentX = 0, currentY = 0;
     let isHovered = false;
     let animId = null;
+    let rect = null;
 
     function renderMagnetic() {
       // Damped spring interpolation (0.20 lerp factor)
@@ -1124,26 +1145,28 @@ function initMagneticButtons() {
     }
 
     btn.addEventListener('mouseenter', () => {
+      rect = btn.getBoundingClientRect();
       btn.style.transition = 'none';
       isHovered = true;
-    });
+    }, { passive: true });
 
     btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
+      if (!rect) rect = btn.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       targetX = (e.clientX - centerX) * 0.24;
       targetY = (e.clientY - centerY) * 0.24;
       isHovered = true;
       if (!animId) animId = requestAnimationFrame(renderMagnetic);
-    });
+    }, { passive: true });
 
     btn.addEventListener('mouseleave', () => {
+      rect = null;
       targetX = 0;
       targetY = 0;
       isHovered = false;
       btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-    });
+    }, { passive: true });
   });
 }
 
