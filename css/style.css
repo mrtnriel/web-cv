@@ -1559,10 +1559,10 @@ h4.masked-heading {
   margin: 0 auto;
 }
 
-/* --- 03 Education & 04 Tech Stack --- */
+/* --- 04 Education --- */
 .split-grid { gap: 6rem; align-items: stretch; }
-.edu-grid, .tech-grid { align-items: center; }
-.edu-column, .tech-column, .skills-column { display: flex; flex-direction: column; gap: 2.5rem; }
+.edu-grid { align-items: center; }
+.edu-column, .skills-column { display: flex; flex-direction: column; gap: 2.5rem; }
 
 .column-header { 
   font-family: var(--font-mono); 
@@ -1603,36 +1603,32 @@ h4.masked-heading {
 
 .edu-years { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); display: block; letter-spacing: 0.05em; }
 .edu-degree { font-size: 1.75rem; line-height: 1.2; font-weight: 500; color: var(--ink); }
-.edu-institution { display: block; font-size: 1.1rem; color: var(--gray-400); font-family: var(--font-serif); }
+.edu-institution { display: block; font-size: 1.05rem; color: var(--gray-400); font-family: var(--font-serif); }
 .edu-description { font-size: 1.05rem; color: var(--gray-500); line-height: 1.6; }
 
-.timeline-content > .mask-wrap { margin-bottom: 0.5rem; }
-.timeline-content > .mask-wrap:first-child { margin-bottom: 0.75rem; }
-.timeline-content > .mask-wrap:nth-child(3) { margin-bottom: 1.25rem; }
+.timeline-content > .mask-wrap { margin-bottom: 0.45rem; }
+.timeline-content > .mask-wrap:first-child { margin-bottom: 0.65rem; }
+.timeline-content > .mask-wrap:nth-child(3) { margin-bottom: 0.65rem; }
 .timeline-content > .mask-wrap:last-child { margin-bottom: 0; }
 
-/* --- 04 Tech Stack --- */
-.tech-grid { 
-  align-items: center; 
+/* --- 03 Tech Stack (5-Column Layout) --- */
+.tech-5col-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2.75rem;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  max-width: 1080px;
+  margin: 1.5rem auto 0 auto;
 }
 
-.tech-column { 
-  display: flex; 
-  flex-direction: column; 
-  width: 100%; 
-  padding-left: 2rem;
-}
-
-.tech-clusters { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 1.75rem; 
-}
-
-.tech-group { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 0.6rem; 
+.tech-5col-grid .tech-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.75rem;
 }
 
 .tech-group-label { 
@@ -1642,7 +1638,50 @@ h4.masked-heading {
   text-transform: uppercase; 
   letter-spacing: 0.08em; 
   font-weight: 500; 
+  text-align: center;
+  width: 100%;
 }
+
+.tech-5col-grid .tech-pills {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.tech-5col-grid .tech-pill {
+  width: 100%;
+  max-width: 165px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 0 0.85rem;
+  box-sizing: border-box;
+}
+
+.tech-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  fill: currentColor;
+  display: inline-block;
+  vertical-align: middle;
+  opacity: 0.82;
+  transition: 
+    transform var(--duration-fast) var(--ease-spring),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+.tech-pill:hover .tech-icon,
+.tech-capsule:hover .tech-icon {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
 
 .tech-pills, .tech-capsules { 
   display: flex; 
@@ -1703,7 +1742,153 @@ h4.masked-heading {
   transition-duration: var(--duration-instant);
 }
 
-/* --- 05 Contact --- */
+/* --- 05 Experience (Modern Swiss Editorial Ledger) --- */
+.exp-ledger {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.exp-row {
+  display: grid;
+  grid-template-columns: 210px 1.4fr 1fr;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.35rem 0.85rem;
+  border-bottom: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  transition: 
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.exp-row:hover {
+  background-color: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
+.exp-row:last-child {
+  border-bottom: none;
+}
+
+.exp-col-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.exp-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.active-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  flex-shrink: 0;
+  animation: pulse-emerald 2s infinite ease-in-out;
+}
+
+@keyframes pulse-emerald {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.exp-period {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.exp-duration {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-400);
+  letter-spacing: 0.04em;
+}
+
+.exp-col-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.exp-role-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.exp-row:hover .exp-role-title {
+  transform: translateX(3px);
+}
+
+.exp-company-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.exp-org {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--gray-400);
+}
+
+.exp-location {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.exp-col-tags {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.exp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: flex-end;
+}
+
+.exp-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.58rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  color: var(--gray-500);
+  white-space: nowrap;
+  transition: 
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.exp-row:hover .exp-tag {
+  border-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  color: var(--ink);
+  background-color: var(--gray-100);
+}
+
+/* --- 06 Contact --- */
 .contact-layout { 
   display: grid; 
   grid-template-columns: 1fr 1fr; 
@@ -2138,8 +2323,43 @@ h4.masked-heading {
   .contact-form-col { padding: 1.5rem; }
   .island-wrapper { padding: 0 0.5rem; }
   
+  .exp-row {
+    grid-template-columns: 190px 1fr;
+    gap: 0.85rem 1.5rem;
+    padding: 1.15rem 0.5rem;
+  }
+  .exp-col-tags {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+  }
+  .exp-tags {
+    justify-content: flex-start;
+  }
+
   .reveal-item { transform: translateY(8px); }
-  .reveal-group .reveal-item:nth-child(n) { transition-delay: 0ms; }
+  .tech-5col-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3rem 2.25rem;
+    max-width: 640px;
+    margin: 1.5rem auto 0 auto;
+  }
+  .tech-5col-grid .tech-group {
+    gap: 1.5rem;
+  }
+  .tech-5col-grid .tech-pills {
+    gap: 0.9rem;
+  }
+  .tech-5col-grid .tech-group:nth-child(1),
+  .tech-5col-grid .tech-group:nth-child(2),
+  .tech-5col-grid .tech-group:nth-child(3) {
+    grid-column: span 2;
+  }
+  .tech-5col-grid .tech-group:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+  .tech-5col-grid .tech-group:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
   .room-cards-grid { grid-template-columns: 1fr; }
 }
 
@@ -2211,6 +2431,15 @@ h4.masked-heading {
     .topbar-icon {
       width: 12px;
       height: 12px;
+    }
+    .tech-5col-grid {
+      grid-template-columns: 1fr;
+      max-width: 220px;
+      margin: 1.5rem auto 0 auto;
+      gap: 2.5rem;
+    }
+    .tech-5col-grid .tech-group:nth-child(5) {
+      max-width: 100%;
     }
   }
 
@@ -2354,33 +2583,74 @@ h4.masked-heading {
   }
 
   .edu-institution {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .edu-description {
     font-size: 0.92rem;
   }
 
+  /* Experience Mobile Ledger */
+  .exp-row {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    padding: 1.15rem 0;
+  }
+
+  .exp-col-tags {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .exp-tags {
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+
+  .exp-role-title {
+    font-size: 1.05rem;
+  }
+
+  .exp-org {
+    font-size: 0.92rem;
+  }
+
   /* Tech Stack Mobile Layout */
-  .tech-clusters {
+  .tech-5col-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.75rem 1.75rem;
+    max-width: 400px;
+    margin: 1.5rem auto 0 auto;
+  }
+
+  .tech-5col-grid .tech-group {
+    grid-column: auto !important;
     gap: 1.25rem;
   }
 
-  .tech-group {
-    gap: 0.5rem;
+  .tech-5col-grid .tech-group:nth-child(5) {
+    grid-column: 1 / -1 !important;
+    max-width: 175px;
+    justify-self: center;
+    width: 100%;
+  }
+
+  .tech-5col-grid .tech-pills {
+    gap: 0.85rem;
+  }
+
+  .tech-5col-grid .tech-pill {
+    height: 40px;
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
   }
 
   .tech-group-label {
     font-size: 10px;
   }
 
-  .tech-pills, .tech-capsules {
-    gap: 0.5rem;
-  }
-
   .tech-pill, .tech-capsule {
     font-size: 0.85rem;
-    padding: 0.32rem 0.72rem;
     border-radius: var(--radius-sm);
   }
 
