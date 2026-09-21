@@ -1221,93 +1221,95 @@ function initProjectShowcase() {
   });
 }
 
-// 10. SALN Project Multi-Image Carousel (Directional Transitions)
+// 10. Multi-Image Carousel (Directional Transitions)
 function initProjectCarousel() {
-  const container = document.querySelector('.carousel-media');
-  if (!container) return;
+  const containers = document.querySelectorAll('.carousel-media');
+  if (!containers.length) return;
 
-  const slides = container.querySelectorAll('.carousel-slide');
-  const dots = container.querySelectorAll('.carousel-dot');
-  const prevBtn = container.querySelector('.carousel-prev');
-  const nextBtn = container.querySelector('.carousel-next');
-  const counterCurrent = container.querySelector('.carousel-current');
+  containers.forEach((container) => {
+    const slides = container.querySelectorAll('.carousel-slide');
+    const dots = container.querySelectorAll('.carousel-dot');
+    const prevBtn = container.querySelector('.carousel-prev');
+    const nextBtn = container.querySelector('.carousel-next');
+    const counterCurrent = container.querySelector('.carousel-current');
 
-  if (!slides.length) return;
-  let currentIndex = 0;
+    if (!slides.length) return;
+    let currentIndex = 0;
 
-  function updateCarousel(newIndex, direction = 'next') {
-    let targetIndex;
-    if (newIndex < 0) {
-      targetIndex = slides.length - 1;
-    } else if (newIndex >= slides.length) {
-      targetIndex = 0;
-    } else {
-      targetIndex = newIndex;
+    function updateCarousel(newIndex, direction = 'next') {
+      let targetIndex;
+      if (newIndex < 0) {
+        targetIndex = slides.length - 1;
+      } else if (newIndex >= slides.length) {
+        targetIndex = 0;
+      } else {
+        targetIndex = newIndex;
+      }
+
+      if (targetIndex === currentIndex) return;
+
+      slides.forEach((slide, idx) => {
+        slide.classList.remove('is-active', 'slide-from-left', 'slide-from-right');
+        if (idx === targetIndex) {
+          slide.classList.add('is-active');
+        } else if (idx === currentIndex) {
+          slide.classList.add(direction === 'next' ? 'slide-from-left' : 'slide-from-right');
+        }
+      });
+
+      currentIndex = targetIndex;
+
+      dots.forEach((dot, idx) => {
+        const isActive = idx === currentIndex;
+        dot.classList.toggle('is-active', isActive);
+        dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      if (counterCurrent) {
+        counterCurrent.textContent = String(currentIndex + 1).padStart(2, '0');
+      }
+      playHapticSound('slide');
     }
 
-    if (targetIndex === currentIndex) return;
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateCarousel(currentIndex + 1, 'next');
+      });
+    }
 
-    slides.forEach((slide, idx) => {
-      slide.classList.remove('is-active', 'slide-from-left', 'slide-from-right');
-      if (idx === targetIndex) {
-        slide.classList.add('is-active');
-      } else if (idx === currentIndex) {
-        slide.classList.add(direction === 'next' ? 'slide-from-left' : 'slide-from-right');
-      }
-    });
-
-    currentIndex = targetIndex;
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateCarousel(currentIndex - 1, 'prev');
+      });
+    }
 
     dots.forEach((dot, idx) => {
-      const isActive = idx === currentIndex;
-      dot.classList.toggle('is-active', isActive);
-      dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const dir = idx > currentIndex ? 'next' : 'prev';
+        updateCarousel(idx, dir);
+      });
     });
 
-    if (counterCurrent) {
-      counterCurrent.textContent = String(currentIndex + 1).padStart(2, '0');
-    }
-    playHapticSound('slide');
-  }
+    let touchStartX = 0;
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      updateCarousel(currentIndex + 1, 'next');
-    });
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      updateCarousel(currentIndex - 1, 'prev');
-    });
-  }
-
-  dots.forEach((dot, idx) => {
-    dot.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const dir = idx > currentIndex ? 'next' : 'prev';
-      updateCarousel(idx, dir);
-    });
-  });
-
-  let touchStartX = 0;
-  container.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].clientX;
-  }, { passive: true });
-
-  container.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const diffX = touchStartX - touchEndX;
-    if (Math.abs(diffX) > 45) {
-      if (diffX > 0) {
-        updateCarousel(currentIndex + 1, 'next');
-      } else {
-        updateCarousel(currentIndex - 1, 'prev');
+    container.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diffX = touchStartX - touchEndX;
+      if (Math.abs(diffX) > 45) {
+        if (diffX > 0) {
+          updateCarousel(currentIndex + 1, 'next');
+        } else {
+          updateCarousel(currentIndex - 1, 'prev');
+        }
       }
-    }
-  }, { passive: true });
+    }, { passive: true });
+  });
 }
 
 // 11. Contact Cards Quick Copy Clipboard Handler
