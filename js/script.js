@@ -150,7 +150,7 @@ function initCustomCursor() {
     }
   }, { passive: true });
 
-  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit';
+  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit, .exp-tab-btn, .exp-row';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
@@ -1466,6 +1466,101 @@ function initStudioPreloader() {
   requestAnimationFrame(updateStudio);
 }
 
+// 13. Experience Category Tabs & Expandable Ledger Accordion
+function initExperienceTabsAndAccordion() {
+  const tabButtons = document.querySelectorAll('.exp-tab-btn');
+  const panels = document.querySelectorAll('.exp-panel');
+  const expRows = document.querySelectorAll('.exp-row');
+
+  if (!tabButtons.length || !panels.length) return;
+
+  // 1. Tab Switching
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('is-active')) return;
+
+      const targetPanelId = btn.getAttribute('aria-controls');
+      const targetPanel = document.getElementById(targetPanelId);
+      if (!targetPanel) return;
+
+      // Update buttons
+      tabButtons.forEach(b => {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-selected', 'false');
+        b.setAttribute('tabindex', '-1');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-selected', 'true');
+      btn.setAttribute('tabindex', '0');
+
+      // Update panels
+      panels.forEach(p => {
+        p.classList.remove('is-active');
+        p.setAttribute('hidden', '');
+      });
+      targetPanel.classList.add('is-active');
+      targetPanel.removeAttribute('hidden');
+
+      playHapticSound('switch');
+    });
+
+    // Keyboard navigation across tabs (WAI-ARIA)
+    btn.addEventListener('keydown', (e) => {
+      const btnArr = Array.from(tabButtons);
+      const currIndex = btnArr.indexOf(btn);
+      let nextIndex = null;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        nextIndex = (currIndex + 1) % btnArr.length;
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        nextIndex = (currIndex - 1 + btnArr.length) % btnArr.length;
+      } else if (e.key === 'Home') {
+        nextIndex = 0;
+      } else if (e.key === 'End') {
+        nextIndex = btnArr.length - 1;
+      }
+
+      if (nextIndex !== null) {
+        e.preventDefault();
+        btnArr[nextIndex].focus();
+        btnArr[nextIndex].click();
+      }
+    });
+  });
+
+  // 2. Clickable and Expandable Experience Rows
+  expRows.forEach(row => {
+    const toggleRow = (e) => {
+      // Don't toggle if user clicked on an interactive child link or button
+      if (e.target.closest('a, button')) return;
+
+      // Don't toggle if selecting text
+      const selection = window.getSelection();
+      if (selection && selection.toString().trim().length > 0) return;
+
+      const isExpanded = row.classList.contains('is-expanded');
+      if (isExpanded) {
+        row.classList.remove('is-expanded');
+        row.setAttribute('aria-expanded', 'false');
+        playHapticSound('tick');
+      } else {
+        row.classList.add('is-expanded');
+        row.setAttribute('aria-expanded', 'true');
+        playHapticSound('click');
+      }
+    };
+
+    row.addEventListener('click', toggleRow);
+
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleRow(e);
+      }
+    });
+  });
+}
+
 // Master Initialization
 document.addEventListener('DOMContentLoaded', () => {
   initAudioFeedback();
@@ -1482,6 +1577,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMagneticButtons();
   initProjectShowcase();
   initProjectCarousel();
+  initExperienceTabsAndAccordion();
   initContactCopy();
   initContactForm();
 });

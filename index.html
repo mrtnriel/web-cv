@@ -510,119 +510,349 @@
           <span class="section-badge">Manila, PH</span>
         </div>
 
-        <!-- Modern Swiss Editorial Ledger -->
-        <div class="exp-ledger reveal-item">
+        <!-- Experience Category Tab Boxes (Single Centered Box) -->
+        <div class="exp-tabs-wrapper reveal-item">
+          <div class="exp-tabs-bar" role="tablist" aria-label="Experience Categories">
+            <button type="button" class="exp-tab-btn is-active magnetic-btn" role="tab" id="tab-organizational" aria-selected="true" aria-controls="panel-organizational" tabindex="0">
+              Organizational
+            </button>
+            <button type="button" class="exp-tab-btn magnetic-btn" role="tab" id="tab-professional" aria-selected="false" aria-controls="panel-professional" tabindex="-1">
+              Professional
+            </button>
+            <button type="button" class="exp-tab-btn magnetic-btn" role="tab" id="tab-volunteer" aria-selected="false" aria-controls="panel-volunteer" tabindex="-1">
+              Volunteer
+            </button>
+          </div>
+        </div>
+
+        <!-- Experience Panels Container -->
+        <div class="exp-panels-wrap reveal-item">
           
-          <!-- 1. Cisco NetConnect PUP -->
-          <article class="exp-row">
-            <div class="exp-col-date">
-              <div class="exp-date-badge">
-                <span class="active-pulse-dot" aria-hidden="true"></span>
-                <span class="exp-period">SEP 2026 — PRESENT</span>
-              </div>
-            </div>
-            <div class="exp-col-main">
-              <h3 class="exp-role-title">Membership Lead</h3>
-              <div class="exp-company-line">
-                <span class="exp-org">Cisco NetConnect PUP</span>
-                <span class="exp-location">· Sta. Mesa, Manila</span>
-              </div>
-            </div>
-            <div class="exp-col-tags">
-              <div class="exp-tags">
-                <span class="exp-tag">Membership Operations</span>
-                <span class="exp-tag">Leadership</span>
-              </div>
-            </div>
-          </article>
+          <!-- Category 1: Organizational -->
+          <div class="exp-panel is-active" id="panel-organizational" role="tabpanel" aria-labelledby="tab-organizational">
+            <div class="exp-ledger">
+              
+              <!-- 1. Cisco NetConnect PUP -->
+              <article class="exp-row" role="button" tabindex="0" aria-expanded="false" aria-label="Cisco NetConnect PUP, Membership Lead">
+                <div class="exp-summary">
+                  <div class="exp-col-date">
+                    <div class="exp-date-badge">
+                      <span class="active-pulse-dot" aria-hidden="true"></span>
+                      <span class="exp-period">SEP 2026 — PRESENT</span>
+                    </div>
+                  </div>
+                  <div class="exp-col-main">
+                    <h3 class="exp-role-title">Membership Lead</h3>
+                    <div class="exp-company-line">
+                      <span class="exp-org">Cisco NetConnect PUP</span>
+                      <span class="exp-location">· Sta. Mesa, Manila</span>
+                    </div>
+                  </div>
+                  <div class="exp-col-tags">
+                    <div class="exp-tags">
+                      <span class="exp-tag">Membership Operations</span>
+                      <span class="exp-tag">Leadership</span>
+                    </div>
+                    <div class="exp-expand-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="exp-drawer">
+                  <div class="exp-drawer-inner">
+                    <div class="exp-expanded-content">
+                      <div class="exp-org-meta">
+                        <img src="images/logos/cncp-pup.jpg" alt="Cisco NetConnect PUP Logo" class="exp-org-logo" loading="lazy">
+                        <div class="exp-org-meta-info">
+                          <span class="exp-org-fullname">Cisco NetConnect — Polytechnic University of the Philippines</span>
+                          <span class="exp-org-desc">Premier Student Networking &amp; Infrastructure Organization</span>
+                        </div>
+                      </div>
+                      <div class="exp-details-grid">
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Key Responsibilities</span>
+                          <ul class="exp-detail-list">
+                            <li>Lead membership acquisition, onboarding pipelines, and active member record maintenance.</li>
+                            <li>Coordinate inter-departmental logistics with executive officers for networking seminars and technical workshops.</li>
+                            <li>Facilitate communication channels and member support for university-wide student participation.</li>
+                          </ul>
+                        </div>
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Contributions &amp; Impact</span>
+                          <ul class="exp-detail-list">
+                            <li>Streamlined the digital onboarding workflow, reducing verification time for incoming student members.</li>
+                            <li>Formed collaborative study groups focusing on Cisco Packet Tracer, subnetting, and networking fundamentals.</li>
+                            <li>Supported major organizational conventions and member engagement activities across campus.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-          <!-- 2. Microsoft Campus Club PUP -->
-          <article class="exp-row">
-            <div class="exp-col-date">
-              <div class="exp-date-badge">
-                <span class="active-pulse-dot" aria-hidden="true"></span>
-                <span class="exp-period">AUG 2026 — PRESENT</span>
-              </div>
-              <span class="exp-duration">2 mos · Hybrid</span>
-            </div>
-            <div class="exp-col-main">
-              <h3 class="exp-role-title">Marketing Communications Officer</h3>
-              <div class="exp-company-line">
-                <span class="exp-org">Microsoft Campus Club PUP</span>
-                <span class="exp-location">· Sta. Mesa, Manila</span>
-              </div>
-            </div>
-            <div class="exp-col-tags">
-              <div class="exp-tags">
-                <span class="exp-tag">Marketing</span>
-                <span class="exp-tag">Project Management</span>
-              </div>
-            </div>
-          </article>
+              <!-- 2. Microsoft Campus Club PUP -->
+              <article class="exp-row" role="button" tabindex="0" aria-expanded="false" aria-label="Microsoft Campus Club PUP, Marketing Communications Officer">
+                <div class="exp-summary">
+                  <div class="exp-col-date">
+                    <div class="exp-date-badge">
+                      <span class="active-pulse-dot" aria-hidden="true"></span>
+                      <span class="exp-period">AUG 2026 — PRESENT</span>
+                    </div>
+                    <span class="exp-duration">2 mos · Hybrid</span>
+                  </div>
+                  <div class="exp-col-main">
+                    <h3 class="exp-role-title">Marketing Communications Officer</h3>
+                    <div class="exp-company-line">
+                      <span class="exp-org">Microsoft Campus Club PUP</span>
+                      <span class="exp-location">· Sta. Mesa, Manila</span>
+                    </div>
+                  </div>
+                  <div class="exp-col-tags">
+                    <div class="exp-tags">
+                      <span class="exp-tag">Marketing</span>
+                      <span class="exp-tag">Project Management</span>
+                    </div>
+                    <div class="exp-expand-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="exp-drawer">
+                  <div class="exp-drawer-inner">
+                    <div class="exp-expanded-content">
+                      <div class="exp-org-meta">
+                        <img src="images/logos/msc-pup.jpg" alt="Microsoft Campus Club PUP Logo" class="exp-org-logo" loading="lazy">
+                        <div class="exp-org-meta-info">
+                          <span class="exp-org-fullname">Microsoft Campus Club — Polytechnic University of the Philippines</span>
+                          <span class="exp-org-desc">Student Technology Community &amp; Microsoft Tech Evangelism</span>
+                        </div>
+                      </div>
+                      <div class="exp-details-grid">
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Key Responsibilities</span>
+                          <ul class="exp-detail-list">
+                            <li>Formulate and execute digital marketing campaigns, event releases, and community announcements.</li>
+                            <li>Collaborate with technical leads to craft accessible, engaging promotional copy for developer workshops.</li>
+                            <li>Monitor promotional engagement metrics, participant registration rates, and post-event reach.</li>
+                          </ul>
+                        </div>
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Contributions &amp; Impact</span>
+                          <ul class="exp-detail-list">
+                            <li>Established consistent copywriting frameworks and promotional release schedules across digital channels.</li>
+                            <li>Drove attendee turnouts for tech webinars by orchestrating synchronized announcements and teasers.</li>
+                            <li>Assisted in moderating online community interactions and live Q&amp;A sessions with guest speakers.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-          <!-- 3. Google Developer Groups on Campus PUP -->
-          <article class="exp-row">
-            <div class="exp-col-date">
-              <span class="exp-period">NOV 2025 — JAN 2026</span>
-              <span class="exp-duration">3 mos</span>
-            </div>
-            <div class="exp-col-main">
-              <h3 class="exp-role-title">Web Development Cadet</h3>
-              <div class="exp-company-line">
-                <span class="exp-org">Google Developer Groups on Campus PUP</span>
-                <span class="exp-location">· Metro Manila</span>
-              </div>
-            </div>
-            <div class="exp-col-tags">
-              <div class="exp-tags">
-                <span class="exp-tag">HTML</span>
-                <span class="exp-tag">CSS</span>
-                <span class="exp-tag">Web Development</span>
-              </div>
-            </div>
-          </article>
+              <!-- 3. Google Developer Groups on Campus PUP -->
+              <article class="exp-row" role="button" tabindex="0" aria-expanded="false" aria-label="Google Developer Groups on Campus PUP, Web Development Cadet">
+                <div class="exp-summary">
+                  <div class="exp-col-date">
+                    <span class="exp-period">NOV 2025 — JAN 2026</span>
+                    <span class="exp-duration">3 mos</span>
+                  </div>
+                  <div class="exp-col-main">
+                    <h3 class="exp-role-title">Web Development Cadet</h3>
+                    <div class="exp-company-line">
+                      <span class="exp-org">Google Developer Groups on Campus PUP</span>
+                      <span class="exp-location">· Metro Manila</span>
+                    </div>
+                  </div>
+                  <div class="exp-col-tags">
+                    <div class="exp-tags">
+                      <span class="exp-tag">HTML</span>
+                      <span class="exp-tag">CSS</span>
+                      <span class="exp-tag">Web Development</span>
+                    </div>
+                    <div class="exp-expand-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="exp-drawer">
+                  <div class="exp-drawer-inner">
+                    <div class="exp-expanded-content">
+                      <div class="exp-org-meta">
+                        <img src="images/logos/gdg-logo.jpg" alt="Google Developer Groups on Campus PUP Logo" class="exp-org-logo" loading="lazy">
+                        <div class="exp-org-meta-info">
+                          <span class="exp-org-fullname">Google Developer Groups on Campus — PUP</span>
+                          <span class="exp-org-desc">University Chapter for Google Developer Technologies</span>
+                        </div>
+                      </div>
+                      <div class="exp-details-grid">
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Key Responsibilities</span>
+                          <ul class="exp-detail-list">
+                            <li>Completed intensive technical cadetship covering frontend web standards, semantic HTML, and modern CSS.</li>
+                            <li>Engaged in weekly developer workshops, code reviews, and UI component prototyping exercises.</li>
+                            <li>Practiced collaborative Git workflows, branch strategies, and team pull request protocols.</li>
+                          </ul>
+                        </div>
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Contributions &amp; Impact</span>
+                          <ul class="exp-detail-list">
+                            <li>Built responsive, cross-browser UI modules following clean architecture and accessibility standards.</li>
+                            <li>Collaborated with peers to solve algorithmic and frontend layout challenges during sprint sessions.</li>
+                            <li>Successfully completed all cadetship technical milestones and practical web assessments.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-          <!-- 4. AWS Cloud Club PUP -->
-          <article class="exp-row">
-            <div class="exp-col-date">
-              <span class="exp-period">NOV 2025 — JAN 2026</span>
-              <span class="exp-duration">3 mos</span>
-            </div>
-            <div class="exp-col-main">
-              <h3 class="exp-role-title">Video Editor</h3>
-              <div class="exp-company-line">
-                <span class="exp-org">AWS Cloud Club PUP</span>
-                <span class="exp-location">· Metro Manila</span>
-              </div>
-            </div>
-            <div class="exp-col-tags">
-              <div class="exp-tags">
-                <span class="exp-tag">Video Editing</span>
-                <span class="exp-tag">Content Production</span>
-              </div>
-            </div>
-          </article>
+              <!-- 4. AWS Cloud Club PUP -->
+              <article class="exp-row" role="button" tabindex="0" aria-expanded="false" aria-label="AWS Cloud Club PUP, Video Editor">
+                <div class="exp-summary">
+                  <div class="exp-col-date">
+                    <span class="exp-period">NOV 2025 — JAN 2026</span>
+                    <span class="exp-duration">3 mos</span>
+                  </div>
+                  <div class="exp-col-main">
+                    <h3 class="exp-role-title">Creatives Video Editor</h3>
+                    <div class="exp-company-line">
+                      <span class="exp-org">AWS Cloud Club PUP</span>
+                      <span class="exp-location">· Metro Manila</span>
+                    </div>
+                  </div>
+                  <div class="exp-col-tags">
+                    <div class="exp-tags">
+                      <span class="exp-tag">Video Editing</span>
+                      <span class="exp-tag">Content Production</span>
+                    </div>
+                    <div class="exp-expand-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="exp-drawer">
+                  <div class="exp-drawer-inner">
+                    <div class="exp-expanded-content">
+                      <div class="exp-org-meta">
+                        <img src="images/logos/aws-logo.png" alt="AWS Cloud Club PUP Logo" class="exp-org-logo" loading="lazy">
+                        <div class="exp-org-meta-info">
+                          <span class="exp-org-fullname">AWS Cloud Club — Polytechnic University of the Philippines</span>
+                          <span class="exp-org-desc">Student Community for Cloud Architecture &amp; AWS Technologies</span>
+                        </div>
+                      </div>
+                      <div class="exp-details-grid">
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Key Responsibilities</span>
+                          <ul class="exp-detail-list">
+                            <li>Edited and produced multimedia promotional assets, recap reels, and event teasers for cloud tech sessions.</li>
+                            <li>Coordinated with media leads to align video pacing, color treatment, and branding with community guidelines.</li>
+                            <li>Rendered and optimized video assets across multi-platform formats including Reels, TikTok, and YouTube.</li>
+                          </ul>
+                        </div>
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Contributions &amp; Impact</span>
+                          <ul class="exp-detail-list">
+                            <li>Delivered dynamic recap reels highlighting keynote presentations and cloud certification workshops.</li>
+                            <li>Accelerated post-production turnarounds by creating reusable motion graphics and title card presets.</li>
+                            <li>Supported live visual presentations and multimedia projection during club tech events.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
 
-          <!-- 5. WEB Community -->
-          <article class="exp-row">
-            <div class="exp-col-date">
-              <span class="exp-period">APR 2024 — JUL 2024</span>
-              <span class="exp-duration">4 mos</span>
+              <!-- 5. WEB Community -->
+              <article class="exp-row" role="button" tabindex="0" aria-expanded="false" aria-label="WEB Community, Associate Media Director">
+                <div class="exp-summary">
+                  <div class="exp-col-date">
+                    <span class="exp-period">APR 2024 — JUL 2024</span>
+                    <span class="exp-duration">4 mos</span>
+                  </div>
+                  <div class="exp-col-main">
+                    <h3 class="exp-role-title">Associate Media Director</h3>
+                    <div class="exp-company-line">
+                      <span class="exp-org">WEB Community</span>
+                      <span class="exp-location">· Metro Manila</span>
+                    </div>
+                  </div>
+                  <div class="exp-col-tags">
+                    <div class="exp-tags">
+                      <span class="exp-tag">Video Editing</span>
+                      <span class="exp-tag">Documentation</span>
+                    </div>
+                    <div class="exp-expand-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="exp-drawer">
+                  <div class="exp-drawer-inner">
+                    <div class="exp-expanded-content">
+                      <div class="exp-org-meta">
+                        <img src="images/logos/web-logo.png" alt="WEB Community Logo" class="exp-org-logo" loading="lazy">
+                        <div class="exp-org-meta-info">
+                          <span class="exp-org-fullname">WEB Community — Metro Manila</span>
+                          <span class="exp-org-desc">Grassroots Developer Community &amp; Technical Skill-Sharing</span>
+                        </div>
+                      </div>
+                      <div class="exp-details-grid">
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Key Responsibilities</span>
+                          <ul class="exp-detail-list">
+                            <li>Assisted in directing media production, photography, and videography for community tech meetups.</li>
+                            <li>Captured high-resolution documentation during coding workshops and community hackathons.</li>
+                            <li>Curated and archived multimedia assets for post-event publications and community outreach.</li>
+                          </ul>
+                        </div>
+                        <div class="exp-detail-col">
+                          <span class="exp-detail-label">Contributions &amp; Impact</span>
+                          <ul class="exp-detail-list">
+                            <li>Produced the official after-movie reel commemorating community milestones and speaker sessions.</li>
+                            <li>Maintained visual branding consistency across documentation and promotional release packages.</li>
+                            <li>Mentored junior volunteer documenters in camera composition, audio capture, and editing workflows.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
             </div>
-            <div class="exp-col-main">
-              <h3 class="exp-role-title">Associate Media Director</h3>
-              <div class="exp-company-line">
-                <span class="exp-org">WEB Community</span>
-                <span class="exp-location">· Metro Manila</span>
-              </div>
+          </div>
+
+          <!-- Category 2: Professional -->
+          <div class="exp-panel" id="panel-professional" role="tabpanel" aria-labelledby="tab-professional" hidden>
+            <div class="exp-empty-state">
+              <span class="exp-empty-mono">[ PENDING ]</span>
+              <h3 class="exp-empty-title">Coming Soon</h3>
+              <p class="exp-empty-desc">Currently open for internship and professional software engineering opportunities. Experiences will be documented here as engagements commence.</p>
             </div>
-            <div class="exp-col-tags">
-              <div class="exp-tags">
-                <span class="exp-tag">Video Editing</span>
-                <span class="exp-tag">Documentation</span>
-              </div>
+          </div>
+
+          <!-- Category 3: Volunteer -->
+          <div class="exp-panel" id="panel-volunteer" role="tabpanel" aria-labelledby="tab-volunteer" hidden>
+            <div class="exp-empty-state">
+              <span class="exp-empty-mono">[ PENDING ]</span>
+              <h3 class="exp-empty-title">Coming Soon</h3>
+              <p class="exp-empty-desc">Community volunteer initiatives and technical contributions will be documented here as activities commence.</p>
             </div>
-          </article>
+          </div>
 
         </div>
       </div>
