@@ -150,7 +150,7 @@ function initCustomCursor() {
     }
   }, { passive: true });
 
-  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit, .exp-tab-btn, .exp-row';
+  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit, .exp-tab-btn, .exp-row, .exp-tag, .edu-logo-card, .magnetic-btn';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {
@@ -159,7 +159,8 @@ function initCustomCursor() {
   });
 
   document.addEventListener('mouseout', (e) => {
-    if (e.target.closest(interactiveSelector)) {
+    const nextTarget = e.relatedTarget ? e.relatedTarget.closest(interactiveSelector) : null;
+    if (!nextTarget) {
       ring.classList.remove('is-hovering');
     }
   });
@@ -757,7 +758,7 @@ function initScrollObserver() {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.18, rootMargin: '0px 0px -20px 0px' });
+  }, { threshold: 0.10, rootMargin: '0px 0px -10px 0px' });
 
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -1114,58 +1115,65 @@ function initSpotlightTracking() {
   });
 }
 
-// 8. Magnetic Buttons (Damped Spring Physics with Cached Bounds)
+// 8. Magnetic Physics Engine (Damped Spring Physics with True Center Preservation)
 function initMagneticButtons() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) return;
 
-  const magneticBtns = document.querySelectorAll('.magnetic-btn');
-  magneticBtns.forEach(btn => {
+  const magneticTargets = document.querySelectorAll('.magnetic-btn, .tech-pill, .island-link, .exp-tab-btn');
+  magneticTargets.forEach(el => {
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
     let isHovered = false;
     let animId = null;
-    let rect = null;
 
     function renderMagnetic() {
-      // Damped spring interpolation (0.20 lerp factor)
-      currentX += (targetX - currentX) * 0.20;
-      currentY += (targetY - currentY) * 0.20;
+      // Damped spring interpolation (Emil Kowalski physics)
+      currentX += (targetX - currentX) * 0.22;
+      currentY += (targetY - currentY) * 0.22;
 
-      btn.style.transform = `translate3d(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px, 0)`;
+      el.style.transform = `translate3d(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px, 0)`;
 
       if (isHovered || Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05) {
         animId = requestAnimationFrame(renderMagnetic);
       } else {
-        btn.style.transform = '';
-        btn.style.transition = '';
+        el.style.transform = '';
         cancelAnimationFrame(animId);
         animId = null;
       }
     }
 
-    btn.addEventListener('mouseenter', () => {
-      rect = btn.getBoundingClientRect();
-      btn.style.transition = 'none';
+    el.addEventListener('mouseenter', () => {
       isHovered = true;
     }, { passive: true });
 
-    btn.addEventListener('mousemove', (e) => {
-      if (!rect) rect = btn.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      targetX = (e.clientX - centerX) * 0.24;
-      targetY = (e.clientY - centerY) * 0.24;
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      // Calculate true un-transformed element center
+      const centerX = (rect.left - currentX) + rect.width / 2;
+      const centerY = (rect.top - currentY) + rect.height / 2;
+
+      // Calibrated pull factor based on element scale
+      let factor = 0.26;
+      if (el.classList.contains('island-link')) {
+        factor = 0.32;
+      } else if (el.classList.contains('tech-pill')) {
+        factor = 0.20;
+      }
+
+      targetX = (e.clientX - centerX) * factor;
+      targetY = (e.clientY - centerY) * factor;
       isHovered = true;
+
       if (!animId) animId = requestAnimationFrame(renderMagnetic);
     }, { passive: true });
 
-    btn.addEventListener('mouseleave', () => {
-      rect = null;
+    el.addEventListener('mouseleave', () => {
       targetX = 0;
       targetY = 0;
       isHovered = false;
-      btn.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+      // Damped spring smoothly brings element back to origin without CSS transition fighting
+      if (!animId) animId = requestAnimationFrame(renderMagnetic);
     }, { passive: true });
   });
 }

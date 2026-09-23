@@ -222,10 +222,7 @@ a {
 
 /* --- Custom Cursor (Desktop Only) --- */
 @media (hover: hover) and (pointer: fine) {
-  body {
-    cursor: none;
-  }
-  a, button, input, textarea, select, .skill-pills span, .project-panel, .timeline-node, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit, .exp-tab-btn, .exp-row {
+  body, *, *::before, *::after {
     cursor: none !important;
   }
 }
@@ -1564,6 +1561,42 @@ h4.masked-heading {
 .edu-grid { align-items: center; }
 .edu-column, .skills-column { display: flex; flex-direction: column; gap: 2.5rem; }
 
+/* PUP University Seal Presentation Card */
+.edu-logo-card {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1 / 1;
+  justify-self: center;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.4);
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.75rem;
+}
+
+.edu-logo-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center center;
+  border-radius: inherit;
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+
+.edu-logo-card:hover .edu-logo-img {
+  transform: scale(1.04);
+}
+
+.edu-logo-card:hover .photo-ambient-glow {
+  opacity: 0.8;
+}
+
 .column-header { 
   font-family: var(--font-mono); 
   font-size: 12px; 
@@ -1629,7 +1662,30 @@ h4.masked-heading {
   align-items: center;
   text-align: center;
   gap: 1.75rem;
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: 
+    opacity 0.65s var(--ease-out-expo),
+    transform 0.65s var(--ease-out-expo);
+  will-change: opacity, transform;
 }
+
+.is-revealed .tech-5col-grid .tech-group,
+.snap-section.is-revealed .tech-5col-grid .tech-group {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.is-revealed .tech-5col-grid .tech-group:nth-child(1),
+.snap-section.is-revealed .tech-5col-grid .tech-group:nth-child(1) { transition-delay: 50ms; }
+.is-revealed .tech-5col-grid .tech-group:nth-child(2),
+.snap-section.is-revealed .tech-5col-grid .tech-group:nth-child(2) { transition-delay: 120ms; }
+.is-revealed .tech-5col-grid .tech-group:nth-child(3),
+.snap-section.is-revealed .tech-5col-grid .tech-group:nth-child(3) { transition-delay: 190ms; }
+.is-revealed .tech-5col-grid .tech-group:nth-child(4),
+.snap-section.is-revealed .tech-5col-grid .tech-group:nth-child(4) { transition-delay: 260ms; }
+.is-revealed .tech-5col-grid .tech-group:nth-child(5),
+.snap-section.is-revealed .tech-5col-grid .tech-group:nth-child(5) { transition-delay: 330ms; }
 
 .tech-group-label { 
   font-family: var(--font-mono); 
@@ -1661,7 +1717,47 @@ h4.masked-heading {
   gap: 0.5rem;
   padding: 0 0.85rem;
   box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition: 
+    opacity 0.55s var(--ease-out-expo),
+    transform 0.55s var(--ease-out-expo),
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+  will-change: opacity, transform;
 }
+
+.is-revealed .tech-5col-grid .tech-pill,
+.snap-section.is-revealed .tech-5col-grid .tech-pill {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.is-revealed .tech-group:nth-child(1) .tech-pill:nth-child(1) { transition-delay: 80ms; }
+.is-revealed .tech-group:nth-child(1) .tech-pill:nth-child(2) { transition-delay: 130ms; }
+.is-revealed .tech-group:nth-child(1) .tech-pill:nth-child(3) { transition-delay: 180ms; }
+.is-revealed .tech-group:nth-child(1) .tech-pill:nth-child(4) { transition-delay: 230ms; }
+
+.is-revealed .tech-group:nth-child(2) .tech-pill:nth-child(1) { transition-delay: 150ms; }
+.is-revealed .tech-group:nth-child(2) .tech-pill:nth-child(2) { transition-delay: 200ms; }
+.is-revealed .tech-group:nth-child(2) .tech-pill:nth-child(3) { transition-delay: 250ms; }
+.is-revealed .tech-group:nth-child(2) .tech-pill:nth-child(4) { transition-delay: 300ms; }
+
+.is-revealed .tech-group:nth-child(3) .tech-pill:nth-child(1) { transition-delay: 220ms; }
+.is-revealed .tech-group:nth-child(3) .tech-pill:nth-child(2) { transition-delay: 270ms; }
+.is-revealed .tech-group:nth-child(3) .tech-pill:nth-child(3) { transition-delay: 320ms; }
+.is-revealed .tech-group:nth-child(3) .tech-pill:nth-child(4) { transition-delay: 370ms; }
+
+.is-revealed .tech-group:nth-child(4) .tech-pill:nth-child(1) { transition-delay: 290ms; }
+.is-revealed .tech-group:nth-child(4) .tech-pill:nth-child(2) { transition-delay: 340ms; }
+.is-revealed .tech-group:nth-child(4) .tech-pill:nth-child(3) { transition-delay: 390ms; }
+.is-revealed .tech-group:nth-child(4) .tech-pill:nth-child(4) { transition-delay: 440ms; }
+
+.is-revealed .tech-group:nth-child(5) .tech-pill:nth-child(1) { transition-delay: 360ms; }
+.is-revealed .tech-group:nth-child(5) .tech-pill:nth-child(2) { transition-delay: 410ms; }
+.is-revealed .tech-group:nth-child(5) .tech-pill:nth-child(3) { transition-delay: 460ms; }
+.is-revealed .tech-group:nth-child(5) .tech-pill:nth-child(4) { transition-delay: 510ms; }
 
 .tech-icon {
   width: 15px;
@@ -1679,9 +1775,8 @@ h4.masked-heading {
 .tech-pill:hover .tech-icon,
 .tech-capsule:hover .tech-icon {
   opacity: 1;
-  transform: scale(1.12);
+  transform: scale(1.15);
 }
-
 
 .tech-pills, .tech-capsules { 
   display: flex; 
@@ -1701,7 +1796,6 @@ h4.masked-heading {
   border-radius: var(--radius-sm);
   background-color: var(--gray-50);
   border: 1px solid var(--gray-300);
-  cursor: default;
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
@@ -1710,6 +1804,12 @@ h4.masked-heading {
     border-color var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out),
     box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.tech-pill:hover, .tech-capsule:hover {
+  border-color: var(--gray-400);
+  background-color: var(--gray-100);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
 }
 
 .tech-pill::before, .tech-capsule::before {
@@ -1818,24 +1918,6 @@ h4.masked-heading {
 
 .exp-panel.is-active {
   display: block;
-  animation: expPanelFade 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes expPanelFade {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .exp-panel.is-active {
-    animation: none;
-  }
 }
 
 .exp-ledger {
@@ -1844,19 +1926,67 @@ h4.masked-heading {
   width: 100%;
 }
 
-/* Experience Row / Box - Clickable & Expandable */
+/* Experience Row / Box - Clickable & Expandable with Staggered Cascade */
 .exp-row {
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--gray-200);
   border-radius: var(--radius-sm);
   padding: 0.35rem 0.85rem;
-  cursor: pointer;
   position: relative;
+  user-select: none;
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
   transition: 
+    opacity 0.55s var(--ease-out-expo),
+    transform 0.55s var(--ease-out-expo),
     background-color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out);
-  user-select: none;
+  will-change: opacity, transform;
+}
+
+.is-revealed .exp-panel.is-active .exp-row,
+.snap-section.is-revealed .exp-panel.is-active .exp-row {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.is-revealed .exp-panel.is-active .exp-row:nth-child(1),
+.snap-section.is-revealed .exp-panel.is-active .exp-row:nth-child(1) { transition-delay: 60ms; }
+.is-revealed .exp-panel.is-active .exp-row:nth-child(2),
+.snap-section.is-revealed .exp-panel.is-active .exp-row:nth-child(2) { transition-delay: 130ms; }
+.is-revealed .exp-panel.is-active .exp-row:nth-child(3),
+.snap-section.is-revealed .exp-panel.is-active .exp-row:nth-child(3) { transition-delay: 200ms; }
+.is-revealed .exp-panel.is-active .exp-row:nth-child(4),
+.snap-section.is-revealed .exp-panel.is-active .exp-row:nth-child(4) { transition-delay: 270ms; }
+.is-revealed .exp-panel.is-active .exp-row:nth-child(5),
+.snap-section.is-revealed .exp-panel.is-active .exp-row:nth-child(5) { transition-delay: 340ms; }
+
+/* Dynamic cascade when user toggles categories */
+.exp-panel.is-active .exp-row {
+  animation: expRowCascade 0.5s var(--ease-out-expo) both;
+}
+
+.exp-panel.is-active .exp-row:nth-child(1) { animation-delay: 50ms; }
+.exp-panel.is-active .exp-row:nth-child(2) { animation-delay: 110ms; }
+.exp-panel.is-active .exp-row:nth-child(3) { animation-delay: 170ms; }
+.exp-panel.is-active .exp-row:nth-child(4) { animation-delay: 230ms; }
+.exp-panel.is-active .exp-row:nth-child(5) { animation-delay: 290ms; }
+
+@keyframes expRowCascade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.exp-panel.is-active .exp-empty-state {
+  animation: expRowCascade 0.45s var(--ease-out-expo) both;
+  animation-delay: 70ms;
 }
 
 .exp-row:hover {
@@ -2053,6 +2183,16 @@ h4.masked-heading {
 .exp-drawer-inner {
   min-height: 0;
   overflow: hidden;
+  opacity: 0;
+  transform: translate3d(0, -6px, 0);
+  transition: 
+    opacity 280ms ease,
+    transform 280ms var(--ease-out-expo);
+}
+
+.exp-row.is-expanded .exp-drawer-inner {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .exp-expanded-content {
@@ -2672,6 +2812,7 @@ h4.masked-heading {
   .immersive-grid, .split-grid, .edu-grid, .tech-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
   .tech-column { padding-left: 0; }
   .image-column { max-width: 280px; margin: 0 auto; }
+  .edu-logo-card { max-width: 240px; margin: 0 auto; }
   .projects-track { padding-left: 0; padding-right: 0; margin-left: 0; width: 100%; gap: 3rem; }
   .project-panel { width: 100%; min-width: 100%; grid-template-columns: 1fr; gap: 1.5rem; padding: 0.5rem 0; min-height: auto; }
   .project-panel.alone { min-height: auto; display: block; }
@@ -2942,6 +3083,11 @@ h4.masked-heading {
   }
 
   /* Education & Tech Stack Mobile Layout */
+  .edu-logo-card {
+    max-width: 200px;
+    margin: 0 auto 1.25rem auto;
+  }
+
   .edu-column {
     gap: 1.25rem;
   }
@@ -3139,7 +3285,10 @@ h4.masked-heading {
   .reveal-item,
   .mask-inner,
   .glow-fade-item,
-  .skill-category {
+  .skill-category,
+  .tech-group,
+  .tech-pill,
+  .exp-row {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
