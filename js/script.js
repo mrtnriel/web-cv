@@ -150,7 +150,7 @@ function initCustomCursor() {
     }
   }, { passive: true });
 
-  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit, .exp-tab-btn, .exp-row, .exp-tag, .edu-logo-card, .magnetic-btn';
+  const interactiveSelector = 'a, button, input, textarea, select, .skill-pills span, .tech-pill, .tech-capsule, .project-panel, .timeline-node, .immersive-photo, .project-nav-btn, .carousel-btn, .carousel-dot, .island-theme-btn, .island-link, .hero-name, .spotlight-card, .btn-primary, .btn-secondary, .btn-action, .btn-submit, .exp-tab-btn, .exp-row, .exp-tag, .edu-ledger-card, .edu-seal-frame, .magnetic-btn';
   
   document.addEventListener('mouseover', (e) => {
     if (e.target.closest(interactiveSelector)) {

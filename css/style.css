@@ -1556,93 +1556,227 @@ h4.masked-heading {
   margin: 0 auto;
 }
 
-/* --- 04 Education --- */
-.split-grid { gap: 6rem; align-items: stretch; }
-.edu-grid { align-items: center; }
-.edu-column, .skills-column { display: flex; flex-direction: column; gap: 2.5rem; }
-
-/* PUP University Seal Presentation Card */
-.edu-logo-card {
-  position: relative;
+/* --- 04 Education (Academic Ledger Card) --- */
+.edu-ledger-card {
   width: 100%;
-  max-width: 280px;
-  aspect-ratio: 1 / 1;
-  justify-self: center;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.4);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 2.25rem;
   background-color: var(--gray-50);
   border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Card Header: Brand Block (Seal + Title) & Status */
+.edu-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.edu-brand-block {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Circular Seal Frame */
+.edu-seal-frame {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  min-width: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.75rem;
+  padding: 0.45rem;
+  flex-shrink: 0;
+  transition: 
+    border-color var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-spring),
+    box-shadow var(--duration-normal) var(--ease-out);
 }
 
-.edu-logo-img {
+.edu-ledger-card:hover .edu-seal-frame {
+  border-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
+}
+
+.edu-seal-img {
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: contain;
-  object-position: center center;
-  border-radius: inherit;
+  object-position: center;
+  border-radius: 50%;
+  display: block;
   transition: transform var(--duration-slow) var(--ease-out-expo);
 }
 
-.edu-logo-card:hover .edu-logo-img {
-  transform: scale(1.04);
+.edu-ledger-card:hover .edu-seal-img {
+  transform: scale(1.05);
 }
 
-.edu-logo-card:hover .photo-ambient-glow {
-  opacity: 0.8;
-}
-
-.column-header { 
-  font-family: var(--font-mono); 
-  font-size: 12px; 
-  color: var(--gray-500); 
-  text-transform: uppercase; 
-  letter-spacing: 0.08em; 
-  border-bottom: 1px solid var(--gray-200); 
-  padding-bottom: 1rem; 
-}
-
-.timeline-node {
-  position: relative;
-  padding-left: 1.5rem;
-  border-left: 1px solid var(--gray-200);
-  transition: border-color var(--duration-fast) var(--ease-out);
-}
-
-.timeline-dot {
-  position: absolute;
-  left: -4px;
-  top: 6px;
-  width: 7px;
-  height: 7px;
+.edu-seal-frame .photo-ambient-glow {
   border-radius: 50%;
-  background-color: var(--gray-400);
+  opacity: 0.4;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.edu-ledger-card:hover .edu-seal-frame .photo-ambient-glow {
+  opacity: 0.85;
+}
+
+/* Title Block & Typography */
+.edu-title-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.edu-title-block > .mask-wrap {
+  margin-bottom: 0;
+}
+
+.edu-institution-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  line-height: 1.35;
+}
+
+.edu-inst-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--gray-400);
+  letter-spacing: -0.01em;
+}
+
+.edu-inst-campus {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--gray-500);
+}
+
+.edu-ledger-card .edu-degree-title,
+h2.edu-degree-title.masked-heading {
+  font-size: clamp(1.12rem, 1.48vw, 1.32rem);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  margin: 0.15rem 0 0.35rem 0;
+  white-space: nowrap;
+}
+
+.edu-ledger-card .edu-degree-title .mask-wrap,
+.edu-ledger-card .edu-degree-title .mask-inner {
+  white-space: nowrap;
+  display: block;
+}
+
+.edu-college-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-500);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+/* Status Column: Active Pulse & Standing */
+.edu-status-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  padding-top: 0.2rem;
+}
+
+.edu-standing-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--gray-400);
+  white-space: nowrap;
+}
+
+/* Card Body: Overview & Coursework Shelf */
+.edu-card-body {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.edu-card-body > .mask-wrap {
+  margin-bottom: 0;
+}
+
+.edu-overview-text {
+  font-size: 0.98rem;
+  color: var(--gray-500);
+  line-height: 1.65;
+  max-width: 820px;
+  margin: 0;
+}
+
+.edu-curriculum-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.edu-shelf-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+
+.edu-tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.edu-tags-grid .exp-tag {
   transition: 
-    transform var(--duration-fast) var(--ease-spring), 
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
-    box-shadow var(--duration-fast) var(--ease-out);
+    transform var(--duration-fast) var(--ease-spring);
 }
 
-.timeline-node:hover .timeline-dot {
-  background-color: var(--ink);
-  transform: scale(1.4);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--ink) 50%, transparent);
+.edu-tags-grid .exp-tag:hover {
+  border-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  color: var(--ink);
+  background-color: var(--gray-100);
+  transform: translateY(-1px);
 }
-
-.edu-years { font-family: var(--font-mono); font-size: 11px; color: var(--gray-500); display: block; letter-spacing: 0.05em; }
-.edu-degree { font-size: 1.75rem; line-height: 1.2; font-weight: 500; color: var(--ink); }
-.edu-institution { display: block; font-size: 1.05rem; color: var(--gray-400); font-family: var(--font-serif); }
-.edu-description { font-size: 1.05rem; color: var(--gray-500); line-height: 1.6; }
-
-.timeline-content > .mask-wrap { margin-bottom: 0.45rem; }
-.timeline-content > .mask-wrap:first-child { margin-bottom: 0.65rem; }
-.timeline-content > .mask-wrap:nth-child(3) { margin-bottom: 0.65rem; }
-.timeline-content > .mask-wrap:last-child { margin-bottom: 0; }
 
 /* --- 03 Tech Stack (5-Column Layout) --- */
 .tech-5col-grid {
@@ -2809,10 +2943,24 @@ h4.masked-heading {
 @media (max-width: 900px) {
   html { scroll-snap-type: y proximity; }
   .snap-section { height: auto; min-height: 100dvh; padding: 5.5rem 1.5rem 3rem 1.5rem; }
-  .immersive-grid, .split-grid, .edu-grid, .tech-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .immersive-grid, .tech-grid, .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
   .tech-column { padding-left: 0; }
   .image-column { max-width: 280px; margin: 0 auto; }
-  .edu-logo-card { max-width: 240px; margin: 0 auto; }
+
+  /* Education Tablet Layout */
+  .edu-ledger-card {
+    padding: 1.75rem 2rem;
+  }
+  .edu-seal-frame {
+    width: 68px;
+    height: 68px;
+    min-width: 68px;
+    padding: 0.35rem;
+  }
+  .edu-ledger-card .edu-degree-title,
+  h2.edu-degree-title.masked-heading {
+    font-size: clamp(1.08rem, 2vw, 1.22rem);
+  }
   .projects-track { padding-left: 0; padding-right: 0; margin-left: 0; width: 100%; gap: 3rem; }
   .project-panel { width: 100%; min-width: 100%; grid-template-columns: 1fr; gap: 1.5rem; padding: 0.5rem 0; min-height: auto; }
   .project-panel.alone { min-height: auto; display: block; }
@@ -2871,6 +3019,24 @@ h4.masked-heading {
     grid-column: 4 / span 2;
   }
   .room-cards-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 820px) {
+  .edu-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .edu-status-col {
+    align-items: flex-start;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--gray-200);
+    padding-top: 0.75rem;
+  }
 }
 
 /* --- Mobile Smartphones (<= 600px) --- */
@@ -3082,27 +3248,47 @@ h4.masked-heading {
     padding: 0.75rem 1.25rem;
   }
 
-  /* Education & Tech Stack Mobile Layout */
-  .edu-logo-card {
-    max-width: 200px;
-    margin: 0 auto 1.25rem auto;
+  /* Education Mobile Ledger */
+  .edu-ledger-card {
+    padding: 1.35rem 1.15rem;
   }
 
-  .edu-column {
-    gap: 1.25rem;
+  .edu-brand-block {
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
   }
 
-  .edu-degree {
-    font-size: 1.35rem;
-    line-height: 1.25;
+  .edu-seal-frame {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    padding: 0.3rem;
   }
 
-  .edu-institution {
-    font-size: 0.95rem;
+  .edu-ledger-card .edu-degree-title,
+  h2.edu-degree-title.masked-heading {
+    font-size: clamp(1.08rem, 4vw, 1.2rem);
+    line-height: 1.3;
+    white-space: normal;
   }
 
-  .edu-description {
+  .edu-ledger-card .edu-degree-title .mask-wrap,
+  .edu-ledger-card .edu-degree-title .mask-inner {
+    white-space: normal;
+  }
+
+  .edu-card-body {
+    margin-top: 1.25rem;
+    padding-top: 1.15rem;
+  }
+
+  .edu-overview-text {
     font-size: 0.92rem;
+  }
+
+  .edu-tags-grid {
+    gap: 0.4rem;
   }
 
   /* Experience Mobile Ledger */
